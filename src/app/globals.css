@@ -2,32 +2,69 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  @apply box-border text-white h-dvh relative text-base m-0 p-0 bg-primary bg-background bg-no-repeat bg-cover bg-fixed bg-center;
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .banner-heading-text {
+    @apply text-[56px] font-bold tracking-[-2.24px] leading-[64px];
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-gradient-three via-gradient-four to-gradient-five inline-block text-transparent bg-clip-text;
+  }
+
+  .gradient-border {
+    @apply absolute inset-[-1000%] bg-[conic-gradient(from_90deg_at_50%_50%,#18F6DB_0%,#a65ce6_40%,#66D4F6_100%)];
+  }
+
+  .rounded-30 {
+    @apply rounded-[30px];
+  }
+
+  .gradient-btn {
+    background-size: 300% 100%;
+    -o-transition: all 0.4s ease-in-out;
+    -webkit-transition: all 0.4s ease-in-out;
+    transition: all 0.4s ease-in-out;
+    background-image: linear-gradient(
+      0.4turn,
+      #56acfc,
+      #4d92ff,
+      #bb65ff,
+      #bb65ff,
+      #56acfc,
+      #4d92ff
+    );
+  }
+
+  .gradient-btn:hover {
+    background-position: 100% 0;
+    -o-transition: all 0.4s ease-in-out;
+    -webkit-transition: all 0.4s ease-in-out;
+    transition: all 0.4s ease-in-out;
+  }
+
+  .text-26 {
+    @apply text-[26px];
+  }
+
+  .loader {
+    @apply border-t-[#030523] border-l-gray-300;
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }

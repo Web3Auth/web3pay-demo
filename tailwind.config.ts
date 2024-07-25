@@ -8,10 +8,34 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      transitionProperty: {
+        "max-height": "max-height",
+        transform: "transform",
+      },
+      maxHeight: {
+        "0": "0",
+        screen: "100vh",
+      },
+      colors: {
+        primary: "#030324",
+        opaque: "#182146",
+        line: "rgba(255, 255, 255, 0.30)",
+        gradient: {
+          one: "#18F6DB",
+          two: "#0364FF",
+          three: "#66D4F6",
+          four: "#4D92FF",
+          five: "#BB65FF",
+        },
+      },
       backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        background: "url('/images/demo-bg.svg')",
+      },
+      animation: {
+        "bounce-short": "bounce 1s linear 2",
+        "spin-short": "spin 20s linear infinite",
+        "spin-medium": "spin 5s linear infinite",
+        move: "move 3s ease-in-out",
       },
     },
   },
