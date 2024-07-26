@@ -3,56 +3,31 @@
 import React, { useEffect, useState } from "react";
 import Card from "./ui/Card";
 import Image from "next/image";
-import Loader from "./ui/Loader";
-import { WalletProvider } from "@web3auth/global-accounts-sdk";
 import axios from "axios";
+import Button from "./ui/Button";
+export type Step = "start" | "create" | "fundToken" | "import" | "mintNft";
+import { generatePrivateKey, privateKeyToAccount, privateKeyToAddress } from "viem/accounts";
+import { IRandomWallet } from "@/utils/interfaces";
 import { generatePrivate, getPublic } from "@toruslabs/eccrypto";
-import { OpenloginSessionManager } from "@toruslabs/session-manager";
-export type Step = "start" | "import" | "mintNft" | "connect" | "fundToken";
+import { createPublicClient, Hex, http } from "viem";
+import { waitForTransactionReceipt } from "viem/actions";
+import { arbitrumSepolia } from "viem/chains";
 
 const Steps = ({
-  loginOrRegister,
   address,
   skipToStep,
-  chainId,
   handleMintNft,
   handleImportAccount,
 }: {
-  loginOrRegister(): Promise<void>;
   skipToStep: Step;
   address: string;
-  chainId: number;
   handleMintNft: (address: string) => Promise<void>;
-  handleImportAccount: () => Promise<void>;
+  handleImportAccount: (randWallet: IRandomWallet) => Promise<void>;
 }) => {
+  const [randomWallet, setRandomWallet] = useState<IRandomWallet>();
   const [currentStep, setCurrentStep] = useState<Step>("start");
   const [completedSteps, setCompletedSteps] = useState<Step[]>([]);
-
-  // set the current step 
-  useEffect(() => {
-    if(currentStep) {
-      const handleSteps = async () => {
-        switch (currentStep) {
-          case "connect": {
-            // await handleConnect();
-            break;
-          }
-          case "fundToken":
-            // await fundAccount();
-            break;
-          case "import":
-            // await importAccount();
-            break;
-          case "mintNft":
-            // await mintNft();
-            break;
-          default:
-            break;
-        }
-      }
-      handleSteps();
-    }
-  }, [currentStep]);
+  const [stepLoader, setStepLoader] = useState(false);
 
 
   useEffect(() => {
@@ -61,53 +36,99 @@ const Steps = ({
     }
   }, [skipToStep]);
   
-  // step1: login
-  async function handleConnect() {
-    await loginOrRegister();
-    // existingUser ? setCurrentStep("import") : setCurrentStep("fundToken");
+  // step1: create random wallet
+  async function handleCreateRandomWallet() {
+    const privateKeyBuf = generatePrivate();
+    const publicKeyBuf = getPublic(privateKeyBuf);
+
+    const privateKey = privateKeyBuf.toString("hex");
+    const publicKey = publicKeyBuf.toString("hex");
+
+    const address = privateKeyToAddress(privateKey.startsWith("0x") ? privateKey as Hex : `0x${privateKey}`);
+
+    setRandomWallet({
+      publicKey,
+      privateKey,
+      address,
+      keyType: "secp256k1",
+    });
+  
+    setCurrentStep("fundToken");
   }
 
-  // step2: fund account
+  // step2: fund  random wallet on arbitrum
   async function fundAccount() {
-    if(address) {
-      console.log(`Funding account: ${address}`);
-      const txnHash = await axios.post("https://lrc-accounts.web3auth.io/api/mint", {
-        "chainId": chainId.toString(),
-        "toAddress": address,
-      });
-      console.log({txnHash});
-      setCurrentStep("import");
+    try {
+      if(randomWallet?.address) {
+        setStepLoader(true)
+        const {faucetHash: hash}: {faucetHash: Hex} = await axios.post("https://lrc-accounts.web3auth.io/api/mint", {
+          "chainId": "421614",
+          "toAddress": randomWallet.address,
+        });
+
+        console.log("txnHash", hash);
+
+        const publicClient = createPublicClient({
+          chain: arbitrumSepolia,
+          transport: http("https://arbitrum-sepolia.infura.io/v3/dee726a2930e4573a743a5c8f79942c1"),
+        })
+        await waitForTransactionReceipt(publicClient, {
+          hash,
+        })
+        setCurrentStep("import");
+      }
+    } catch (error) {
+      console.error("error while funding", error)
+    } finally {
+      setStepLoader(false)
     }
   }
 
   // step3: import account
   async function importAccount() {
-    await handleImportAccount();
-    setCurrentStep("mintNft");
+    if(randomWallet) {
+      await handleImportAccount(randomWallet);
+      setCurrentStep("mintNft");
+    }
   }
   // step4: mint nft
   async function mintNft() {
-    if(address) {
-      setCurrentStep("mintNft");
-      handleMintNft(address);
+    if(randomWallet) {
+      await handleMintNft(randomWallet.address);
     }
   }
 
   const handleStep = async (step: Step) => {
-    setCurrentStep(step);
-    await importAccount()
-  };
+      switch (step) {
+        case "create": {
+          await handleCreateRandomWallet();
+          break;
+        }
+        case "fundToken":
+          await fundAccount();
+          break;
+        case "import":
+          await importAccount();
+          break;
+        case "mintNft":
+          await mintNft();
+          break;
+        default:
+          break;
+      }
+  }
+  
 
   return (
     <div className="mt-16 ml-20 flex items-center">
-      {/* connect */}
+      {/* create */}
       <Card
         cardClasses={`gap-y-5 ${
           currentStep === "start" || !completedSteps.includes("start")
             ? "h-auto"
             : "h-[157px]"
         }`}
-        active={currentStep === "fundToken"}
+        active={currentStep === "create"}
       >
         <p className="text-26 font-normal flex items-center justify-between w-full">
           01
@@ -121,10 +142,10 @@ const Steps = ({
           )}
         </p>
         <p className="text-base font-medium break-words w-[250px]">
-          Create test wallet on Polygon chain
+          Create test wallet on Arbitrum chain
         </p>
         {currentStep === "start" && (
-          <GradientButton title="Connect" handleClick={() => handleStep("connect")} />
+          <Button loading={stepLoader} title="Create" handleClick={() => handleStep("create")} />
         )}
       </Card>
       <Image src="/icons/arrow-right.svg" alt="arrow" height={50} width={50} />
@@ -151,10 +172,10 @@ const Steps = ({
           Fund test wallet with Arbitrum token
         </p>
         {currentStep === "fundToken" && (
-          <GradientButton
-            title="Connect"
-            handleClick={() => handleStep("connect")}
-            loading
+          <Button
+            title="fund"
+            handleClick={() => handleStep("fundToken")}
+            loading={stepLoader}
           />
         )}
       </Card>
@@ -182,7 +203,7 @@ const Steps = ({
           Import test wallet liquidity into global account
         </p>
         {currentStep === "import" && (
-          <GradientButton title="Import" handleClick={importAccount} />
+          <Button title="Import" handleClick={() => handleStep("import")} />
         )}
       </Card>
       <Image src="/icons/arrow-right.svg" alt="arrow" height={50} width={50} />
@@ -207,33 +228,15 @@ const Steps = ({
           )}
         </p>
         <p className="text-base font-medium break-words">
-          Mint NFT on yyy chain
+          Mint NFT on Polygon
         </p>
         {currentStep === "mintNft" && (
-          <GradientButton title="Mint" handleClick={mintNft} />
+          <Button title="Mint" handleClick={() => handleStep("mintNft")} />
         )}
       </Card>
     </div>
   );
 };
 
-const GradientButton = ({
-  title,
-  handleClick,
-  loading,
-}: {
-  title: string;
-  handleClick: () => void;
-  loading?: boolean;
-}) => {
-  return (
-    <button
-      className="gradient-btn relative w-fit rounded-full px-12 py-4 flex items-center justify-center"
-      onClick={() => handleClick && handleClick()}
-    >
-      {loading ? <Loader size="xs" /> : title}
-    </button>
-  );
-};
 
 export default Steps;
