@@ -1,86 +1,90 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import React, { useEffect, useState } from "react";
 import Card from "./ui/Card";
 import Image from "next/image";
 import axios from "axios";
-import Button from "./ui/Button";
-export type Step = "start" | "fundToken" | "mintNft";
+import GradientButton from "./ui/GradientButton";
+export type NonImportFlowStep = "start" | "fundToken" | "mintNft";
 
-const Steps = ({
+const NonImportFlow = ({
   address,
   skipToStep,
 }: {
-  skipToStep: Step;
+  skipToStep: NonImportFlowStep;
   address: string;
 }) => {
-  
-  const [currentStep, setCurrentStep] = useState<Step>("fundToken");
-  const [completedSteps, setCompletedSteps] = useState<Step[]>([]);
+  const [currentStep, setCurrentStep] =
+    useState<NonImportFlowStep>("fundToken");
+  const [completedSteps, setCompletedSteps] = useState<NonImportFlowStep[]>([]);
   const [stepLoader, setStepLoader] = useState(false);
 
-
   useEffect(() => {
-    if(skipToStep && skipToStep != currentStep) {
+    if (skipToStep && skipToStep != currentStep) {
       setCurrentStep(skipToStep);
     }
   }, [skipToStep]);
-  
+
   // step1: create random wallet
   async function handleCreateRandomWallet() {
     // TODO: create random key pair
     try {
-      if(address) {
-        setStepLoader(true)
-        const txnHash = await axios.post("https://lrc-accounts.web3auth.io/api/mint", {
-          "chainId": "421614",
-          "toAddress": address,
-        });
+      if (address) {
+        setStepLoader(true);
+        const txnHash = await axios.post(
+          "https://lrc-accounts.web3auth.io/api/mint",
+          {
+            chainId: "421614",
+            toAddress: address,
+          }
+        );
         // TODO: wait for txn
         setCurrentStep("mintNft");
       }
     } catch (error) {
-      console.error("error while funding", error)
+      console.error("error while funding", error);
     } finally {
-      setStepLoader(false)
+      setStepLoader(false);
     }
   }
 
   // step1: fund  random wallet on arbitrum
   async function fundAccount() {
-    if(address) {
-      const txnHash = await axios.post("https://lrc-accounts.web3auth.io/api/mint", {
-        "chainId": "421614",
-        "toAddress": address,
-      });
+    if (address) {
+      const txnHash = await axios.post(
+        "https://lrc-accounts.web3auth.io/api/mint",
+        {
+          chainId: "421614",
+          toAddress: address,
+        }
+      );
       // TODO: wait for txn
       setCurrentStep("mintNft");
     }
   }
   // step2: mint nft
   async function mintNft() {
-    if(address) {
+    if (address) {
     }
   }
 
-  const handleStep = async (step: Step) => {
-      switch (step) {
-        case "fundToken":
-          await fundAccount();
-          break;
+  const handleStep = async (step: NonImportFlowStep) => {
+    switch (step) {
+      case "fundToken":
+        await fundAccount();
+        break;
 
-        case "mintNft":
-          await mintNft();
-          break;
-        default:
-          break;
-      }
-  }
-  
+      case "mintNft":
+        await mintNft();
+        break;
+      default:
+        break;
+    }
+  };
 
   return (
     <div className="mt-16 ml-20 flex items-center">
-  
       <Card
         cardClasses={`gap-y-5 ${
           currentStep === "start" || !completedSteps.includes("fundToken")
@@ -104,7 +108,7 @@ const Steps = ({
           Fund Global Account with Arbitrum token
         </p>
         {currentStep === "fundToken" && (
-          <Button
+          <GradientButton
             title="fund"
             handleClick={() => handleStep("fundToken")}
             loading={stepLoader}
@@ -133,16 +137,16 @@ const Steps = ({
             />
           )}
         </p>
-        <p className="text-base font-medium break-words">
-          Mint NFT on Polygon
-        </p>
+        <p className="text-base font-medium break-words">Mint NFT on Polygon</p>
         {currentStep === "mintNft" && (
-          <Button title="Mint" handleClick={() => handleStep("mintNft")} />
+          <GradientButton
+            title="Mint"
+            handleClick={() => handleStep("mintNft")}
+          />
         )}
       </Card>
     </div>
   );
 };
 
-
-export default Steps;
+export default NonImportFlow;
