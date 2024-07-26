@@ -3,9 +3,12 @@
 import Banner from "@/components/Banner";
 import Steps, { Step } from "@/components/Steps";
 import Navbar from "@/components/ui/Navbar";
+import { erc721Abi } from "@/utils/abis/erc721";
+import { generatePrivate, getPublic } from "@toruslabs/eccrypto";
+import { OpenloginSessionManager } from "@toruslabs/session-manager";
 import { WalletProvider } from "@web3auth/global-accounts-sdk";
-import axios from "axios";
 import { useEffect, useState } from "react";
+import { encodeFunctionData } from "viem";
 
 export default function Home() {
   const [walletProvider, setWalletProvider] = useState<WalletProvider>();
@@ -87,6 +90,55 @@ export default function Home() {
     }
   }
 
+  async function mintNft(address: string) {
+    const data = encodeFunctionData({
+      abi: erc721Abi,
+      functionName: "mint",
+      args: [address],
+    });
+
+    const resp = await walletProvider?.request({
+      method: "eth_sendTransaction",
+      params: {
+        from: address,
+        to: "0x5493818C548020536F7aF02ea1905055aEBC3D7f",
+        data,
+        value: "0",
+      },
+    });
+
+    console.log("mint nft resp", resp);
+  }
+
+  async function importAccount() {
+    try {
+      if(address) {
+        const privateKeyBuf = generatePrivate();
+        const publicKeyBuf = getPublic(privateKeyBuf);
+  
+        const privateKey = privateKeyBuf.toString("hex");
+        const publicKey = publicKeyBuf.toString("hex");
+        console.log({privateKey, publicKey});
+  
+        let sessionId = OpenloginSessionManager.generateRandomSessionKey();
+        const sessionMgr = new OpenloginSessionManager({ sessionId });
+        sessionId = await sessionMgr.createSession({
+          privateKey, publicKey, keyType: "secp256k1"
+        });
+  
+        const response = await walletProvider?.request({
+          method: "wallet_importW3aSession",
+          params: {
+            sessionId,
+          },
+        });
+        console.log("Response", response);
+      }
+    } catch (e: unknown) {
+      console.error("error importing account", e);
+    }
+  }
+
   return (
     <main className="p-6">
       <Navbar
@@ -101,6 +153,9 @@ export default function Home() {
           skipToStep={skipToStep as Step}
           address={address}
           loginOrRegister={loginOrRegister}
+          walletProvider={walletProvider}
+          handleMintNft={mintNft}
+          handleImportAccount={importAccount}
         />
       ) : (
         <></>

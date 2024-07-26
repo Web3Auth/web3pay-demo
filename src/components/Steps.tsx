@@ -6,6 +6,8 @@ import Image from "next/image";
 import Loader from "./ui/Loader";
 import { WalletProvider } from "@web3auth/global-accounts-sdk";
 import axios from "axios";
+import { generatePrivate, getPublic } from "@toruslabs/eccrypto";
+import { OpenloginSessionManager } from "@toruslabs/session-manager";
 export type Step = "start" | "import" | "mintNft" | "connect" | "fundToken";
 
 const Steps = ({
@@ -13,11 +15,17 @@ const Steps = ({
   address,
   skipToStep,
   chainId,
+  walletProvider,
+  handleMintNft,
+  handleImportAccount,
 }: {
   loginOrRegister(): Promise<void>;
   skipToStep: Step;
   address: string;
   chainId: number;
+  walletProvider: WalletProvider;
+  handleMintNft: (address: string) => Promise<void>;
+  handleImportAccount: () => Promise<void>;
 }) => {
   const [currentStep, setCurrentStep] = useState<Step>("start");
   const [completedSteps, setCompletedSteps] = useState<Step[]>([]);
@@ -28,17 +36,17 @@ const Steps = ({
       const handleSteps = async () => {
         switch (currentStep) {
           case "connect": {
-            await handleConnect();
+            // await handleConnect();
             break;
           }
           case "fundToken":
-            await fundAccount();
+            // await fundAccount();
             break;
           case "import":
-            await importAccount();
+            // await importAccount();
             break;
           case "mintNft":
-            await mintNft();
+            // await mintNft();
             break;
           default:
             break;
@@ -76,18 +84,20 @@ const Steps = ({
 
   // step3: import account
   async function importAccount() {
-    if(address) {
-      // setCurrentStep("mintNft");
-    }
+    await handleImportAccount();
+    setCurrentStep("mintNft");
   }
   // step4: mint nft
   async function mintNft() {
     if(address) {
+      setCurrentStep("mintNft");
+      handleMintNft(address);
     }
   }
 
-  const handleStep = (step: Step) => {
+  const handleStep = async (step: Step) => {
     setCurrentStep(step);
+    await importAccount()
   };
 
   return (
@@ -174,7 +184,7 @@ const Steps = ({
           Import test wallet liquidity into global account
         </p>
         {currentStep === "import" && (
-          <GradientButton title="Import" handleClick={() => handleStep("import")} />
+          <GradientButton title="Import" handleClick={importAccount} />
         )}
       </Card>
       <Image src="/icons/arrow-right.svg" alt="arrow" height={50} width={50} />
@@ -202,7 +212,7 @@ const Steps = ({
           Mint NFT on yyy chain
         </p>
         {currentStep === "mintNft" && (
-          <GradientButton title="Mint" handleClick={() => handleStep("mintNft")} />
+          <GradientButton title="Mint" handleClick={mintNft} />
         )}
       </Card>
     </div>
