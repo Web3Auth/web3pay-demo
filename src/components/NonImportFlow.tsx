@@ -14,14 +14,8 @@ const Steps = ({
   skipToStep: Step;
   address: string;
 }) => {
-  const [randomWallet, setRandomWallet] = useState<{
-    address: string;
-    privateKey: string;
-  }>({
-    address: "",
-    privateKey: "",
-  });
-  const [currentStep, setCurrentStep] = useState<Step>("start");
+  
+  const [currentStep, setCurrentStep] = useState<Step>("fundToken");
   const [completedSteps, setCompletedSteps] = useState<Step[]>([]);
   const [stepLoader, setStepLoader] = useState(false);
 
@@ -35,14 +29,28 @@ const Steps = ({
   // step1: create random wallet
   async function handleCreateRandomWallet() {
     // TODO: create random key pair
-    setCurrentStep("fundToken");
+    try {
+      if(address) {
+        setStepLoader(true)
+        const txnHash = await axios.post("https://lrc-accounts.web3auth.io/api/mint", {
+          "chainId": "421614",
+          "toAddress": address,
+        });
+        // TODO: wait for txn
+        setCurrentStep("mintNft");
+      }
+    } catch (error) {
+      console.error("error while funding", error)
+    } finally {
+      setStepLoader(false)
+    }
   }
 
   // step1: fund  random wallet on arbitrum
   async function fundAccount() {
     if(address) {
       const txnHash = await axios.post("https://lrc-accounts.web3auth.io/api/mint", {
-        "chainId": "421611",
+        "chainId": "421614",
         "toAddress": address,
       });
       // TODO: wait for txn
