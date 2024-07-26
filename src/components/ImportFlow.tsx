@@ -8,7 +8,7 @@ import { WalletProvider } from "@web3auth/global-accounts-sdk";
 import axios from "axios";
 import Button from "./ui/Button";
 export type Step = "start" | "create" | "fundToken" | "import" | "mintNft";
-
+import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 const Steps = ({
   address,
   skipToStep,
@@ -36,7 +36,17 @@ const Steps = ({
   
   // step1: create random wallet
   async function handleCreateRandomWallet() {
-    // TODO: create random key pair
+    const privateKey = generatePrivateKey();
+    console.log("Private Key:", privateKey);
+
+    const account = privateKeyToAccount(privateKey);
+    console.log("Account Address:", account.address);
+
+    setRandomWallet({
+      address: account.address,
+      privateKey,
+    });
+  
     setCurrentStep("fundToken");
   }
 
@@ -46,7 +56,7 @@ const Steps = ({
       if(randomWallet.address) {
         setStepLoader(true)
         const txnHash = await axios.post("https://lrc-accounts.web3auth.io/api/mint", {
-          "chainId": "421611",
+          "chainId": "421614",
           "toAddress": randomWallet.address,
         });
         // TODO: wait for txn
