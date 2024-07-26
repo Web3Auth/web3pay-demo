@@ -5,9 +5,11 @@ import Button from "./Button";
 const Navbar = ({
   handleConnect,
   loader,
+  address,
 }: {
   handleConnect?: () => void;
   loader?: boolean;
+  address: string;
 }) => {
   return (
     <div className="flex items-center justify-between">
@@ -17,11 +19,20 @@ const Navbar = ({
         height={50}
         width={50}
       />
-      <Button
-        title="Connect"
-        loading={loader}
-        handleClick={() => handleConnect && handleConnect()}
-      />
+      {
+        !address ? (
+          <Button
+            title="Connect"
+            loading={loader}
+            handleClick={() => handleConnect && handleConnect()}
+          />
+        ) : (
+          <Button
+            title={address}
+            loading={loader}
+          />
+        )
+      }
     </div>
   );
 };

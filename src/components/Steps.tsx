@@ -1,37 +1,109 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Card from "./ui/Card";
 import Image from "next/image";
 import Loader from "./ui/Loader";
+import { WalletProvider } from "@web3auth/global-accounts-sdk";
+import axios from "axios";
+export type Step = "start" | "import" | "mintNft" | "connect" | "fundToken";
 
-const Steps = () => {
-  const [currentStep, setCurrentStep] = React.useState(1);
-  const [completedSteps, setCompletedSteps] = React.useState<number[]>([]);
+const Steps = ({
+  loginOrRegister,
+  address,
+  skipToStep,
+  chainId,
+}: {
+  loginOrRegister(): Promise<void>;
+  skipToStep: Step;
+  address: string;
+  chainId: number;
+}) => {
+  const [currentStep, setCurrentStep] = useState<Step>("start");
+  const [completedSteps, setCompletedSteps] = useState<Step[]>([]);
 
-  const handleStep = (step: number) => {
-    if (step !== 0) {
-      setCurrentStep(step);
-      setCompletedSteps((prev) => [...prev, step - 1]);
-    } else {
-      setCurrentStep(0);
-      setCompletedSteps((prev) => [...prev, 4]);
+  // set the current step 
+  useEffect(() => {
+    if(currentStep) {
+      const handleSteps = async () => {
+        switch (currentStep) {
+          case "connect": {
+            await handleConnect();
+            break;
+          }
+          case "fundToken":
+            await fundAccount();
+            break;
+          case "import":
+            await importAccount();
+            break;
+          case "mintNft":
+            await mintNft();
+            break;
+          default:
+            break;
+        }
+      }
+      handleSteps();
     }
+  }, [currentStep]);
+
+
+  useEffect(() => {
+    if(skipToStep && skipToStep != currentStep) {
+      setCurrentStep(skipToStep);
+    }
+  }, [skipToStep]);
+  
+  // step1: login
+  async function handleConnect() {
+    await loginOrRegister();
+    // existingUser ? setCurrentStep("import") : setCurrentStep("fundToken");
+  }
+
+  // step2: fund account
+  async function fundAccount() {
+    if(address) {
+      console.log(`Funding account: ${address}`);
+      const txnHash = await axios.post("https://lrc-accounts.web3auth.io/api/mint", {
+        "chainId": chainId.toString(),
+        "toAddress": address,
+      });
+      console.log({txnHash});
+      setCurrentStep("import");
+    }
+  }
+
+  // step3: import account
+  async function importAccount() {
+    if(address) {
+      // setCurrentStep("mintNft");
+    }
+  }
+  // step4: mint nft
+  async function mintNft() {
+    if(address) {
+    }
+  }
+
+  const handleStep = (step: Step) => {
+    setCurrentStep(step);
   };
 
   return (
     <div className="mt-16 ml-20 flex items-center">
+      {/* connect */}
       <Card
         cardClasses={`gap-y-5 ${
-          currentStep === 1 || !completedSteps.includes(1)
+          currentStep === "start" || !completedSteps.includes("start")
             ? "h-auto"
             : "h-[157px]"
         }`}
-        active={currentStep === 1}
+        active={currentStep === "fundToken"}
       >
         <p className="text-26 font-normal flex items-center justify-between w-full">
           01
-          {completedSteps.includes(1) && (
+          {completedSteps.includes("start") && (
             <Image
               src="/icons/badge-check.svg"
               alt="arrow"
@@ -43,22 +115,22 @@ const Steps = () => {
         <p className="text-base font-medium break-words w-[250px]">
           Create test wallet on Polygon chain
         </p>
-        {currentStep === 1 && (
-          <GradientButton title="Connect" handleClick={() => handleStep(2)} />
+        {currentStep === "start" && (
+          <GradientButton title="Connect" handleClick={() => handleStep("connect")} />
         )}
       </Card>
       <Image src="/icons/arrow-right.svg" alt="arrow" height={50} width={50} />
       <Card
         cardClasses={`gap-y-5 ${
-          currentStep === 2 || !completedSteps.includes(2)
+          currentStep === "fundToken" || !completedSteps.includes("fundToken")
             ? "h-auto"
             : "h-[157px]"
         }`}
-        active={currentStep === 2}
+        active={currentStep === "fundToken"}
       >
         <p className="text-26 font-normal flex items-center justify-between w-full">
           02
-          {completedSteps.includes(2) && (
+          {completedSteps.includes("fundToken") && (
             <Image
               src="/icons/badge-check.svg"
               alt="arrow"
@@ -70,10 +142,10 @@ const Steps = () => {
         <p className="text-base font-medium break-words w-[250px]">
           Fund test wallet with Arbitrum token
         </p>
-        {currentStep === 2 && (
+        {currentStep === "fundToken" && (
           <GradientButton
             title="Connect"
-            handleClick={() => handleStep(3)}
+            handleClick={() => handleStep("connect")}
             loading
           />
         )}
@@ -81,15 +153,15 @@ const Steps = () => {
       <Image src="/icons/arrow-right.svg" alt="arrow" height={50} width={50} />
       <Card
         cardClasses={`gap-y-5 ${
-          currentStep === 3 || !completedSteps.includes(3)
+          currentStep === "import" || !completedSteps.includes("import")
             ? "h-auto"
             : "h-[157px]"
         }`}
-        active={currentStep === 3}
+        active={currentStep === "import"}
       >
         <p className="text-26 font-normal flex items-center justify-between w-full">
           03
-          {completedSteps.includes(3) && (
+          {completedSteps.includes("import") && (
             <Image
               src="/icons/badge-check.svg"
               alt="arrow"
@@ -101,23 +173,23 @@ const Steps = () => {
         <p className="text-base font-medium break-words w-[250px]">
           Import test wallet liquidity into global account
         </p>
-        {currentStep === 3 && (
-          <GradientButton title="Import" handleClick={() => handleStep(4)} />
+        {currentStep === "import" && (
+          <GradientButton title="Import" handleClick={() => handleStep("import")} />
         )}
       </Card>
       <Image src="/icons/arrow-right.svg" alt="arrow" height={50} width={50} />
       {completedSteps}
       <Card
         cardClasses={`gap-y-5 ${
-          currentStep === 4 || !completedSteps.includes(4)
+          currentStep === "mintNft" || !completedSteps.includes("mintNft")
             ? "h-auto"
             : "h-[157px]"
         }`}
-        active={currentStep === 4}
+        active={currentStep === "mintNft"}
       >
         <p className="text-26 font-normal flex items-center justify-between w-full">
           04
-          {completedSteps.includes(4) && (
+          {completedSteps.includes("mintNft") && (
             <Image
               src="/icons/badge-check.svg"
               alt="arrow"
@@ -129,8 +201,8 @@ const Steps = () => {
         <p className="text-base font-medium break-words">
           Mint NFT on yyy chain
         </p>
-        {currentStep === 4 && (
-          <GradientButton title="Mint" handleClick={() => handleStep(0)} />
+        {currentStep === "mintNft" && (
+          <GradientButton title="Mint" handleClick={() => handleStep("mintNft")} />
         )}
       </Card>
     </div>
