@@ -12,10 +12,12 @@ const Steps = ({
   loginOrRegister,
   address,
   skipToStep,
+  chainId,
 }: {
   loginOrRegister(): Promise<void>;
   skipToStep: Step;
   address: string;
+  chainId: number;
 }) => {
   const [currentStep, setCurrentStep] = useState<Step>("start");
   const [completedSteps, setCompletedSteps] = useState<Step[]>([]);
@@ -64,8 +66,8 @@ const Steps = ({
     if(address) {
       console.log(`Funding account: ${address}`);
       const txnHash = await axios.post("https://lrc-accounts.web3auth.io/api/mint", {
-        "chainId": "80002",
-        "toAddress": "0xC41Ac297e3a5a3515dF64E77D806f053C3F34aBc"
+        "chainId": chainId.toString(),
+        "toAddress": address,
       });
       console.log({txnHash});
       setCurrentStep("import");

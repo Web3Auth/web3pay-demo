@@ -16,6 +16,7 @@ export default function Home() {
 
   // todo: change this before deployment or move it to env
   const [selectedEnv, setSelectedEnv] = useState("local");
+  const [chainId, setChainId] = useState(80002)
 
   useEffect(() => {
     const getWalletURL = () => {
@@ -32,7 +33,7 @@ export default function Home() {
       setWalletProvider(
         new WalletProvider({
           metadata: {
-            appChainIds: [80002],
+            appChainIds: [chainId],
             appName: "Demo App",
             appLogoUrl: "https://web3auth.io/images/web3authlog.png",
           },
@@ -96,6 +97,7 @@ export default function Home() {
       <Banner />
       {walletProvider ? (
         <Steps
+          chainId={chainId}
           skipToStep={skipToStep as Step}
           address={address}
           loginOrRegister={loginOrRegister}
