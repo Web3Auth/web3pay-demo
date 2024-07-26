@@ -7,7 +7,7 @@ html {
 }
 
 body {
-  @apply box-border text-white h-dvh relative text-base m-0 p-0 bg-primary bg-background bg-no-repeat bg-cover bg-fixed bg-center;
+  @apply box-border text-white h-dvh relative text-base m-0 p-0 bg-primary bg-no-repeat bg-cover bg-fixed bg-center;
 }
 
 @layer utilities {
