@@ -1,9 +1,12 @@
 "use client";
 
 import Banner from "@/components/Banner";
-import Steps from "@/components/Steps";
+import Steps, { Step } from "@/components/ImportFlow";
+import NonImportFlowSteps, { Step as NonImportFlowStep } from "@/components/NonImportFlow";
+
 import Navbar from "@/components/ui/Navbar";
 import { WalletProvider } from "@web3auth/global-accounts-sdk";
+import axios from "axios";
 import { useEffect, useState } from "react";
 
 export default function Home() {
@@ -11,25 +14,28 @@ export default function Home() {
   const [loggedIn, setLoggedIn] = useState(walletProvider?.connected || false);
   const [address, setAddress] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [skipToStep, setSkipToStep] = useState("");
 
-  const isLocal = window.location.hostname.startsWith("localhost");
-  const [selectedEnv, setSelectedEnv] = useState(isLocal ? "local" : "prod");
+  // todo: change this before deployment or move it to env
+  const [selectedEnv, setSelectedEnv] = useState("local");
+  const [chainId, setChainId] = useState(80002)
 
   useEffect(() => {
     const getWalletURL = () => {
       if (selectedEnv === "local") {
-        return "https://lrc-accounts.web3auth.io/connect";
-      } else {
         return "http://localhost:3000/connect";
+      } else {
+        return "https://lrc-accounts.web3auth.io/connect";
       }
     };
 
-    const init = async () => {
+    // initiate sdk
+    const initWalletProvider = async () => {
       setIsLoading(true);
       setWalletProvider(
         new WalletProvider({
           metadata: {
-            appChainIds: [11155111],
+            appChainIds: [chainId],
             appName: "Demo App",
             appLogoUrl: "https://web3auth.io/images/web3authlog.png",
           },
@@ -41,32 +47,71 @@ export default function Home() {
       setIsLoading(false);
       setLoggedIn(walletProvider?.connected || false);
     };
-    init();
+    initWalletProvider();
+
+    // check if user is already logged in
+    const getAddress = async () => {
+      try {
+        setLoggedIn(walletProvider?.connected || loggedIn);
+        const account = (await walletProvider?.request({
+          method: "eth_accounts",
+          params: [],
+        })) as string[];
+        if (account?.length) {
+          setAddress(account[0]);
+        }
+      } catch (err) {
+        console.log(err);
+        setAddress("");
+      }
+    };
+    getAddress();
   }, [walletProvider?.connected, selectedEnv]);
 
+
+  // step 0 (connect)
   async function loginOrRegister() {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       const response = await walletProvider?.request({
         method: "eth_requestAccounts",
         params: [],
       });
-      setAddress((response as string[])[0]);
-      console.log({ response });
+      const loggedInAddress = (response as string[])[0];
+      setAddress(loggedInAddress);
       setLoggedIn(walletProvider?.connected || false);
       // addLog(`Success full login: ${response}`);
     } catch (err) {
-      // addLog(`Error during login: ${JSON.stringify(err)}`);
+      console.log(`Error during login: ${JSON.stringify(err)}`);
+      throw err;
     } finally {
       setIsLoading(false);
     }
   }
 
+
   return (
     <main className="p-6">
-      <Navbar handleConnect={loginOrRegister} loader={isLoading} />
+      <Navbar
+        address={address}
+        handleConnect={loginOrRegister}
+        loader={isLoading}
+      />
       <Banner />
-      <Steps />
+      {walletProvider ? (
+       <>
+        <Steps
+          skipToStep={skipToStep as Step}
+          address={address}
+        />
+        <NonImportFlowSteps
+          skipToStep={skipToStep as NonImportFlowStep}
+          address={address}
+        />
+        </>
+      ) : (
+        <></>
+      )}
     </main>
   );
 }
