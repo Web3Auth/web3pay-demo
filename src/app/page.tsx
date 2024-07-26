@@ -1,7 +1,9 @@
 "use client";
 
 import Banner from "@/components/Banner";
-import Steps, { Step } from "@/components/Steps";
+import Steps, { Step } from "@/components/ImportFlow";
+import NonImportFlowSteps, { Step as NonImportFlowStep } from "@/components/NonImportFlow";
+
 import Navbar from "@/components/ui/Navbar";
 import { WalletProvider } from "@web3auth/global-accounts-sdk";
 import axios from "axios";
@@ -57,7 +59,6 @@ export default function Home() {
         })) as string[];
         if (account?.length) {
           setAddress(account[0]);
-          setSkipToStep("import");
         }
       } catch (err) {
         console.log(err);
@@ -67,6 +68,8 @@ export default function Home() {
     getAddress();
   }, [walletProvider?.connected, selectedEnv]);
 
+
+  // step 0 (connect)
   async function loginOrRegister() {
     setIsLoading(true);
     try {
@@ -77,7 +80,6 @@ export default function Home() {
       const loggedInAddress = (response as string[])[0];
       setAddress(loggedInAddress);
       setLoggedIn(walletProvider?.connected || false);
-      setSkipToStep("fundToken");
       // addLog(`Success full login: ${response}`);
     } catch (err) {
       console.log(`Error during login: ${JSON.stringify(err)}`);
@@ -86,6 +88,7 @@ export default function Home() {
       setIsLoading(false);
     }
   }
+
 
   return (
     <main className="p-6">
@@ -96,12 +99,16 @@ export default function Home() {
       />
       <Banner />
       {walletProvider ? (
+       <>
         <Steps
-          chainId={chainId}
           skipToStep={skipToStep as Step}
           address={address}
-          loginOrRegister={loginOrRegister}
         />
+        <NonImportFlowSteps
+          skipToStep={skipToStep as NonImportFlowStep}
+          address={address}
+        />
+        </>
       ) : (
         <></>
       )}
