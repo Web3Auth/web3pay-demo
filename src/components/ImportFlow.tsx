@@ -61,12 +61,11 @@ const Steps = ({
     try {
       if(randomWallet?.address) {
         setStepLoader(true)
-        const {faucetHash: hash}: {faucetHash: Hex} = await axios.post("https://lrc-accounts.web3auth.io/api/mint", {
+        const resp = await axios.post("https://lrc-accounts.web3auth.io/api/mint", {
           "chainId": "421614",
           "toAddress": randomWallet.address,
         });
-
-        console.log("txnHash", hash);
+        const { faucetHash: hash } = resp.data;
 
         const publicClient = createPublicClient({
           chain: arbitrumSepolia,
@@ -74,7 +73,7 @@ const Steps = ({
         })
         await waitForTransactionReceipt(publicClient, {
           hash,
-        })
+        });
         setCurrentStep("import");
       }
     } catch (error) {
