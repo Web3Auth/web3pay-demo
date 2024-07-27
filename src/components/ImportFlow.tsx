@@ -11,23 +11,27 @@ export type ImportFlowStep =
   | "fundToken"
   | "import"
   | "mintNft";
-import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
+import { generatePrivateKey, privateKeyToAccount, privateKeyToAddress } from "viem/accounts";
 import GradientButton from "./ui/GradientButton";
+
+import { IRandomWallet } from "@/utils/interfaces";
+import { generatePrivate, getPublic } from "@toruslabs/eccrypto";
+import { createPublicClient, Hex, http } from "viem";
+import { waitForTransactionReceipt } from "viem/actions";
+import { arbitrumSepolia } from "viem/chains";
 
 const ImportFlow = ({
   address,
   skipToStep,
+  handleMintNft,
+  handleImportAccount,
 }: {
   skipToStep: ImportFlowStep;
   address: string;
+  handleMintNft: (address: string) => Promise<void>;
+  handleImportAccount: (randWallet: IRandomWallet) => Promise<void>;
 }) => {
-  const [randomWallet, setRandomWallet] = useState<{
-    address: string;
-    privateKey: string;
-  }>({
-    address: "",
-    privateKey: "",
-  });
+  const [randomWallet, setRandomWallet] = useState<IRandomWallet>();
   const [currentStep, setCurrentStep] = useState<ImportFlowStep>("start");
   const [completedSteps, setCompletedSteps] = useState<ImportFlowStep[]>([]);
   const [stepLoader, setStepLoader] = useState(false);
@@ -40,15 +44,19 @@ const ImportFlow = ({
 
   // step1: create random wallet
   async function handleCreateRandomWallet() {
-    const privateKey = generatePrivateKey();
-    console.log("Private Key:", privateKey);
+    const privateKeyBuf = generatePrivate();
+    const publicKeyBuf = getPublic(privateKeyBuf);
 
-    const account = privateKeyToAccount(privateKey);
-    console.log("Account Address:", account.address);
+    const privateKey = privateKeyBuf.toString("hex");
+    const publicKey = publicKeyBuf.toString("hex");
+
+    const address = privateKeyToAddress(privateKey.startsWith("0x") ? privateKey as Hex : `0x${privateKey}`);
 
     setRandomWallet({
-      address: account.address,
+      publicKey,
       privateKey,
+      address,
+      keyType: "secp256k1",
     });
 
     setCurrentStep("fundToken");
@@ -57,16 +65,21 @@ const ImportFlow = ({
   // step2: fund  random wallet on arbitrum
   async function fundAccount() {
     try {
-      if (randomWallet.address) {
-        setStepLoader(true);
-        const txnHash = await axios.post(
-          "https://lrc-accounts.web3auth.io/api/mint",
-          {
-            chainId: "421614",
-            toAddress: randomWallet.address,
-          }
-        );
-        // TODO: wait for txn
+      if(randomWallet?.address) {
+        setStepLoader(true)
+        const resp = await axios.post("https://lrc-accounts.web3auth.io/api/mint", {
+          "chainId": "421614",
+          "toAddress": randomWallet.address,
+        });
+        const { faucetHash: hash } = resp.data;
+
+        const publicClient = createPublicClient({
+          chain: arbitrumSepolia,
+          transport: http("https://arbitrum-sepolia.infura.io/v3/dee726a2930e4573a743a5c8f79942c1"),
+        })
+        await waitForTransactionReceipt(publicClient, {
+          hash,
+        });
         setCurrentStep("import");
       }
     } catch (error) {
@@ -78,13 +91,15 @@ const ImportFlow = ({
 
   // step3: import account
   async function importAccount() {
-    if (randomWallet.address && randomWallet.privateKey) {
-      // setCurrentStep("mintNft");
+    if(randomWallet) {
+      await handleImportAccount(randomWallet);
+      setCurrentStep("mintNft");
     }
   }
   // step4: mint nft
   async function mintNft() {
-    if (randomWallet.address) {
+    if(randomWallet) {
+      await handleMintNft(randomWallet.address);
     }
   }
 
