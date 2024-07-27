@@ -4,14 +4,14 @@ import Loader from "./Loader";
 const Button = ({
   title,
   icon,
-  position,
+  position = "right",
   handleClick,
   otherClasses,
   loading,
 }: {
   title: string;
   icon?: React.ReactNode;
-  position?: string;
+  position?: "left" | "right";
   handleClick?: () => void;
   otherClasses?: string;
   loading?: boolean;

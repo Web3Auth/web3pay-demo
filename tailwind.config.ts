@@ -29,7 +29,8 @@ const config: Config = {
         },
       },
       backgroundImage: {
-        background: "url('/images/demo-bg.svg')",
+        login: "url('/images/demo-login-bg.svg')",
+        home: "url('/images/demo-home-bg.svg')",
       },
       animation: {
         "bounce-short": "bounce 1s linear 2",
