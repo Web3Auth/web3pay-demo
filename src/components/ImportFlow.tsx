@@ -109,128 +109,141 @@ const ImportFlow = ({
   };
 
   return (
-    <div className="mt-16 ml-20 flex items-center">
-      {/* create */}
-      <Card
-        cardClasses={`gap-y-5 ${
-          currentStep === "start" || !completedSteps.includes("start")
-            ? "h-auto"
-            : "h-[157px]"
-        }`}
-        active={currentStep === "create"}
-      >
-        <p className="text-26 font-normal flex items-center justify-between w-full">
-          01
-          {completedSteps.includes("start") && (
-            <Image
-              src="/icons/badge-check.svg"
-              alt="arrow"
-              height={50}
-              width={50}
+    <div className="bg-darkCard w-max p-8 rounded-32 flex flex-col gap-y-6">
+      <div className="flex items-center gap-x-6 justify-center">
+        <p className="text-3xl font-bold text-white break-words w-[450px]">
+          Plug and Use Any Wallet with Web3Pay
+        </p>
+        <div className="h-[70px] w-0.5 bg-white rounded-md break-words" />
+        <p className="text-xl font-normal break-words w-[450px]">
+          Try out how you can connect to any wallet to mint NFTs with token of a
+          different chain!
+        </p>
+      </div>
+      <div className="items-center justify-center gap-x-6 grid grid-cols-4">
+        <Card
+          cardClasses={`gap-y-5 ${
+            currentStep === "start" || !completedSteps.includes("start")
+              ? "h-auto"
+              : "h-[157px]"
+          }`}
+          active={currentStep === "create"}
+          rootClasses="!w-full"
+        >
+          <p className="text-26 font-normal flex items-center justify-between w-full">
+            01
+            {completedSteps.includes("start") && (
+              <Image
+                src="/icons/badge-check.svg"
+                alt="arrow"
+                height={50}
+                width={50}
+              />
+            )}
+          </p>
+          <p className="text-base font-medium break-words w-[250px]">
+            Create test wallet on Arbitrum chain
+          </p>
+          {currentStep === "start" && (
+            <GradientButton
+              loading={stepLoader}
+              title="Create"
+              handleClick={() => handleStep("create")}
             />
           )}
-        </p>
-        <p className="text-base font-medium break-words w-[250px]">
-          Create test wallet on Arbitrum chain
-        </p>
-        {currentStep === "start" && (
-          <GradientButton
-            loading={stepLoader}
-            title="Create"
-            handleClick={() => handleStep("create")}
-          />
-        )}
-      </Card>
-      <Image src="/icons/arrow-right.svg" alt="arrow" height={50} width={50} />
-      <Card
-        cardClasses={`gap-y-5 ${
-          currentStep === "fundToken" || !completedSteps.includes("fundToken")
-            ? "h-auto"
-            : "h-[157px]"
-        }`}
-        active={currentStep === "fundToken"}
-      >
-        <p className="text-26 font-normal flex items-center justify-between w-full">
-          02
-          {completedSteps.includes("fundToken") && (
-            <Image
-              src="/icons/badge-check.svg"
-              alt="arrow"
-              height={50}
-              width={50}
+        </Card>
+        <Card
+          cardClasses={`gap-y-5 ${
+            currentStep === "fundToken" || !completedSteps.includes("fundToken")
+              ? "h-auto"
+              : "h-[157px]"
+          }`}
+          active={currentStep === "fundToken"}
+          rootClasses="!w-full"
+        >
+          <p className="text-26 font-normal flex items-center justify-between w-full">
+            02
+            {completedSteps.includes("fundToken") && (
+              <Image
+                src="/icons/badge-check.svg"
+                alt="arrow"
+                height={50}
+                width={50}
+              />
+            )}
+          </p>
+          <p className="text-base font-medium break-words w-[250px]">
+            Fund test wallet with Arbitrum token
+          </p>
+          {currentStep === "fundToken" && (
+            <GradientButton
+              title="fund"
+              handleClick={() => handleStep("fundToken")}
+              loading={stepLoader}
             />
           )}
-        </p>
-        <p className="text-base font-medium break-words w-[250px]">
-          Fund test wallet with Arbitrum token
-        </p>
-        {currentStep === "fundToken" && (
-          <GradientButton
-            title="fund"
-            handleClick={() => handleStep("fundToken")}
-            loading={stepLoader}
-          />
-        )}
-      </Card>
-      <Image src="/icons/arrow-right.svg" alt="arrow" height={50} width={50} />
-      <Card
-        cardClasses={`gap-y-5 ${
-          currentStep === "import" || !completedSteps.includes("import")
-            ? "h-auto"
-            : "h-[157px]"
-        }`}
-        active={currentStep === "import"}
-      >
-        <p className="text-26 font-normal flex items-center justify-between w-full">
-          03
-          {completedSteps.includes("import") && (
-            <Image
-              src="/icons/badge-check.svg"
-              alt="arrow"
-              height={50}
-              width={50}
+        </Card>
+        <Card
+          cardClasses={`gap-y-5 ${
+            currentStep === "import" || !completedSteps.includes("import")
+              ? "h-auto"
+              : "h-[157px]"
+          }`}
+          active={currentStep === "import"}
+          rootClasses="!w-full"
+        >
+          <p className="text-26 font-normal flex items-center justify-between w-full">
+            03
+            {completedSteps.includes("import") && (
+              <Image
+                src="/icons/badge-check.svg"
+                alt="arrow"
+                height={50}
+                width={50}
+              />
+            )}
+          </p>
+          <p className="text-base font-medium break-words w-[250px]">
+            Import test wallet liquidity into global account
+          </p>
+          {currentStep === "import" && (
+            <GradientButton
+              title="Import"
+              handleClick={() => handleStep("import")}
             />
           )}
-        </p>
-        <p className="text-base font-medium break-words w-[250px]">
-          Import test wallet liquidity into global account
-        </p>
-        {currentStep === "import" && (
-          <GradientButton
-            title="Import"
-            handleClick={() => handleStep("import")}
-          />
-        )}
-      </Card>
-      <Image src="/icons/arrow-right.svg" alt="arrow" height={50} width={50} />
-      {completedSteps}
-      <Card
-        cardClasses={`gap-y-5 ${
-          currentStep === "mintNft" || !completedSteps.includes("mintNft")
-            ? "h-auto"
-            : "h-[157px]"
-        }`}
-        active={currentStep === "mintNft"}
-      >
-        <p className="text-26 font-normal flex items-center justify-between w-full">
-          04
-          {completedSteps.includes("mintNft") && (
-            <Image
-              src="/icons/badge-check.svg"
-              alt="arrow"
-              height={50}
-              width={50}
+        </Card>
+        <Card
+          cardClasses={`gap-y-5 ${
+            currentStep === "mintNft" || !completedSteps.includes("mintNft")
+              ? "h-auto"
+              : "h-[157px]"
+          }`}
+          active={currentStep === "mintNft"}
+          rootClasses="!w-full"
+        >
+          <p className="text-26 font-normal flex items-center justify-between w-full">
+            04
+            {completedSteps.includes("mintNft") && (
+              <Image
+                src="/icons/badge-check.svg"
+                alt="arrow"
+                height={50}
+                width={50}
+              />
+            )}
+          </p>
+          <p className="text-base font-medium break-words">
+            Mint NFT on Polygon
+          </p>
+          {currentStep === "mintNft" && (
+            <GradientButton
+              title="Mint"
+              handleClick={() => handleStep("mintNft")}
             />
           )}
-        </p>
-        <p className="text-base font-medium break-words">Mint NFT on Polygon</p>
-        {currentStep === "mintNft" && (
-          <GradientButton
-            title="Mint"
-            handleClick={() => handleStep("mintNft")}
-          />
-        )}
-      </Card>
+        </Card>
+      </div>
     </div>
   );
 };

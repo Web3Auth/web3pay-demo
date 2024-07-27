@@ -31,6 +31,10 @@ body {
     @apply rounded-[30px];
   }
 
+  .rounded-32 {
+    @apply rounded-[32px];
+  }
+
   .gradient-btn {
     background-size: 300% 100%;
     -o-transition: all 0.4s ease-in-out;

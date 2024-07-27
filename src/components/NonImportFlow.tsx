@@ -84,67 +84,58 @@ const NonImportFlow = ({
   };
 
   return (
-    <div className="mt-16 ml-20 flex items-center">
-      <Card
-        cardClasses={`gap-y-5 ${
-          currentStep === "start" || !completedSteps.includes("fundToken")
-            ? "h-auto"
-            : "h-[157px]"
-        }`}
-        active={currentStep === "fundToken"}
-      >
-        <p className="text-26 font-normal flex items-center justify-between w-full">
-          02
-          {completedSteps.includes("fundToken") && (
+    <div className="bg-darkCard w-max p-8 rounded-32 flex flex-col gap-y-6">
+      <div className="flex items-center gap-x-6">
+        <p className="text-3xl font-bold text-white break-words w-[450px]">
+          Cross Chain Transactions within Web3Pay
+        </p>
+        <div className="h-[70px] w-0.5 bg-white rounded-md break-words" />
+        <p className="text-xl font-normal break-words w-[450px]">
+          Try out how you can mint NFTs with tokens of a different chain in just
+          one click!{" "}
+        </p>
+      </div>
+      <div className="items-stretch justify-center gap-x-6 grid grid-cols-2 px-24">
+        <Card cardClasses={`gap-y-5 p-9`} active rootClasses="!w-full">
+          <p className="text-26 font-normal flex items-center justify-between w-full">
+            01
             <Image
-              src="/icons/badge-check.svg"
+              src="/icons/arbitrum.svg"
               alt="arrow"
-              height={50}
-              width={50}
+              height={30}
+              width={30}
             />
-          )}
-        </p>
-        <p className="text-base font-medium break-words w-[250px]">
-          Fund Global Account with Arbitrum token
-        </p>
-        {currentStep === "fundToken" && (
+          </p>
+          <p className="text-base font-medium break-words w-[270px]">
+            Fund your Web3Pay Account with Arbitrum Test Tokens for free
+          </p>
+
           <GradientButton
-            title="fund"
+            title="Get Test Tokens"
             handleClick={() => handleStep("fundToken")}
             loading={stepLoader}
           />
-        )}
-      </Card>
+        </Card>
 
-      <Image src="/icons/arrow-right.svg" alt="arrow" height={50} width={50} />
-      {completedSteps}
-      <Card
-        cardClasses={`gap-y-5 ${
-          currentStep === "mintNft" || !completedSteps.includes("mintNft")
-            ? "h-auto"
-            : "h-[157px]"
-        }`}
-        active={currentStep === "mintNft"}
-      >
-        <p className="text-26 font-normal flex items-center justify-between w-full">
-          04
-          {completedSteps.includes("mintNft") && (
+        <Card cardClasses={`gap-y-5 p-9`} active rootClasses="!w-full">
+          <p className="text-26 font-normal flex items-center justify-between w-full">
+            02
             <Image
-              src="/icons/badge-check.svg"
+              src="/icons/polygon.svg"
               alt="arrow"
-              height={50}
-              width={50}
+              height={30}
+              width={30}
             />
-          )}
-        </p>
-        <p className="text-base font-medium break-words">Mint NFT on Polygon</p>
-        {currentStep === "mintNft" && (
+          </p>
+          <p className="text-base font-medium break-words w-[250px]">
+            Mint an NFT on Polygon chain using your Arbitrum Test Tokens
+          </p>
           <GradientButton
-            title="Mint"
+            title="Mint NFT"
             handleClick={() => handleStep("mintNft")}
           />
-        )}
-      </Card>
+        </Card>
+      </div>
     </div>
   );
 };

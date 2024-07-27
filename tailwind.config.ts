@@ -27,6 +27,7 @@ const config: Config = {
           four: "#4D92FF",
           five: "#BB65FF",
         },
+        darkCard: "rgba(0, 0, 0, 0.50)",
       },
       backgroundImage: {
         login: "url('/images/demo-login-bg.svg')",
