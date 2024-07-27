@@ -4,16 +4,18 @@ const Card = ({
   children,
   cardClasses,
   active = false,
+  rootClasses,
 }: {
   children: React.ReactNode;
   cardClasses?: string;
   active?: boolean;
+  rootClasses?: string;
 }) => {
   return (
     <div
       className={`relative inline-flex w-max overflow-hidden rounded-30 p-[1px] focus:outline-none ${
         !active ? "border border-line" : ""
-      }`}
+      } ${rootClasses}`}
     >
       {active && (
         <span className="animate-[spin_2s_linear_infinite] gradient-border rounded-30" />

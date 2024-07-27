@@ -7,12 +7,12 @@ html {
 }
 
 body {
-  @apply box-border text-white h-dvh relative text-base m-0 p-0 bg-primary bg-background bg-no-repeat bg-cover bg-fixed bg-center;
+  @apply box-border text-white h-dvh min-h-screen relative text-base m-0 p-0 bg-primary;
 }
 
 @layer utilities {
   .banner-heading-text {
-    @apply text-[56px] font-bold tracking-[-2.24px] leading-[64px];
+    @apply text-[56px] font-bold tracking-[-3px] leading-[64px];
   }
 
   .gradient-text {
@@ -21,6 +21,10 @@ body {
 
   .gradient-border {
     @apply absolute inset-[-1000%] bg-[conic-gradient(from_90deg_at_50%_50%,#18F6DB_0%,#a65ce6_40%,#66D4F6_100%)];
+  }
+
+  .gradient-divider {
+    @apply bg-gradient-to-tr from-gradient-three via-gradient-four to-gradient-two h-0.5 w-full rounded-md animate-pulse;
   }
 
   .rounded-30 {
@@ -57,6 +61,10 @@ body {
   .loader {
     @apply border-t-[#030523] border-l-gray-300;
     animation: spin 1s linear infinite;
+  }
+
+  .text-32 {
+    @apply text-[32px] font-bold leading-9;
   }
 }
 
