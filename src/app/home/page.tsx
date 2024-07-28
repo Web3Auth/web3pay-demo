@@ -119,14 +119,16 @@ export default function Home() {
 
   async function importAccount(randWallet: IRandomWallet) {
     try {
-      if(address) {
+      if (address) {
         const { privateKey, publicKey, keyType } = randWallet;
         let sessionId = OpenloginSessionManager.generateRandomSessionKey();
         const sessionMgr = new OpenloginSessionManager({ sessionId });
         sessionId = await sessionMgr.createSession({
-          privateKey, publicKey, keyType,
+          privateKey,
+          publicKey,
+          keyType,
         });
-  
+
         const response = await walletProvider?.request({
           method: "wallet_importW3aSession",
           params: {
@@ -141,26 +143,47 @@ export default function Home() {
   }
 
   return (
-    <main className="p-6 bg-login bg-no-repeat bg-cover bg-fixed bg-center">
-      <Navbar
-        address={address}
-        handleConnect={loginOrRegister}
-        loader={isLoading}
-      />
-      <HomeBanner />
+    <main className="flex flex-col">
+      <section className="lg:h-dvh bg-blend-lighten lg:bg-home bg-no-repeat bg-auto bg-scroll bg-[100%] flex-grow px-6 py-10 md:p-9 md:pb-20 flex flex-col gap-y-10 md:gap-y-20">
+        <Navbar
+          address={address}
+          handleConnect={loginOrRegister}
+          loader={isLoading}
+        />
+        <div className="flex flex-col text-left gap-y-6 lg:pl-16 mt-2.5">
+          <div className="text-left text-3xl sm:banner-heading-text flex flex-col gap-y-1">
+            <p>Experience</p>
+            <p className="gradient-text">Wallet Abstraction</p>
+            <p>All in One</p>
+          </div>
+          <p className="text-left text-2xl font-normal w-full md:w-[482px] break-words text-gray-400 hidden lg:block">
+            Experience cross chain minting without the hassle of bridging
+          </p>
+        </div>
+        <Image
+          src="/images/demo-home-bg.svg"
+          alt="bg"
+          height={200}
+          width={100}
+          className="w-full lg:hidden"
+        />
+        <p className="text-left text-base font-normal w-full md:w-[482px] break-words text-gray-400 block lg:hidden">
+          Experience cross chain minting without the hassle of bridging
+        </p>
+      </section>
       {walletProvider && (
-        <>
+        <section className="p-6 py-20 md:px-10 flex flex-col items-center justify-center w-full gap-y-10">
+          <NonImportFlow
+            skipToStep={skipToStep as NonImportFlowStep}
+            address={address}
+          />
           <ImportFlow
             skipToStep={skipToStep as ImportFlowStep}
             address={address}
             handleImportAccount={importAccount}
             handleMintNft={mintNft}
           />
-          <NonImportFlow
-            skipToStep={skipToStep as NonImportFlowStep}
-            address={address}
-          />
-          </>
+        </section>
       )}
     </main>
   );
