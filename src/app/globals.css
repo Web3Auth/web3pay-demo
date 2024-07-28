@@ -7,7 +7,7 @@ html {
 }
 
 body {
-  @apply box-border text-white h-dvh min-h-screen relative text-base m-0 p-0 bg-primary;
+  @apply box-border text-white h-dvh min-h-screen relative text-base m-0 p-0 bg-[#050b32];
 }
 
 @layer utilities {
