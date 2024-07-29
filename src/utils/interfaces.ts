@@ -6,3 +6,14 @@ export interface IRandomWallet {
   address: string;
   keyType: TRandomWalletKeyType; 
 }
+
+export type SelectedEnv = "local" | "production";
+
+export type ImportFlowStep =
+  | "start"
+  | "create"
+  | "fundToken"
+  | "import"
+  | "mintNft";
+
+export type NonImportFlowStep = "start" | "fundToken" | "mintNft";
