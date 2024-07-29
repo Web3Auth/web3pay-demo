@@ -32,7 +32,7 @@ export default function Home() {
       if (selectedEnv === "local") {
         return "http://localhost:3000/connect";
       } else {
-        debugger;
+        // debugger;
         return "https://lrc-accounts.web3auth.io/connect";
       }
     };
@@ -67,7 +67,7 @@ export default function Home() {
         })) as string[];
         if (account?.length) {
           setAddress(account[0]);
-          debugger;
+          // debugger;
         }
       } catch (err) {
         console.log(err);
@@ -144,47 +144,88 @@ export default function Home() {
 
   return (
     <main className="flex flex-col">
-      <section className="lg:h-dvh bg-blend-lighten lg:bg-home bg-no-repeat bg-auto bg-scroll bg-[100%] flex-grow px-6 py-10 md:p-9 md:pb-20 flex flex-col gap-y-10 md:gap-y-20">
+      <section className="flex-grow px-6 py-10 md:p-9 flex flex-col max-md:gap-y-10">
         <Navbar
           address={address}
           handleConnect={loginOrRegister}
           loader={isLoading}
         />
-        <div className="flex flex-col text-left gap-y-6 lg:pl-16 mt-2.5">
-          <div className="text-left text-3xl sm:banner-heading-text flex flex-col gap-y-1">
-            <p>Experience</p>
-            <p className="gradient-text">Wallet Abstraction</p>
-            <p>All in One</p>
+        <div className="flex flex-col text-center gap-y-6 mt-10 md:mt-5 w-full">
+          <div className="text-center text-3xl sm:banner-heading-text flex flex-col gap-y-1">
+            <div className="flex flex-col md:flex-row items-center gap-x-2 justify-center">
+              <p>Experience</p>
+              <div className="content">
+                <div className="content__container !px-0 text-center">
+                  <ul className="content__container__list gradient-text text-3xl sm:banner-heading-text max-md:!text-center">
+                    <li className="content__container__list__item">
+                      Wallet <span className="gradient-tex">Abstraction</span>
+                    </li>
+                    <li className="content__container__list__item">
+                      Liquidity{" "}
+                      <span className="gradient-tex">Abstraction</span>
+                    </li>
+                    <li className="content__container__list__item">
+                      Chain <span className="gradient-tex">Abstraction</span>
+                    </li>
+                    <li className="content__container__list__item">
+                      Wallet <span className="gradient-tex">Abstraction</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <p>All-in-One</p>
           </div>
-          <p className="text-left text-2xl font-normal w-full md:w-[482px] break-words text-gray-400 hidden lg:block">
-            Experience cross chain minting without the hassle of bridging
-          </p>
         </div>
         <Image
           src="/images/demo-home-bg.svg"
           alt="bg"
-          height={200}
-          width={100}
-          className="w-full lg:hidden"
+          height={100}
+          width={580}
+          className="mx-auto shadow-2xl rounded-3xl opacity-80 w-full lg:w-[62%]  xl:w-[50%] 2xl:w-[60%] md:-mt-24 lg:-mt-28"
         />
-        <p className="text-left text-base font-normal w-full md:w-[482px] break-words text-gray-400 block lg:hidden">
-          Experience cross chain minting without the hassle of bridging
-        </p>
       </section>
-      {walletProvider && (
-        <section className="p-6 py-20 md:px-10 flex flex-col items-center justify-center w-full gap-y-10">
+      <section className="flex-grow relative z-1 bg-darkCard py-11 px-9 pb-20 w-full">
+        <Image
+          src={"/images/cross-chain-gradient.png"}
+          alt="cross chain"
+          width={400}
+          height={400}
+          className="z-0 w-full h-full opacity-50 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+        />
+        <div className="flex flex-col items-center justify-center text-center">
+          <Button title="Demo"></Button>
           <NonImportFlow
             skipToStep={skipToStep as NonImportFlowStep}
             address={address}
           />
+        </div>
+      </section>
+      <section className="flex-grow p-10 md:py-24 md:px-20 text-center w-full">
+        <p className="gradient-text text-3xl md:text-5xl font-bold md:w-[80%]">
+          Keeping track of multiple chains can be overwhelming. Let us make it
+          easier for you.
+        </p>
+      </section>
+
+      <section className="flex-grow relative z-1 bg-darkCard py-11 px-9 pb-20">
+        <Image
+          src={"/images/cross-chain-gradient.png"}
+          alt="cross chain"
+          width={400}
+          height={400}
+          className="z-0 w-full h-full opacity-50 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+        />
+        <div className="flex flex-col items-center justify-center text-center w-full">
+          <Button title="Demo"></Button>
           <ImportFlow
             skipToStep={skipToStep as ImportFlowStep}
             address={address}
             handleImportAccount={importAccount}
             handleMintNft={mintNft}
           />
-        </section>
-      )}
+        </div>
+      </section>
     </main>
   );
 }

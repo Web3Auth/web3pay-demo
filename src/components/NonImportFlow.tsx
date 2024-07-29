@@ -84,19 +84,22 @@ const NonImportFlow = ({
   };
 
   return (
-    <div className="bg-darkCard w-max p-8 rounded-32 flex flex-col gap-y-6">
-      <div className="flex items-center gap-x-6">
-        <p className="text-3xl font-bold text-white break-words w-[450px]">
+    <div className="w-full flex flex-col gap-y-6 mt-9">
+      <div className="flex flex-col items-center gap-y-4">
+        <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-white">
           Cross Chain Transactions within Web3Pay
         </p>
-        <div className="h-[70px] w-0.5 bg-white rounded-md break-words" />
-        <p className="text-xl font-normal break-words w-[450px]">
-          Try out how you can mint NFTs with tokens of a different chain in just
-          one click!{" "}
+        <p className="text-lg sm:text-xl md:text-2xl font-normal w-full md:w-[70%]">
+          Mint NFTs seamlessly with tokens from a different chain in one simple
+          click!
         </p>
       </div>
-      <div className="items-stretch justify-center gap-x-6 grid grid-cols-2 px-24">
-        <Card cardClasses={`gap-y-5 p-9`} active rootClasses="!w-full">
+      <div className="mt-10 w-full flex items-center flex-col sm:flex-row sm:items-stretch justify-center">
+        <Card
+          cardClasses={`gap-y-3 p-6 md:!p-9 !bg-[#030226] !flex !flex-col !justify-between`}
+          active
+          rootClasses="!w-full sm:!w-max"
+        >
           <p className="text-26 font-normal flex items-center justify-between w-full">
             01
             <Image
@@ -106,18 +109,39 @@ const NonImportFlow = ({
               width={30}
             />
           </p>
-          <p className="text-base font-medium break-words w-[270px]">
-            Fund your Web3Pay Account with Arbitrum Test Tokens for free
+          <p className="text-base font-bold break-words w-full md:w-[270px] text-left">
+            Fund your Web3Pay Account with Arbitrum Tokens
           </p>
-
+          <p className="text-base font-normal break-words w-full md:w-[270px] text-left text-gray-400">
+            Load your Web3Pay Account with Arbitrum Test Tokens to test—our
+            treat!
+          </p>
           <GradientButton
             title="Get Test Tokens"
             handleClick={() => handleStep("fundToken")}
             loading={stepLoader}
+            btnClass="max-sm:!w-full"
           />
         </Card>
-
-        <Card cardClasses={`gap-y-5 p-9`} active rootClasses="!w-full">
+        <Image
+          src="/icons/arrow-right.svg"
+          alt="arrow"
+          height={50}
+          width={50}
+          className="rotate-90 my-5 mx-auto block sm:hidden"
+        />
+        <Image
+          src="/icons/arrow-right.svg"
+          alt="arrow"
+          height={50}
+          width={50}
+          className="hidden sm:block"
+        />
+        <Card
+          cardClasses={`gap-y-3 p-6 md:!p-9 !bg-[#030226] !flex !flex-col !justify-between`}
+          active
+          rootClasses="!w-full sm:!w-max"
+        >
           <p className="text-26 font-normal flex items-center justify-between w-full">
             02
             <Image
@@ -127,12 +151,17 @@ const NonImportFlow = ({
               width={30}
             />
           </p>
-          <p className="text-base font-medium break-words w-[250px]">
-            Mint an NFT on Polygon chain using your Arbitrum Test Tokens
+          <p className="text-base font-bold break-words w-[250px] text-left">
+            Mint your NFT on Polygon Chain
+          </p>
+          <p className="text-base font-normal break-words w-[270px] text-left text-gray-400">
+            Use your Arbitrum Test Tokens to mint an NFT on Polygon, no bridges
+            required.
           </p>
           <GradientButton
             title="Mint NFT"
             handleClick={() => handleStep("mintNft")}
+            btnClass="max-sm:!w-full"
           />
         </Card>
       </div>

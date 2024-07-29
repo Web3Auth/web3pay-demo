@@ -22,9 +22,9 @@ const Card = ({
       )}
       <span
         className={`flex flex-col h-full w-full cursor-pointer items-start rounded-30
-              p-4 xl:p-6 2xl:px-9 2xl:py-6 text-base font-medium text-white backdrop-blur-3xl ${cardClasses} ${
-          active ? "bg-opaque" : "bg-transparent"
-        }`}
+              p-4 xl:p-6 2xl:px-9 2xl:py-6 text-base font-medium text-white backdrop-blur-3xl ${
+                active ? "bg-opaque" : "bg-transparent"
+              } ${cardClasses}`}
       >
         {children}
       </span>

@@ -11,7 +11,11 @@ export type ImportFlowStep =
   | "fundToken"
   | "import"
   | "mintNft";
-import { generatePrivateKey, privateKeyToAccount, privateKeyToAddress } from "viem/accounts";
+import {
+  generatePrivateKey,
+  privateKeyToAccount,
+  privateKeyToAddress,
+} from "viem/accounts";
 import GradientButton from "./ui/GradientButton";
 
 import { IRandomWallet } from "@/utils/interfaces";
@@ -19,6 +23,7 @@ import { generatePrivate, getPublic } from "@toruslabs/eccrypto";
 import { createPublicClient, Hex, http } from "viem";
 import { waitForTransactionReceipt } from "viem/actions";
 import { arbitrumSepolia } from "viem/chains";
+import { TbExternalLink } from "react-icons/tb";
 
 const ImportFlow = ({
   address,
@@ -50,7 +55,9 @@ const ImportFlow = ({
     const privateKey = privateKeyBuf.toString("hex");
     const publicKey = publicKeyBuf.toString("hex");
 
-    const address = privateKeyToAddress(privateKey.startsWith("0x") ? privateKey as Hex : `0x${privateKey}`);
+    const address = privateKeyToAddress(
+      privateKey.startsWith("0x") ? (privateKey as Hex) : `0x${privateKey}`
+    );
 
     setRandomWallet({
       publicKey,
@@ -65,18 +72,23 @@ const ImportFlow = ({
   // step2: fund  random wallet on arbitrum
   async function fundAccount() {
     try {
-      if(randomWallet?.address) {
-        setStepLoader(true)
-        const resp = await axios.post("https://lrc-accounts.web3auth.io/api/mint", {
-          "chainId": "421614",
-          "toAddress": randomWallet.address,
-        });
+      if (randomWallet?.address) {
+        setStepLoader(true);
+        const resp = await axios.post(
+          "https://lrc-accounts.web3auth.io/api/mint",
+          {
+            chainId: "421614",
+            toAddress: randomWallet.address,
+          }
+        );
         const { faucetHash: hash } = resp.data;
 
         const publicClient = createPublicClient({
           chain: arbitrumSepolia,
-          transport: http("https://arbitrum-sepolia.infura.io/v3/dee726a2930e4573a743a5c8f79942c1"),
-        })
+          transport: http(
+            "https://arbitrum-sepolia.infura.io/v3/dee726a2930e4573a743a5c8f79942c1"
+          ),
+        });
         await waitForTransactionReceipt(publicClient, {
           hash,
         });
@@ -91,14 +103,14 @@ const ImportFlow = ({
 
   // step3: import account
   async function importAccount() {
-    if(randomWallet) {
+    if (randomWallet) {
       await handleImportAccount(randomWallet);
       setCurrentStep("mintNft");
     }
   }
   // step4: mint nft
   async function mintNft() {
-    if(randomWallet) {
+    if (randomWallet) {
       await handleMintNft(randomWallet.address);
     }
   }
@@ -107,16 +119,20 @@ const ImportFlow = ({
     switch (step) {
       case "create": {
         await handleCreateRandomWallet();
+        setCompletedSteps([...completedSteps, "start"]);
         break;
       }
       case "fundToken":
         await fundAccount();
+        setCompletedSteps([...completedSteps, "fundToken"]);
         break;
       case "import":
         await importAccount();
+        setCompletedSteps([...completedSteps, "import"]);
         break;
       case "mintNft":
         await mintNft();
+        setCompletedSteps([...completedSteps, "mintNft"]);
         break;
       default:
         break;
@@ -124,140 +140,323 @@ const ImportFlow = ({
   };
 
   return (
-    <div className="bg-darkCard w-max p-8 rounded-32 flex flex-col gap-y-6">
-      <div className="flex items-center gap-x-6 justify-center">
-        <p className="text-3xl font-bold text-white break-words w-[450px]">
-          Plug and Use Any Wallet with Web3Pay
+    <div className="w-full flex flex-col gap-y-6 mt-9">
+      <div className="flex flex-col items-center gap-y-4">
+        <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-white">
+          Use your Wallets with Web3Pay
         </p>
-        <div className="h-[70px] w-0.5 bg-white rounded-md break-words" />
-        <p className="text-xl font-normal break-words w-[450px]">
-          Try out how you can connect to any wallet to mint NFTs with token of a
-          different chain!
+        <p className="text-lg sm:text-xl md:text-2xl font-normal w-full md:w-[45%]">
+          Mint NFTs with tokens from a different chain with your existing
+          wallets, no deposits required!
         </p>
       </div>
-      <div className="items-center justify-center gap-x-6 grid grid-cols-4">
-        <Card
-          cardClasses={`gap-y-5 ${
-            currentStep === "start" || !completedSteps.includes("start")
-              ? "h-auto"
-              : "h-[157px]"
+      <div
+        className={`mt-10 w-full flex flex-col xl:flex-row md:gap-y-6 justify-center mx-auto ${
+          completedSteps.length === 4 ? "items-stretch" : ""
+        }`}
+      >
+        <div
+          className={`flex flex-col md:flex-row items-center justify-center ${
+            completedSteps.length === 4 ? "items-stretch" : ""
           }`}
-          active={currentStep === "create"}
-          rootClasses="!w-full"
         >
-          <p className="text-26 font-normal flex items-center justify-between w-full">
-            01
+          {/* Card 1 */}
+          <Card
+            cardClasses={`gap-y-3 !bg-[#030226] p-6 ${
+              currentStep === "start" || completedSteps.includes("start")
+                ? "h-auto"
+                : "h-full md:h-[232px]"
+            }`}
+            active={currentStep === "create"}
+            rootClasses={`!w-full ${
+              currentStep === "start" || completedSteps.includes("start")
+                ? "h-auto"
+                : "h-full md:h-[232px]"
+            }`}
+          >
+            <p className="text-26 font-normal flex items-center justify-between w-full">
+              01
+              {completedSteps.includes("start") ? (
+                <Image
+                  src="/icons/badge-check.svg"
+                  alt="arrow"
+                  height={50}
+                  width={50}
+                />
+              ) : (
+                <Image
+                  src="/icons/arbitrum.svg"
+                  alt="arrow"
+                  height={30}
+                  width={30}
+                />
+              )}
+            </p>
+            <p className="text-base font-bold break-words w-full 2xl:w-[250px] text-left text-white">
+              Create a test wallet on Arbitrum chain
+            </p>
+            <p className="text-base font-normal break-words w-full 2xl:w-[250px] text-left text-gray-400">
+              For demo purposes, we will help you create a test wallet that will
+              stand in for your external wallets
+            </p>
+            {currentStep === "start" && (
+              <GradientButton
+                loading={stepLoader}
+                title="Create"
+                handleClick={() => handleStep("create")}
+                btnClass="max-sm:!w-full"
+              />
+            )}
             {completedSteps.includes("start") && (
-              <Image
-                src="/icons/badge-check.svg"
-                alt="arrow"
-                height={50}
-                width={50}
+              <div className="flex items-center w-full bg-transparent rounded-full border border-gray-200 justify-center gap-x-2 py-2 opacity-45">
+                <Image
+                  src="/icons/arbitrum.svg"
+                  alt="arrow"
+                  height={20}
+                  width={20}
+                />{" "}
+                <p className="text-base font-medium text-white">
+                  0x12345...12345
+                </p>
+              </div>
+            )}
+          </Card>
+          {/* Divider */}
+          <Image
+            src="/icons/arrow-right.svg"
+            alt="arrow"
+            height={50}
+            width={50}
+            className="rotate-90 my-5 mx-auto block md:hidden"
+          />
+          <Image
+            src="/icons/arrow-right.svg"
+            alt="arrow"
+            height={50}
+            width={50}
+            className="hidden md:block"
+          />
+          {/* Card 2 */}
+          <Card
+            cardClasses={`gap-y-3 !bg-[#030226] p-6 ${
+              currentStep === "fundToken" ||
+              completedSteps.includes("fundToken")
+                ? "h-auto"
+                : "h-full md:h-[232px]"
+            }`}
+            active={currentStep === "fundToken"}
+            rootClasses={`!w-full ${
+              currentStep === "fundToken" ? "h-auto" : "h-full md:h-[232px]"
+            }`}
+          >
+            <p className="text-26 font-normal flex items-center justify-between w-full">
+              02
+              {completedSteps.includes("fundToken") ||
+              completedSteps.includes("fundToken") ? (
+                <Image
+                  src="/icons/badge-check.svg"
+                  alt="arrow"
+                  height={50}
+                  width={50}
+                />
+              ) : (
+                <Image
+                  src="/icons/arbitrum.svg"
+                  alt="arrow"
+                  height={30}
+                  width={30}
+                />
+              )}
+            </p>
+            <p className="text-base font-bold break-words w-full 2xl:w-[250px] text-left text-white">
+              Fund your Web3Pay Account with Arbitrum Tokens
+            </p>
+            <p className="text-base font-normal break-words w-full 2xl:w-[250px] text-left text-gray-400">
+              Load your Web3Pay Account with Arbitrum Test Tokens to test—our
+              treat!
+            </p>
+            {currentStep === "fundToken" && (
+              <GradientButton
+                title="fund"
+                handleClick={() => handleStep("fundToken")}
+                loading={stepLoader}
+                btnClass="max-sm:!w-full"
               />
             )}
-          </p>
-          <p className="text-base font-medium break-words w-[250px]">
-            Create test wallet on Arbitrum chain
-          </p>
-          {currentStep === "start" && (
-            <GradientButton
-              loading={stepLoader}
-              title="Create"
-              handleClick={() => handleStep("create")}
-            />
-          )}
-        </Card>
-        <Card
-          cardClasses={`gap-y-5 ${
-            currentStep === "fundToken" || !completedSteps.includes("fundToken")
-              ? "h-auto"
-              : "h-[157px]"
-          }`}
-          active={currentStep === "fundToken"}
-          rootClasses="!w-full"
-        >
-          <p className="text-26 font-normal flex items-center justify-between w-full">
-            02
             {completedSteps.includes("fundToken") && (
-              <Image
-                src="/icons/badge-check.svg"
-                alt="arrow"
-                height={50}
-                width={50}
-              />
+              <div className="flex items-center w-full bg-transparent rounded-full border border-gray-200 justify-center gap-x-2 py-2 opacity-45">
+                <Image
+                  src="/icons/arbitrum.svg"
+                  alt="arrow"
+                  height={20}
+                  width={20}
+                />{" "}
+                <p className="text-base font-medium text-white">
+                  Received 0.0001 ETH
+                </p>
+              </div>
             )}
-          </p>
-          <p className="text-base font-medium break-words w-[250px]">
-            Fund test wallet with Arbitrum token
-          </p>
-          {currentStep === "fundToken" && (
-            <GradientButton
-              title="fund"
-              handleClick={() => handleStep("fundToken")}
-              loading={stepLoader}
-            />
-          )}
-        </Card>
-        <Card
-          cardClasses={`gap-y-5 ${
-            currentStep === "import" || !completedSteps.includes("import")
-              ? "h-auto"
-              : "h-[157px]"
+          </Card>
+        </div>
+        {/* Divider */}
+        <Image
+          src="/icons/arrow-right.svg"
+          alt="arrow"
+          height={50}
+          width={50}
+          className="rotate-90 my-5 mx-auto block md:hidden"
+        />
+        <Image
+          src="/icons/arrow-right.svg"
+          alt="arrow"
+          height={50}
+          width={50}
+          className="hidden xl:block w-[28px]"
+        />
+        <Image
+          src="/icons/arrow-right.svg"
+          alt="arrow"
+          height={80}
+          width={50}
+          className={`ml-auto rotate-90 ${
+            currentStep === "fundToken" || completedSteps.includes("fundToken")
+              ? "mt-0"
+              : "-mt-10"
+          } hidden md:block xl:hidden`}
+        />
+        <div
+          className={`flex flex-col md:flex-row-reverse xl:flex-row items-center justify-center ${
+            completedSteps.length === 4 ? "items-stretch" : ""
           }`}
-          active={currentStep === "import"}
-          rootClasses="!w-full"
         >
-          <p className="text-26 font-normal flex items-center justify-between w-full">
-            03
-            {completedSteps.includes("import") && (
-              <Image
-                src="/icons/badge-check.svg"
-                alt="arrow"
-                height={50}
-                width={50}
+          {/* Card 3 */}
+          <Card
+            cardClasses={`gap-y-3 !bg-[#030226] p-6`}
+            active={currentStep === "import"}
+            rootClasses={`!w-full ${
+              currentStep === "import" || completedSteps.includes("import")
+                ? "h-auto"
+                : "h-full md:h-[232px]"
+            }`}
+          >
+            <p className="text-26 font-normal flex items-center justify-between w-full">
+              03
+              {completedSteps.includes("import") ||
+              completedSteps.includes("import") ? (
+                <Image
+                  src="/icons/badge-check.svg"
+                  alt="arrow"
+                  height={50}
+                  width={50}
+                />
+              ) : (
+                <Image
+                  src="/icons/arbitrum.svg"
+                  alt="arrow"
+                  height={30}
+                  width={30}
+                />
+              )}
+            </p>
+            <p className="text-base font-bold break-words w-full 2xl:w-[250px] text-left text-white">
+              Connect your test wallet to your Web3Pay Account
+            </p>
+            <p className="text-base font-normal break-words w-full 2xl:w-[250px] text-left text-gray-400">
+              Allow your Web3Pay Account to access liquidity from your test
+              wallet.
+            </p>
+            {currentStep === "import" && (
+              <GradientButton
+                title="Import"
+                handleClick={() => handleStep("import")}
+                btnClass="max-sm:!w-full"
               />
             )}
-          </p>
-          <p className="text-base font-medium break-words w-[250px]">
-            Import test wallet liquidity into global account
-          </p>
-          {currentStep === "import" && (
-            <GradientButton
-              title="Import"
-              handleClick={() => handleStep("import")}
-            />
-          )}
-        </Card>
-        <Card
-          cardClasses={`gap-y-5 ${
-            currentStep === "mintNft" || !completedSteps.includes("mintNft")
-              ? "h-auto"
-              : "h-[157px]"
-          }`}
-          active={currentStep === "mintNft"}
-          rootClasses="!w-full"
-        >
-          <p className="text-26 font-normal flex items-center justify-between w-full">
-            04
-            {completedSteps.includes("mintNft") && (
-              <Image
-                src="/icons/badge-check.svg"
-                alt="arrow"
-                height={50}
-                width={50}
+            {completedSteps.includes("fundToken") && (
+              <div className="flex items-center w-full bg-transparent rounded-full border border-gray-200 justify-center gap-x-2 py-2 opacity-45">
+                <Image
+                  src="/icons/link-gradient.svg"
+                  alt="arrow"
+                  height={20}
+                  width={20}
+                />{" "}
+                <p className="text-base font-medium text-white">
+                  Wallet linked Successfully
+                </p>
+              </div>
+            )}
+          </Card>
+          {/* Divider */}
+          <Image
+            src="/icons/arrow-right.svg"
+            alt="arrow"
+            height={50}
+            width={50}
+            className="rotate-90 my-5 mx-auto block md:hidden"
+          />
+          <Image
+            src="/icons/arrow-right.svg"
+            alt="arrow"
+            height={50}
+            width={50}
+            className="hidden md:block md:rotate-180 xl:rotate-0"
+          />
+          {/* Card 3 */}
+          <Card
+            cardClasses={`gap-y-3 !bg-[#030226] p-6 ${
+              currentStep === "mintNft" || completedSteps.includes("mintNft")
+                ? "h-auto"
+                : "h-full md:h-[232px]"
+            }`}
+            active={currentStep === "mintNft"}
+            rootClasses={`!w-full ${
+              currentStep === "mintNft" || completedSteps.includes("mintNft")
+                ? "h-auto"
+                : "h-full md:h-[232px]"
+            }`}
+          >
+            <p className="text-26 font-normal flex items-center justify-between w-full">
+              04
+              {completedSteps.includes("mintNft") ? (
+                <Image
+                  src="/icons/badge-check.svg"
+                  alt="arrow"
+                  height={50}
+                  width={50}
+                />
+              ) : (
+                <Image
+                  src="/icons/polygon.svg"
+                  alt="arrow"
+                  height={30}
+                  width={30}
+                />
+              )}
+            </p>
+            <p className="text-base font-bold break-words w-full 2xl:w-[250px] text-left text-white">
+              Mint your NFT on Polygon Chain
+            </p>
+            <p className="text-base font-normal break-words w-full 2xl:w-[250px] text-left text-gray-400">
+              Use your Arbitrum Test Tokens to mint an NFT on Polygon, no
+              bridges required.
+            </p>
+            {currentStep === "mintNft" && (
+              <GradientButton
+                title="Mint"
+                handleClick={() => handleStep("mintNft")}
+                btnClass="max-sm:!w-full"
               />
             )}
-          </p>
-          <p className="text-base font-medium break-words">
-            Mint NFT on Polygon
-          </p>
-          {currentStep === "mintNft" && (
-            <GradientButton
-              title="Mint"
-              handleClick={() => handleStep("mintNft")}
-            />
-          )}
-        </Card>
+            {completedSteps.includes("fundToken") && (
+              <div className="flex items-center w-full bg-transparent rounded-full border border-gray-200 justify-center gap-x-2 py-2">
+                <p className="text-base font-medium text-white">
+                  NFT successfully minted
+                </p>
+                <TbExternalLink className="text-white text-xl" />
+              </div>
+            )}
+          </Card>
+        </div>
       </div>
     </div>
   );
