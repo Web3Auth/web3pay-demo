@@ -25,7 +25,7 @@ export default function Home() {
   const [address, setAddress] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [skipToStep, setSkipToStep] = useState("");
-  const [mintSuccess, setMintSuccess] = useState(true);
+  const [mintSuccess, setMintSuccess] = useState(false);
   const [nftSuccess, setNftSuccess] = useState(false);
 
   // todo: change this before deployment or move it to env
@@ -97,23 +97,30 @@ export default function Home() {
   }
 
   async function mintNft(address: string) {
-    const data = encodeFunctionData({
-      abi: erc721Abi,
-      functionName: "mint",
-      args: [address],
-    });
-
-    const resp = await walletProvider?.request({
-      method: "eth_sendTransaction",
-      params: {
-        from: address,
-        to: "0xFD8e3E880a098F2aCC1F855974e4Ce03Ef4B147F",
-        data,
-        value: "0",
-      },
-    });
-
-    console.log("mint nft resp", resp);
+    try {
+      const data = encodeFunctionData({
+        abi: erc721Abi,
+        functionName: "mint",
+        args: [address],
+      });
+  
+      const resp = await walletProvider?.request({
+        method: "eth_sendTransaction",
+        params: {
+          from: address,
+          to: "0xa1a97236e4200949bA4CefAA5bdDe070cc92D619",
+          data,
+          value: "0",
+        },
+      });
+  
+      console.log("mint nft resp", resp);
+    } catch (e: unknown) {
+      console.error("error minting nft", e);
+      throw e;
+    } finally {
+      setNftSuccess(true);
+    }
   }
 
   async function importAccount(randWallet: IRandomWallet) {
@@ -138,6 +145,7 @@ export default function Home() {
       }
     } catch (e: unknown) {
       console.error("error importing account", e);
+      throw e;
     }
   }
 
@@ -228,6 +236,7 @@ export default function Home() {
       <Modal isOpen={mintSuccess} onClose={() => setMintSuccess(false)}>
         <MintSuccess />
       </Modal>
+      {/* todo: test this when paymaster issue resolves */}
       <Modal isOpen={nftSuccess} onClose={() => setNftSuccess(false)}>
         <NFTSuccess />
       </Modal>
