@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import HomeBanner from "@/components/HomeBanner";
 import ImportFlow from "@/components/ImportFlow";
 import NonImportFlow from "@/components/NonImportFlow";
 import Button from "@/components/ui/Button";
