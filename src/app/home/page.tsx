@@ -103,7 +103,7 @@ export default function Home() {
       method: "eth_sendTransaction",
       params: {
         from: address,
-        to: "0x5493818C548020536F7aF02ea1905055aEBC3D7f",
+        to: "0xFD8e3E880a098F2aCC1F855974e4Ce03Ef4B147F",
         data,
         value: "0",
       },
@@ -169,6 +169,7 @@ export default function Home() {
       {walletProvider && (
         <section className="p-6 py-20 md:px-10 flex flex-col items-center justify-center w-full gap-y-10">
           <NonImportFlow
+            handleMintNft={mintNft}
             address={address}
             selectedEnv={selectedEnv}
           />
@@ -176,6 +177,7 @@ export default function Home() {
             handleImportAccount={importAccount}
             handleMintNft={mintNft}
             selectedEnv={selectedEnv}
+
           />
         </section>
       )}

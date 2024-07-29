@@ -16,14 +16,15 @@ import { calculateBaseUrl } from "@/utils/utils";
 const NonImportFlow = ({
   address,
   selectedEnv,
+  handleMintNft,
 }: {
   address: string;
   selectedEnv: SelectedEnv;
+  handleMintNft: (address: string) => Promise<void>;
 }) => {
   const { addToast } = useToast();
   const [currentStep, setCurrentStep] =
     useState<NonImportFlowStep>("fundToken");
-  const [completedSteps, setCompletedSteps] = useState<NonImportFlowStep[]>([]);
   const [stepLoader, setStepLoader] = useState(false);
 
   // step1: fund  random wallet on arbitrum
@@ -68,8 +69,16 @@ const NonImportFlow = ({
   }
   // step2: mint nft
   async function mintNft() {
-    if (address) {
-    }
+     try {
+      if (address) {
+        setStepLoader(true);
+        await handleMintNft(address);
+      }
+     } catch (error) {
+      console.error("error while minting", error);
+     } finally {
+       setStepLoader(false);
+     }
   }
 
   const handleStep = async (step: NonImportFlowStep) => {
@@ -77,7 +86,6 @@ const NonImportFlow = ({
       case "fundToken":
         await fundAccount();
         break;
-
       case "mintNft":
         await mintNft();
         break;
