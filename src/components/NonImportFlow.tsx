@@ -6,61 +6,64 @@ import Card from "./ui/Card";
 import Image from "next/image";
 import axios from "axios";
 import GradientButton from "./ui/GradientButton";
-export type NonImportFlowStep = "start" | "fundToken" | "mintNft";
+import { useToast } from "@/context/ToastContext";
+import { createPublicClient, http } from "viem";
+import { arbitrumSepolia } from "viem/chains";
+import { waitForTransactionReceipt } from "viem/actions";
+import { NonImportFlowStep, SelectedEnv } from "@/utils/interfaces";
+import { calculateBaseUrl } from "@/utils/utils";
 
 const NonImportFlow = ({
   address,
-  skipToStep,
+  selectedEnv,
 }: {
-  skipToStep: NonImportFlowStep;
   address: string;
+  selectedEnv: SelectedEnv;
 }) => {
+  const { addToast } = useToast();
   const [currentStep, setCurrentStep] =
     useState<NonImportFlowStep>("fundToken");
   const [completedSteps, setCompletedSteps] = useState<NonImportFlowStep[]>([]);
   const [stepLoader, setStepLoader] = useState(false);
 
-  useEffect(() => {
-    if (skipToStep && skipToStep != currentStep) {
-      setCurrentStep(skipToStep);
-    }
-  }, [skipToStep]);
-
-  // step1: create random wallet
-  async function handleCreateRandomWallet() {
-    // TODO: create random key pair
+  // step1: fund  random wallet on arbitrum
+  async function fundAccount() {
     try {
       if (address) {
         setStepLoader(true);
-        const txnHash = await axios.post(
-          "https://lrc-accounts.web3auth.io/api/mint",
+        const baseUrl = calculateBaseUrl(selectedEnv);
+        const resp = await axios.post(
+          `${baseUrl}/api/mint`,
           {
             chainId: "421614",
             toAddress: address,
           }
         );
-        // TODO: wait for txn
+        const { txHash: hash, message } = resp.data;
+
+        const publicClient = createPublicClient({
+          chain: arbitrumSepolia,
+          transport: http("https://arbitrum-sepolia.infura.io/v3/dee726a2930e4573a743a5c8f79942c1"),
+        });
+        addToast("success", message || "Successfully Funded test wallet with arbitrum token");
+        // hash won't be there for sufficient balance faucet use case
+        if(hash) {
+          await waitForTransactionReceipt(publicClient, {
+            hash,
+          });
+        }
         setCurrentStep("mintNft");
       }
-    } catch (error) {
-      console.error("error while funding", error);
+
+    } catch(err) {
+      console.error(`error while funding`, err);
+      addToast("error", "Funding failed");
+      throw err;
+      // handle error
+      // check for user balance on asset needed for minting 
+      // if already available proceed to funding
     } finally {
       setStepLoader(false);
-    }
-  }
-
-  // step1: fund  random wallet on arbitrum
-  async function fundAccount() {
-    if (address) {
-      const txnHash = await axios.post(
-        "https://lrc-accounts.web3auth.io/api/mint",
-        {
-          chainId: "421614",
-          toAddress: address,
-        }
-      );
-      // TODO: wait for txn
-      setCurrentStep("mintNft");
     }
   }
   // step2: mint nft
