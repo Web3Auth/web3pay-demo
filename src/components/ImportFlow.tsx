@@ -5,61 +5,60 @@ import React, { useEffect, useState } from "react";
 import Card from "./ui/Card";
 import Image from "next/image";
 import axios from "axios";
-export type ImportFlowStep =
-  | "start"
-  | "create"
-  | "fundToken"
-  | "import"
-  | "mintNft";
-import { generatePrivateKey, privateKeyToAccount, privateKeyToAddress } from "viem/accounts";
+
+import { privateKeyToAddress } from "viem/accounts";
 import GradientButton from "./ui/GradientButton";
 
-import { IRandomWallet } from "@/utils/interfaces";
+import { ImportFlowStep, IRandomWallet, SelectedEnv } from "@/utils/interfaces";
 import { generatePrivate, getPublic } from "@toruslabs/eccrypto";
 import { createPublicClient, Hex, http } from "viem";
 import { waitForTransactionReceipt } from "viem/actions";
 import { arbitrumSepolia } from "viem/chains";
+import { useToast } from "@/context/ToastContext";
+import { calculateBaseUrl } from "@/utils/utils";
 
 const ImportFlow = ({
-  address,
-  skipToStep,
+  selectedEnv,
   handleMintNft,
   handleImportAccount,
 }: {
-  skipToStep: ImportFlowStep;
-  address: string;
+  selectedEnv: SelectedEnv;
   handleMintNft: (address: string) => Promise<void>;
   handleImportAccount: (randWallet: IRandomWallet) => Promise<void>;
 }) => {
+  const { addToast } = useToast();
+
   const [randomWallet, setRandomWallet] = useState<IRandomWallet>();
   const [currentStep, setCurrentStep] = useState<ImportFlowStep>("start");
   const [completedSteps, setCompletedSteps] = useState<ImportFlowStep[]>([]);
   const [stepLoader, setStepLoader] = useState(false);
 
-  useEffect(() => {
-    if (skipToStep && skipToStep != currentStep) {
-      setCurrentStep(skipToStep);
-    }
-  }, [skipToStep]);
+
 
   // step1: create random wallet
   async function handleCreateRandomWallet() {
-    const privateKeyBuf = generatePrivate();
-    const publicKeyBuf = getPublic(privateKeyBuf);
-
-    const privateKey = privateKeyBuf.toString("hex");
-    const publicKey = publicKeyBuf.toString("hex");
-
-    const address = privateKeyToAddress(privateKey.startsWith("0x") ? privateKey as Hex : `0x${privateKey}`);
-
-    setRandomWallet({
-      publicKey,
-      privateKey,
-      address,
-      keyType: "secp256k1",
-    });
-
-    setCurrentStep("fundToken");
+    try {
+      const privateKeyBuf = generatePrivate();
+      const publicKeyBuf = getPublic(privateKeyBuf);
+  
+      const privateKey = privateKeyBuf.toString("hex");
+      const publicKey = publicKeyBuf.toString("hex");
+  
+      const address = privateKeyToAddress(privateKey.startsWith("0x") ? privateKey as Hex : `0x${privateKey}`);
+  
+      setRandomWallet({
+        publicKey,
+        privateKey,
+        address,
+        keyType: "secp256k1",
+      });
+      addToast("success", "Successfully created test wallet on arbitrum chain");
+  
+      setCurrentStep("fundToken");
+    } catch(err) {
+      console.error("error while creating random wallet", err);
+      addToast("error", "error while creating random wallet");
+    }
   }
 
   // step2: fund  random wallet on arbitrum
@@ -67,11 +66,13 @@ const ImportFlow = ({
     try {
       if(randomWallet?.address) {
         setStepLoader(true)
-        const resp = await axios.post("https://lrc-accounts.web3auth.io/api/mint", {
+        const baseUrl = calculateBaseUrl(selectedEnv);
+
+        const resp = await axios.post(`${baseUrl}/api/mint`, {
           "chainId": "421614",
           "toAddress": randomWallet.address,
         });
-        const { faucetHash: hash } = resp.data;
+        const { txHash: hash, message } = resp.data;
 
         const publicClient = createPublicClient({
           chain: arbitrumSepolia,
@@ -80,10 +81,14 @@ const ImportFlow = ({
         await waitForTransactionReceipt(publicClient, {
           hash,
         });
+        // handle already funded wallet to avoid multiple funding also time limit in faucet contract
         setCurrentStep("import");
+        addToast("success", message || "Successfully Funded test wallet with arbitrum token");
       }
     } catch (error) {
       console.error("error while funding", error);
+      addToast("error", "Funding failed");
+      // check if user has enough balance and proceed to next step
     } finally {
       setStepLoader(false);
     }

@@ -2,19 +2,20 @@
 "use client";
 
 import HomeBanner from "@/components/HomeBanner";
-import ImportFlow, { ImportFlowStep } from "@/components/ImportFlow";
-import NonImportFlow, { NonImportFlowStep } from "@/components/NonImportFlow";
+import ImportFlow from "@/components/ImportFlow";
+import NonImportFlow from "@/components/NonImportFlow";
 import Button from "@/components/ui/Button";
 import Image from "next/image";
 
 import Navbar from "@/components/ui/Navbar";
 import { erc721Abi } from "@/utils/abis/erc721";
-import { IRandomWallet } from "@/utils/interfaces";
+import { IRandomWallet, SelectedEnv } from "@/utils/interfaces";
 import { OpenloginSessionManager } from "@toruslabs/session-manager";
 import { WalletProvider } from "@web3auth/global-accounts-sdk";
 import { useEffect, useState } from "react";
 import { HiOutlineArrowSmRight } from "react-icons/hi";
 import { encodeFunctionData } from "viem";
+import { calculateBaseUrl } from "@/utils/utils";
 
 export default function Home() {
   const [walletProvider, setWalletProvider] = useState<WalletProvider>();
@@ -24,17 +25,12 @@ export default function Home() {
   const [skipToStep, setSkipToStep] = useState("");
 
   // todo: change this before deployment or move it to env
-  const [selectedEnv, setSelectedEnv] = useState("local");
+  const [selectedEnv, setSelectedEnv] = useState<SelectedEnv>("local");
   const [chainId, setChainId] = useState(80002);
 
   useEffect(() => {
     const getWalletURL = () => {
-      if (selectedEnv === "local") {
-        return "http://localhost:3000/connect";
-      } else {
-        debugger;
-        return "https://lrc-accounts.web3auth.io/connect";
-      }
+      return `${calculateBaseUrl(selectedEnv)}/connect`
     };
 
     // initiate sdk
@@ -67,7 +63,6 @@ export default function Home() {
         })) as string[];
         if (account?.length) {
           setAddress(account[0]);
-          debugger;
         }
       } catch (err) {
         console.log(err);
@@ -174,14 +169,13 @@ export default function Home() {
       {walletProvider && (
         <section className="p-6 py-20 md:px-10 flex flex-col items-center justify-center w-full gap-y-10">
           <NonImportFlow
-            skipToStep={skipToStep as NonImportFlowStep}
             address={address}
+            selectedEnv={selectedEnv}
           />
           <ImportFlow
-            skipToStep={skipToStep as ImportFlowStep}
-            address={address}
             handleImportAccount={importAccount}
             handleMintNft={mintNft}
+            selectedEnv={selectedEnv}
           />
         </section>
       )}
