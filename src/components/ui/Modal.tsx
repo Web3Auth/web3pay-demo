@@ -4,7 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/utils/utils";
 
 const modalVariants = cva(
-  `absolute bg-app-white dark:bg-app-gray-700 rounded-[30px] p-6 w-[90%] @sm:w-[430px]`,
+  `absolute bg-modal text-black rounded-[30px] p-6 w-[90%] sm:w-[430px]`,
   {
     variants: {
       position: {

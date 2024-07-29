@@ -26,10 +26,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className}`}>
-        <ToastProvider>
-          {children}
-        </ToastProvider>
+      <body className={`${inter.className} relative`}>
+        <ToastProvider>{children}</ToastProvider>
       </body>
     </html>
   );

@@ -5,6 +5,7 @@ import ImportFlow from "@/components/ImportFlow";
 import NonImportFlow from "@/components/NonImportFlow";
 import Button from "@/components/ui/Button";
 import Image from "next/image";
+import { Modal } from "@/components/ui/Modal";
 
 import Navbar from "@/components/ui/Navbar";
 import { erc721Abi } from "@/utils/abis/erc721";
@@ -15,6 +16,8 @@ import { useEffect, useState } from "react";
 import { HiOutlineArrowSmRight } from "react-icons/hi";
 import { encodeFunctionData } from "viem";
 import { calculateBaseUrl } from "@/utils/utils";
+import MintSuccess from "@/components/MintSuccess";
+import NFTSuccess from "@/components/NFTSuccess";
 
 export default function Home() {
   const [walletProvider, setWalletProvider] = useState<WalletProvider>();
@@ -22,6 +25,8 @@ export default function Home() {
   const [address, setAddress] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [skipToStep, setSkipToStep] = useState("");
+  const [mintSuccess, setMintSuccess] = useState(true);
+  const [nftSuccess, setNftSuccess] = useState(false);
 
   // todo: change this before deployment or move it to env
   const [selectedEnv, setSelectedEnv] = useState<SelectedEnv>("local");
@@ -220,6 +225,12 @@ export default function Home() {
           />
         </div>
       </section>
+      <Modal isOpen={mintSuccess} onClose={() => setMintSuccess(false)}>
+        <MintSuccess />
+      </Modal>
+      <Modal isOpen={nftSuccess} onClose={() => setNftSuccess(false)}>
+        <NFTSuccess />
+      </Modal>
     </main>
   );
 }
