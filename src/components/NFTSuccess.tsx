@@ -12,7 +12,7 @@ const NFTSuccess = () => {
         className="animate-scaleIn"
       />
       <div className="text-center">
-        <p className="text-lg font-medium text-white">W3PNFT #21 Minted!</p>
+        <p className="text-lg font-medium text-white">Web3Auth NFT Minted!</p>
         <p className="text-sm font-normal text-white text-center mt-1 w-[80%] mx-auto">
           Check out the new collectible details in your account
         </p>

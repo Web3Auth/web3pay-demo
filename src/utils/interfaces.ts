@@ -14,6 +14,7 @@ export type ImportFlowStep =
   | "create"
   | "fundToken"
   | "import"
-  | "mintNft";
+  | "mintNft"
+  | "completed";
 
-export type NonImportFlowStep = "start" | "fundToken" | "mintNft";
+export type NonImportFlowStep = "start" | "fundToken" | "mintNft" | "completed";
