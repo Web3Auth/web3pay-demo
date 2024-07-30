@@ -115,11 +115,11 @@ export default function Home() {
       });
   
       console.log("mint nft resp", resp);
+      setNftSuccess(true);
     } catch (e: unknown) {
       console.error("error minting nft", e);
       throw e;
     } finally {
-      setNftSuccess(true);
     }
   }
 
