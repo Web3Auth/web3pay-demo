@@ -6,14 +6,12 @@ import { TbCopy, TbCircleCheck } from "react-icons/tb";
 import Link from "next/link";
 
 const Navbar = ({
-  handleConnect,
-  loader,
   address,
+  loader,
   showButton = true,
 }: {
-  handleConnect?: () => void;
+  address: string;
   loader?: boolean;
-  address?: string;
   showButton?: boolean;
 }) => {
   const [copied, setCopied] = React.useState(false);
@@ -37,13 +35,7 @@ const Navbar = ({
         />
       </Link>
       {showButton ? (
-        !address ? (
-          <Button
-            title="Connect"
-            loading={loader}
-            handleClick={() => handleConnect && handleConnect()}
-          />
-        ) : (
+       
           <Button
             title={copied ? "Copied!" : sliceAddress(address)}
             loading={loader}
@@ -56,7 +48,6 @@ const Navbar = ({
             }
             handleClick={handleCopy}
           />
-        )
       ) : null}
     </div>
   );
