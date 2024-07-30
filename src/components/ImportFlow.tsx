@@ -54,7 +54,6 @@ const ImportFlow = ({
         address,
         keyType: "secp256k1",
       });
-      addToast("success", "Successfully created test wallet on arbitrum chain");
 
       setCurrentStep("fundToken");
       setCompletedSteps([...completedSteps, "start"]);
@@ -91,10 +90,6 @@ const ImportFlow = ({
         // handle already funded wallet to avoid multiple funding also time limit in faucet contract
         setCurrentStep("import");
         setCompletedSteps([...completedSteps, "fundToken"]);
-        addToast(
-          "success",
-          message || "Successfully Funded test wallet with arbitrum token"
-        );
       }
     } catch (error) {
       console.error("error while funding", error);
@@ -111,7 +106,6 @@ const ImportFlow = ({
       try {
         setStepLoader(true);
         await handleImportAccount(randomWallet);
-        addToast("success", "Successfully imported account");
         setCurrentStep("mintNft");
         setCompletedSteps([...completedSteps, "import"]);
       } catch (err: any) {
@@ -130,7 +124,6 @@ const ImportFlow = ({
       try {
         setStepLoader(true);
         await handleMintNft(randomWallet.address);
-        addToast("success", "Successfully Minted NFT!");
       } catch (err: any) {
         console.error("error while importing account", err);
         addToast("error", `error while minting nft ${err?.message}`);
@@ -326,7 +319,7 @@ const ImportFlow = ({
                   width={20}
                 />{" "}
                 <p className="text-base font-medium text-white">
-                  Received 0.0001 ETH
+                  Received 50 W3PTEST tokens
                 </p>
               </div>
             )}

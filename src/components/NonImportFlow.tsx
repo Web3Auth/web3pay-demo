@@ -58,10 +58,6 @@ const NonImportFlow = ({
         setTxHash(`https://sepolia.arbiscan.io/address/${address}`);
         setCompletedSteps([...completedSteps, "fundToken"]);
         setCurrentStep("mintNft");
-        addToast(
-          "success",
-          message || "Successfully Funded test wallet with arbitrum token"
-        );
       }
     } catch (err: any) {
       console.error(`error while funding`, err.message || "");
@@ -80,7 +76,6 @@ const NonImportFlow = ({
       try {
         setStepLoader(true);
         await handleMintNft(address);
-        addToast("success", "Successfully imported account");
       } catch (err: any) {
         console.error("error  while minting NFT", err);
         addToast("error", `error while minting NFT ${err?.message}`);
@@ -168,7 +163,7 @@ const NonImportFlow = ({
                   width={20}
                 />{" "}
                 <p className="text-base font-medium text-white">
-                  Received 0.0001 ETH
+                  Received 50 W3PTEST tokens
                 </p>
               </div>
             )}
