@@ -12,4 +12,4 @@ export const calculateBaseUrl = (selectedEnv: SelectedEnv) => {
   } else {
     return "https://lrc-accounts.web3auth.io";
   }
-}
+};

@@ -4,7 +4,7 @@ interface ILoaderProps {
 
 const Loader: React.FC<ILoaderProps> = ({ size = "xs" }) => {
   const loaderSizeClass = () => {
-    let sizeClass = "w-6 h-6 border-[1.5px] border-t-[1.5px]";
+    let sizeClass = "w-6 h-6 border-[1px] border-t-[1px]";
     if (size === "sm") {
       sizeClass = "w-10 h-10";
     }
