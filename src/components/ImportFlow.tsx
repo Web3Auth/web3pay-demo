@@ -124,13 +124,13 @@ const ImportFlow = ({
       try {
         setStepLoader(true);
         await handleMintNft(randomWallet.address);
+        setCompletedSteps([...completedSteps, "mintNft"]);
+        setCurrentStep("completed");
       } catch (err: any) {
         console.error("error while importing account", err);
         addToast("error", `error while minting nft ${err?.message}`);
       } finally {
         setStepLoader(false);
-        setCompletedSteps([...completedSteps, "mintNft"]);
-        setCurrentStep("completed");
       }
     } else {
       addToast("error", "Wallet not created!");

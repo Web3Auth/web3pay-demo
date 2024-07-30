@@ -76,13 +76,13 @@ const NonImportFlow = ({
       try {
         setStepLoader(true);
         await handleMintNft(address);
+        setCurrentStep("completed");
+        setCompletedSteps([...completedSteps, "mintNft"]);
       } catch (err: any) {
         console.error("error  while minting NFT", err);
         addToast("error", `error while minting NFT ${err?.message}`);
       } finally {
         setStepLoader(false);
-        setCurrentStep("completed");
-        setCompletedSteps([...completedSteps, "mintNft"]);
       }
     } else {
       addToast("error", "Wallet not created!");
