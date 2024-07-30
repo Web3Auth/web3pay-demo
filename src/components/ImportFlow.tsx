@@ -44,6 +44,7 @@ const ImportFlow = ({
   async function handleCreateRandomWallet() {
     try {
       setDisplayErrorPopup(false);
+      setStepLoader(true);
       const privateKeyBuf = generatePrivate();
       const publicKeyBuf = getPublic(privateKeyBuf);
 
@@ -69,6 +70,8 @@ const ImportFlow = ({
       setSubErrorText(err?.message || "");
       setErrorRetryFunction(() => handleCreateRandomWallet);
       setDisplayErrorPopup(true);
+    } finally {
+      setStepLoader(true);
     }
   }
 
@@ -132,7 +135,7 @@ const ImportFlow = ({
       }
     } else {
       // shouldn't come here
-      setErrorText("Error while creating random wallet");
+      setErrorText("Error while importing account");
       setErrorRetryFunction(() => handleCreateRandomWallet);
       setDisplayErrorPopup(true);
     }
@@ -156,7 +159,7 @@ const ImportFlow = ({
         setStepLoader(false);
       }
     } else {
-      setErrorText("Error while creating random wallet");
+      setErrorText("Error while minting NFT");
       setErrorRetryFunction(() => handleCreateRandomWallet);
       setDisplayErrorPopup(true);
     }
@@ -499,6 +502,7 @@ const ImportFlow = ({
                 title="Mint"
                 handleClick={() => handleStep("mintNft")}
                 btnClass="max-sm:!w-full"
+                loading={stepLoader}
               />
             )}
             {completedSteps.includes("mintNft") && (
