@@ -13,6 +13,7 @@ import { waitForTransactionReceipt } from "viem/actions";
 import { NonImportFlowStep, SelectedEnv } from "@/utils/interfaces";
 import { calculateBaseUrl } from "@/utils/utils";
 import { openInNewTab } from "@/utils";
+import { TbExternalLink } from "react-icons/tb";
 
 const NonImportFlow = ({
   address,
@@ -80,12 +81,12 @@ const NonImportFlow = ({
         setStepLoader(true);
         await handleMintNft(address);
         addToast("success", "Successfully imported account");
-        setCurrentStep("mintNft");
       } catch (err: any) {
         console.error("error  while minting NFT", err);
         addToast("error", `error while minting NFT ${err?.message}`);
       } finally {
         setStepLoader(false);
+        setCurrentStep("completed");
         setCompletedSteps([...completedSteps, "mintNft"]);
       }
     } else {
@@ -223,6 +224,14 @@ const NonImportFlow = ({
               loading={stepLoader}
             />
           )}
+          {completedSteps.includes("mintNft") && (
+              <div className="flex items-center w-full bg-transparent rounded-full border border-gray-200 justify-center gap-x-2 py-2">
+                <p className="text-base font-medium text-white">
+                  NFT successfully minted
+                </p>
+                <TbExternalLink className="text-white text-xl" />
+              </div>
+            )}
         </Card>
       </div>
     </div>
