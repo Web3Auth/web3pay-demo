@@ -28,7 +28,9 @@ const NonImportFlow = ({
   const [currentStep, setCurrentStep] =
     useState<NonImportFlowStep>("fundToken");
   const [stepLoader, setStepLoader] = useState(false);
-  const [completedSteps, setCompletedSteps] = useState<NonImportFlowStep[]>(["start"]);
+  const [completedSteps, setCompletedSteps] = useState<NonImportFlowStep[]>([
+    "start",
+  ]);
   const [txHash, setTxHash] = useState<string>("");
   // error message
   const [errorText, setErrorText] = useState("");
@@ -128,21 +130,21 @@ const NonImportFlow = ({
       </div>
       <div className="mt-10 w-full flex items-center flex-col sm:flex-row sm:items-stretch justify-center">
         <Card
-          cardClasses={`gap-y-3 p-6 md:!p-9 !bg-[#030226] !flex !flex-col !justify-between`}
-          active={currentStep === "start"}
+          cardClasses={`gap-y-3 p-6 !bg-[#030226] !flex !flex-col`}
+          active={currentStep === "fundToken"}
           rootClasses="!w-full sm:!w-max"
         >
           <p className="text-26 font-normal flex items-center justify-between w-full">
             01
-            { completedSteps.includes("fundToken") ? (
-                <Image
-                  src="/icons/badge-check.svg"
-                  alt="arrow"
-                  height={30}
-                  width={30}
-                /> 
-              ) : (
-                <Image
+            {completedSteps.includes("fundToken") ? (
+              <Image
+                src="/icons/badge-check.svg"
+                alt="arrow"
+                height={30}
+                width={30}
+              />
+            ) : (
+              <Image
                 src="/icons/arbitrum.svg"
                 alt="arrow"
                 height={30}
@@ -196,21 +198,21 @@ const NonImportFlow = ({
           className="hidden sm:block"
         />
         <Card
-          cardClasses={`gap-y-3 p-6 md:!p-9 !bg-[#030226] !flex !flex-col !justify-between`}
-          active
+          cardClasses={`gap-y-3 p-6 !bg-[#030226] !flex !flex-col`}
+          active={currentStep === "mintNft"}
           rootClasses="!w-full sm:!w-max"
         >
           <p className="text-26 font-normal flex items-center justify-between w-full">
             02
-            { completedSteps.includes("mintNft") ? (
-                <Image
-                  src="/icons/badge-check.svg"
-                  alt="arrow"
-                  height={30}
-                  width={30}
-                /> 
-              ) : (
-                <Image
+            {completedSteps.includes("mintNft") ? (
+              <Image
+                src="/icons/badge-check.svg"
+                alt="arrow"
+                height={30}
+                width={30}
+              />
+            ) : (
+              <Image
                 src="/icons/polygon.svg"
                 alt="arrow"
                 height={30}
@@ -233,13 +235,13 @@ const NonImportFlow = ({
             />
           )}
           {completedSteps.includes("mintNft") && (
-              <div className="flex items-center w-full bg-transparent rounded-full border border-gray-200 justify-center gap-x-2 py-2">
-                <p className="text-base font-medium text-white">
-                  NFT successfully minted
-                </p>
-                <TbExternalLink className="text-white text-xl" />
-              </div>
-            )}
+            <div className="flex items-center w-full bg-transparent rounded-full border border-gray-200 justify-center gap-x-2 py-2">
+              <p className="text-base font-medium text-white">
+                NFT successfully minted
+              </p>
+              <TbExternalLink className="text-white text-xl" />
+            </div>
+          )}
         </Card>
       </div>
     </div>

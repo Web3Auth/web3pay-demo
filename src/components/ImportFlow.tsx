@@ -71,7 +71,7 @@ const ImportFlow = ({
       setErrorRetryFunction(() => handleCreateRandomWallet);
       setDisplayErrorPopup(true);
     } finally {
-      setStepLoader(true);
+      setStepLoader(false);
     }
   }
 
@@ -95,7 +95,7 @@ const ImportFlow = ({
             "https://arbitrum-sepolia.infura.io/v3/dee726a2930e4573a743a5c8f79942c1"
           ),
         });
-        if(hash) {
+        if (hash) {
           await waitForTransactionReceipt(publicClient, {
             hash,
           });
@@ -208,73 +208,21 @@ const ImportFlow = ({
           }`}
         >
           {/* Card 1 */}
-          <Card
-            cardClasses={`gap-y-3 !bg-[#030226] p-6 ${
-              currentStep === "start" || completedSteps.includes("start")
-                ? "h-auto"
-                : "h-full"
-            }`}
-            active={currentStep === "create"}
-            rootClasses={`!w-full ${
-              currentStep === "start" || completedSteps.includes("start")
-                ? "h-auto"
-                : "h-full"
-            }`}
-          >
-            <p className="text-26 font-normal flex items-center justify-between w-full">
-              01
-              {completedSteps.includes("start") ? (
-                <Image
-                  src="/icons/badge-check.svg"
-                  alt="arrow"
-                  height={50}
-                  width={50}
-                />
-              ) : (
-                <Image
-                  src="/icons/arbitrum.svg"
-                  alt="arrow"
-                  height={30}
-                  width={30}
-                />
-              )}
-            </p>
-            <p className="text-base font-bold break-words w-full 2xl:w-[250px] text-left text-white">
-              Create a test wallet on Arbitrum chain
-            </p>
-            <p className="text-base font-normal break-words w-full 2xl:w-[250px] text-left text-gray-400">
-              For demo purposes, we will help you create a test wallet that will
-              stand in for your external wallets
-            </p>
-            {currentStep === "start" && (
-              <GradientButton
-                loading={stepLoader}
-                title="Create"
-                handleClick={() => handleStep("create")}
-                btnClass="max-sm:!w-full"
-              />
-            )}
-            {completedSteps.includes("start") && (
-              <div
-                className="flex items-center w-full bg-transparent rounded-full border border-gray-200 justify-center gap-x-2 py-2 opacity-45"
-                onClick={() => {
-                  openInNewTab(
-                    `https://sepolia.arbiscan.io/address/${randomWallet?.address}`
-                  );
-                }}
-              >
-                <Image
-                  src="/icons/arbitrum.svg"
-                  alt="arrow"
-                  height={20}
-                  width={20}
-                />{" "}
-                <p className="text-base font-medium text-white">
-                  { sliceAddress(randomWallet?.address || "")}
-                </p>
-              </div>
-            )}
-          </Card>
+          <ImportFlowCard
+            title="Create a test wallet on Arbitrum chain"
+            description=" For demo purposes, we will help you create a test wallet that will
+              stand in for your external wallets"
+            step="1"
+            isCompleted={completedSteps.includes("start")}
+            isCurrent={currentStep === "start"}
+            logo="arbitrum"
+            resultOpacity
+            resultText="0x12345...12345"
+            resultLogo="arbitrum"
+            handleClick={() => handleStep("create")}
+            btnText="Create"
+            loading={stepLoader}
+          />
           {/* Divider */}
           <Image
             src="/icons/arrow-right.svg"
@@ -291,68 +239,21 @@ const ImportFlow = ({
             className="hidden md:block"
           />
           {/* Card 2 */}
-          <Card
-            cardClasses={`gap-y-3 !bg-[#030226] p-6 ${
-              currentStep === "fundToken" ||
-              completedSteps.includes("fundToken")
-                ? "h-auto"
-                : "h-full"
-            }`}
-            active={currentStep === "fundToken"}
-            rootClasses={`!w-full ${
-              currentStep === "fundToken" ? "h-auto" : "h-full"
-            }`}
-          >
-            <p className="text-26 font-normal flex items-center justify-between w-full">
-              02
-              {completedSteps.includes("fundToken") ||
-              completedSteps.includes("fundToken") ? (
-                <Image
-                  src="/icons/badge-check.svg"
-                  alt="arrow"
-                  height={50}
-                  width={50}
-                />
-              ) : (
-                <Image
-                  src="/icons/arbitrum.svg"
-                  alt="arrow"
-                  height={30}
-                  width={30}
-                />
-              )}
-            </p>
-            <p className="text-base font-bold break-words w-full 2xl:w-[250px] text-left text-white">
-              Fund your Web3Pay Account with Arbitrum Tokens
-            </p>
-            <p className="text-base font-normal break-words w-full 2xl:w-[250px] text-left text-gray-400">
-              Load your Web3Pay Account with Arbitrum Test Tokens to test—our
-              treat!
-            </p>
-            {currentStep === "fundToken" && (
-              <GradientButton
-                title="fund"
-                handleClick={() => handleStep("fundToken")}
-                loading={stepLoader}
-                btnClass="max-sm:!w-full"
-              />
-            )}
-            {completedSteps.includes("fundToken") && (
-              <div
-                onClick={() => openInNewTab(`https://sepolia.arbiscan.io/tx/${txHash}`)}
-                className="flex items-center w-full bg-transparent rounded-full border border-gray-200 justify-center gap-x-2 py-2 opacity-45">
-                <Image
-                  src="/icons/arbitrum.svg"
-                  alt="arrow"
-                  height={20}
-                  width={20}
-                />{" "}
-                <p className="text-base font-medium text-white">
-                  Received 50 W3PTEST tokens
-                </p>
-              </div>
-            )}
-          </Card>
+          <ImportFlowCard
+            title="Fund your Web3Pay Account with Arbitrum Tokens"
+            description="Load your Web3Pay Account with Arbitrum Test Tokens to test—our
+              treat!"
+            step="2"
+            isCompleted={completedSteps.includes("fundToken")}
+            isCurrent={currentStep === "fundToken"}
+            logo="arbitrum"
+            resultOpacity
+            resultText="Received 0.0001 ETH"
+            resultLogo="arbitrum"
+            handleClick={() => handleStep("fundToken")}
+            btnText="Fund"
+            loading={stepLoader}
+          />
         </div>
         {/* Divider */}
         <Image
@@ -386,63 +287,21 @@ const ImportFlow = ({
           }`}
         >
           {/* Card 3 */}
-          <Card
-            cardClasses={`gap-y-3 !bg-[#030226] p-6`}
-            active={currentStep === "import"}
-            rootClasses={`!w-full ${
-              currentStep === "import" || completedSteps.includes("import")
-                ? "h-auto"
-                : "h-full"
-            }`}
-          >
-            <p className="text-26 font-normal flex items-center justify-between w-full">
-              03
-              {completedSteps.includes("import") ||
-              completedSteps.includes("import") ? (
-                <Image
-                  src="/icons/badge-check.svg"
-                  alt="arrow"
-                  height={50}
-                  width={50}
-                />
-              ) : (
-                <Image
-                  src="/icons/arbitrum.svg"
-                  alt="arrow"
-                  height={30}
-                  width={30}
-                />
-              )}
-            </p>
-            <p className="text-base font-bold break-words w-full 2xl:w-[250px] text-left text-white">
-              Connect your test wallet to your Web3Pay Account
-            </p>
-            <p className="text-base font-normal break-words w-full 2xl:w-[250px] text-left text-gray-400">
-              Allow your Web3Pay Account to access liquidity from your test
-              wallet.
-            </p>
-            {currentStep === "import" && (
-              <GradientButton
-                title="Import"
-                handleClick={() => handleStep("import")}
-                btnClass="max-sm:!w-full"
-                loading={stepLoader}
-              />
-            )}
-            {completedSteps.includes("import") && (
-              <div className="flex items-center w-full bg-transparent rounded-full border border-gray-200 justify-center gap-x-2 py-2 opacity-45">
-                <Image
-                  src="/icons/link-gradient.svg"
-                  alt="arrow"
-                  height={20}
-                  width={20}
-                />{" "}
-                <p className="text-base font-medium text-white">
-                  Wallet linked Successfully
-                </p>
-              </div>
-            )}
-          </Card>
+          <ImportFlowCard
+            title="Connect your test wallet to your Web3Pay Account"
+            description="Allow your Web3Pay Account to access liquidity from your test
+              wallet."
+            step="3"
+            isCompleted={completedSteps.includes("import")}
+            isCurrent={currentStep === "import"}
+            logo="arbitrum"
+            resultOpacity
+            resultText="Wallet linked Successfully"
+            resultLogo="link-gradient"
+            handleClick={() => handleStep("import")}
+            btnText="Import"
+            loading={stepLoader}
+          />
           {/* Divider */}
           <Image
             src="/icons/arrow-right.svg"
@@ -459,61 +318,21 @@ const ImportFlow = ({
             className="hidden md:block md:rotate-180 xl:rotate-0"
           />
           {/* Card 3 */}
-          <Card
-            cardClasses={`gap-y-3 !bg-[#030226] p-6 ${
-              currentStep === "mintNft" || completedSteps.includes("mintNft")
-                ? "h-auto"
-                : "h-full"
-            }`}
-            active={currentStep === "mintNft"}
-            rootClasses={`!w-full ${
-              currentStep === "mintNft" || completedSteps.includes("mintNft")
-                ? "h-auto"
-                : "h-full"
-            }`}
-          >
-            <p className="text-26 font-normal flex items-center justify-between w-full">
-              04
-              {completedSteps.includes("mintNft") ? (
-                <Image
-                  src="/icons/badge-check.svg"
-                  alt="arrow"
-                  height={50}
-                  width={50}
-                />
-              ) : (
-                <Image
-                  src="/icons/polygon.svg"
-                  alt="arrow"
-                  height={30}
-                  width={30}
-                />
-              )}
-            </p>
-            <p className="text-base font-bold break-words w-full 2xl:w-[250px] text-left text-white">
-              Mint your NFT on Polygon Chain
-            </p>
-            <p className="text-base font-normal break-words w-full 2xl:w-[250px] text-left text-gray-400">
-              Use your Arbitrum Test Tokens to mint an NFT on Polygon, no
-              bridges required.
-            </p>
-            {currentStep === "mintNft" && (
-              <GradientButton
-                title="Mint"
-                handleClick={() => handleStep("mintNft")}
-                btnClass="max-sm:!w-full"
-                loading={stepLoader}
-              />
-            )}
-            {completedSteps.includes("mintNft") && (
-              <div className="flex items-center w-full bg-transparent rounded-full border border-gray-200 justify-center gap-x-2 py-2">
-                <p className="text-base font-medium text-white">
-                  NFT successfully minted
-                </p>
-                <TbExternalLink className="text-white text-xl" />
-              </div>
-            )}
-          </Card>
+          <ImportFlowCard
+            title="Mint your NFT on Polygon Chain"
+            description="Use your Arbitrum Test Tokens to mint an NFT on Polygon, no
+              bridges required."
+            step="4"
+            isCompleted={completedSteps.includes("mintNft")}
+            isCurrent={currentStep === "mintNft"}
+            logo="polygon"
+            resultOpacity
+            resultText="NFT successfully minted"
+            resultCustomIcon={<TbExternalLink className="text-white text-xl" />}
+            handleClick={() => handleStep("mintNft")}
+            btnText="Mint"
+            loading={stepLoader}
+          />
         </div>
       </div>
     </div>
@@ -526,3 +345,91 @@ const ImportFlow = ({
 };
 
 export default ImportFlow;
+
+const ImportFlowCard = ({
+  isCurrent = false,
+  isCompleted = false,
+  title,
+  description,
+  handleClick,
+  resultOpacity,
+  logo,
+  resultText,
+  resultLogo,
+  step,
+  resultCustomIcon,
+  btnText,
+  loading,
+}: {
+  isCurrent: boolean;
+  isCompleted: boolean;
+  title: string;
+  description: string;
+  handleClick: () => void;
+  resultOpacity: boolean;
+  logo: string;
+  resultText: string;
+  resultLogo?: string;
+  resultCustomIcon?: React.ReactNode;
+  step: string;
+  loading: boolean;
+  btnText: string;
+}) => {
+  return (
+    <Card
+      cardClasses={`gap-y-3 !bg-[#030226] p-6 ${
+        isCurrent || isCompleted ? "h-auto" : "h-full md:h-[232px]"
+      }`}
+      active={isCurrent}
+      rootClasses={`!w-full ${
+        isCurrent || isCompleted ? "h-auto" : "h-full md:h-[232px]"
+      }`}
+    >
+      <p className="text-26 font-normal flex items-center justify-between w-full">
+        0{step}
+        {isCompleted ? (
+          <Image
+            src="/icons/badge-check.svg"
+            alt="completed"
+            height={50}
+            width={50}
+          />
+        ) : (
+          <Image src={`/icons/${logo}.svg`} alt={logo} height={30} width={30} />
+        )}
+      </p>
+      <p className="text-base font-bold break-words w-full 2xl:w-[250px] text-left text-white">
+        {title}
+      </p>
+      <p className="text-base font-normal break-words w-full 2xl:w-[250px] text-left text-gray-400">
+        {description}
+      </p>
+      {isCurrent && (
+        <GradientButton
+          title={btnText}
+          handleClick={() => handleClick()}
+          btnClass="max-sm:!w-full"
+          loading={loading}
+        />
+      )}
+      {isCompleted && (
+        <div
+          className={`flex items-center w-full bg-transparent rounded-full border border-gray-200 justify-center gap-x-2 py-2 ${
+            resultOpacity ? "opacity-45" : ""
+          }`}
+        >
+          {resultLogo && (
+            <Image
+              src={`/icons/${resultLogo}.svg`}
+              alt={resultLogo}
+              height={20}
+              width={20}
+            />
+          )}
+          <p className="text-base font-medium text-white">{resultText}</p>
+          {resultCustomIcon ?? null}
+        </div>
+      )}
+    </Card>
+  );
+};
