@@ -6,7 +6,6 @@ import Card from "./ui/Card";
 import Image from "next/image";
 import axios from "axios";
 import GradientButton from "./ui/GradientButton";
-import { useToast } from "@/context/ToastContext";
 import { createPublicClient, http } from "viem";
 import { arbitrumSepolia } from "viem/chains";
 import { waitForTransactionReceipt } from "viem/actions";
@@ -26,7 +25,6 @@ const NonImportFlow = ({
   selectedEnv: SelectedEnv;
   handleMintNft: (address: string) => Promise<void>;
 }) => {
-  const { addToast } = useToast();
   const [currentStep, setCurrentStep] =
     useState<NonImportFlowStep>("fundToken");
   const [stepLoader, setStepLoader] = useState(false);
@@ -100,7 +98,6 @@ const NonImportFlow = ({
         setStepLoader(false);
       }
     } else {
-      addToast("error", "Wallet not created!");
     }
   }
 

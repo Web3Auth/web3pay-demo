@@ -14,7 +14,6 @@ import { createPublicClient, Hex, http } from "viem";
 import { waitForTransactionReceipt } from "viem/actions";
 import { arbitrumSepolia } from "viem/chains";
 import { TbExternalLink } from "react-icons/tb";
-import { useToast } from "@/context/ToastContext";
 import { calculateBaseUrl } from "@/utils/utils";
 import { sliceAddress, openInNewTab } from "@/utils";
 import { Modal } from "./ui/Modal";
@@ -29,7 +28,6 @@ const ImportFlow = ({
   handleMintNft: (address: string) => Promise<void>;
   handleImportAccount: (randWallet: IRandomWallet) => Promise<void>;
 }) => {
-  const { addToast } = useToast();
 
   const [randomWallet, setRandomWallet] = useState<IRandomWallet>();
   const [currentStep, setCurrentStep] = useState<ImportFlowStep>("start");
@@ -71,7 +69,6 @@ const ImportFlow = ({
       setSubErrorText(err?.message || "");
       setErrorRetryFunction(() => handleCreateRandomWallet);
       setDisplayErrorPopup(true);
-      addToast("error", "error while creating random wallet");
     }
   }
 
@@ -130,12 +127,14 @@ const ImportFlow = ({
         setErrorRetryFunction(() => importAccount);
         setDisplayErrorPopup(true);
         console.error("error while importing account", err);
-        // addToast("error", `error while importing account ${err?.message}`);
       } finally {
         setStepLoader(false);
       }
     } else {
-      addToast("error", "Wallet not created!");
+      // shouldn't come here
+      setErrorText("Error while creating random wallet");
+      setErrorRetryFunction(() => handleCreateRandomWallet);
+      setDisplayErrorPopup(true);
     }
   }
   // step4: mint nft
@@ -153,12 +152,13 @@ const ImportFlow = ({
         setErrorRetryFunction(() => mintNft);
         setDisplayErrorPopup(true);
         console.error("error while minting NFT", err);
-        // addToast("error", `error while minting nft ${err?.message}`);
       } finally {
         setStepLoader(false);
       }
     } else {
-      addToast("error", "Wallet not created!");
+      setErrorText("Error while creating random wallet");
+      setErrorRetryFunction(() => handleCreateRandomWallet);
+      setDisplayErrorPopup(true);
     }
   }
 
