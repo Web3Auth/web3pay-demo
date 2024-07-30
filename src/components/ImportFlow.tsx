@@ -17,6 +17,8 @@ import { TbExternalLink } from "react-icons/tb";
 import { useToast } from "@/context/ToastContext";
 import { calculateBaseUrl } from "@/utils/utils";
 import { sliceAddress, openInNewTab } from "@/utils";
+import { Modal } from "./ui/Modal";
+import ErrorPopup from "./ErrorPopup";
 
 const ImportFlow = ({
   selectedEnv,
@@ -34,10 +36,16 @@ const ImportFlow = ({
   const [txHash, setTxHash] = useState<string>("");
   const [completedSteps, setCompletedSteps] = useState<ImportFlowStep[]>([]);
   const [stepLoader, setStepLoader] = useState(false);
+  // error message
+  const [errorText, setErrorText] = useState("");
+  const [subErrorText, setSubErrorText] = useState("");
+  const [errorRetryFunction, setErrorRetryFunction] = useState<() => Promise<void>>(() => Promise.resolve());
+  const [displayErrorPopup, setDisplayErrorPopup] = useState(false);
 
   // step1: create random wallet
   async function handleCreateRandomWallet() {
     try {
+      setDisplayErrorPopup(false);
       const privateKeyBuf = generatePrivate();
       const publicKeyBuf = getPublic(privateKeyBuf);
 
@@ -57,8 +65,12 @@ const ImportFlow = ({
 
       setCurrentStep("fundToken");
       setCompletedSteps([...completedSteps, "start"]);
-    } catch (err) {
+    } catch (err: any) {
       console.error("error while creating random wallet", err);
+      setErrorText("Error while creating random wallet");
+      setSubErrorText(err?.message || "");
+      setErrorRetryFunction(() => handleCreateRandomWallet);
+      setDisplayErrorPopup(true);
       addToast("error", "error while creating random wallet");
     }
   }
@@ -66,6 +78,7 @@ const ImportFlow = ({
   // step2: fund  random wallet on arbitrum
   async function fundAccount() {
     try {
+      setDisplayErrorPopup(false);
       if (randomWallet?.address) {
         setStepLoader(true);
         const baseUrl = calculateBaseUrl(selectedEnv);
@@ -91,9 +104,11 @@ const ImportFlow = ({
         setCurrentStep("import");
         setCompletedSteps([...completedSteps, "fundToken"]);
       }
-    } catch (error) {
-      console.error("error while funding", error);
-      addToast("error", "Funding failed");
+    } catch (error: any) {
+      setErrorText("Error while Funding Wallet");
+      setSubErrorText(error?.message || "");
+      setErrorRetryFunction(() => fundAccount);
+      setDisplayErrorPopup(true);
       // check if user has enough balance and proceed to next step
     } finally {
       setStepLoader(false);
@@ -104,13 +119,18 @@ const ImportFlow = ({
   async function importAccount() {
     if (randomWallet) {
       try {
+        setDisplayErrorPopup(false);
         setStepLoader(true);
         await handleImportAccount(randomWallet);
         setCurrentStep("mintNft");
         setCompletedSteps([...completedSteps, "import"]);
       } catch (err: any) {
+        setErrorText("Error while Importing Account");
+        setSubErrorText(err?.message || "");
+        setErrorRetryFunction(() => importAccount);
+        setDisplayErrorPopup(true);
         console.error("error while importing account", err);
-        addToast("error", `error while importing account ${err?.message}`);
+        // addToast("error", `error while importing account ${err?.message}`);
       } finally {
         setStepLoader(false);
       }
@@ -122,13 +142,18 @@ const ImportFlow = ({
   async function mintNft() {
     if (randomWallet) {
       try {
+        setDisplayErrorPopup(false);
         setStepLoader(true);
         await handleMintNft(randomWallet.address);
         setCompletedSteps([...completedSteps, "mintNft"]);
         setCurrentStep("completed");
       } catch (err: any) {
-        console.error("error while importing account", err);
-        addToast("error", `error while minting nft ${err?.message}`);
+        setErrorText("Error while minting NFT");
+        setSubErrorText(err?.message || "");
+        setErrorRetryFunction(() => mintNft);
+        setDisplayErrorPopup(true);
+        console.error("error while minting NFT", err);
+        // addToast("error", `error while minting nft ${err?.message}`);
       } finally {
         setStepLoader(false);
       }
@@ -158,6 +183,7 @@ const ImportFlow = ({
   };
 
   return (
+    <>
     <div className="w-full flex flex-col gap-y-6 mt-9">
       <div className="flex flex-col items-center gap-y-4">
         <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-white">
@@ -487,6 +513,11 @@ const ImportFlow = ({
         </div>
       </div>
     </div>
+
+    <Modal isOpen={displayErrorPopup} onClose={() => setDisplayErrorPopup(false)}>
+        <ErrorPopup handleTryAgain={() => errorRetryFunction()} subText={subErrorText} text={errorText} />
+      </Modal>
+    </>
   );
 };
 

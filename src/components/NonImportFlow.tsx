@@ -14,6 +14,8 @@ import { NonImportFlowStep, SelectedEnv } from "@/utils/interfaces";
 import { calculateBaseUrl } from "@/utils/utils";
 import { openInNewTab } from "@/utils";
 import { TbExternalLink } from "react-icons/tb";
+import { Modal } from "./ui/Modal";
+import ErrorPopup from "./ErrorPopup";
 
 const NonImportFlow = ({
   address,
@@ -30,11 +32,17 @@ const NonImportFlow = ({
   const [stepLoader, setStepLoader] = useState(false);
   const [completedSteps, setCompletedSteps] = useState<NonImportFlowStep[]>(["start"]);
   const [txHash, setTxHash] = useState<string>("");
+  // error message
+  const [errorText, setErrorText] = useState("");
+  const [subErrorText, setSubErrorText] = useState("");
+  const [errorRetryFunction, setErrorRetryFunction] = useState<() => Promise<void>>(() => Promise.resolve());
+  const [displayErrorPopup, setDisplayErrorPopup] = useState(false);
 
   // step1: fund  random wallet on arbitrum
   async function fundAccount() {
     try {
       if (address) {
+        setDisplayErrorPopup(false);
         setStepLoader(true);
         const baseUrl = calculateBaseUrl(selectedEnv);
         const resp = await axios.post(`${baseUrl}/api/mint`, {
@@ -61,7 +69,10 @@ const NonImportFlow = ({
       }
     } catch (err: any) {
       console.error(`error while funding`, err.message || "");
-      addToast("error", "Funding failed");
+      setErrorText("Error while Funding Wallet");
+      setSubErrorText(err?.message || "");
+      setErrorRetryFunction(() => fundAccount);
+      setDisplayErrorPopup(true);
       throw err;
       // handle error
       // check for user balance on asset needed for minting
@@ -74,13 +85,17 @@ const NonImportFlow = ({
   async function mintNft() {
     if (address) {
       try {
+        setDisplayErrorPopup(false);
         setStepLoader(true);
         await handleMintNft(address);
         setCurrentStep("completed");
         setCompletedSteps([...completedSteps, "mintNft"]);
       } catch (err: any) {
         console.error("error  while minting NFT", err);
-        addToast("error", `error while minting NFT ${err?.message}`);
+        setErrorText("Error while minting NFT");
+        setSubErrorText(err?.message || "");
+        setErrorRetryFunction(() => mintNft);
+        setDisplayErrorPopup(true);
       } finally {
         setStepLoader(false);
       }
@@ -103,6 +118,7 @@ const NonImportFlow = ({
   };
 
   return (
+    <>
     <div className="w-full flex flex-col gap-y-6 mt-9">
       <div className="flex flex-col items-center gap-y-4">
         <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-white">
@@ -230,6 +246,11 @@ const NonImportFlow = ({
         </Card>
       </div>
     </div>
+
+    <Modal isOpen={displayErrorPopup} onClose={() => setDisplayErrorPopup(false)}>
+        <ErrorPopup handleTryAgain={() => errorRetryFunction()} subText={subErrorText} text={errorText} />
+      </Modal>
+    </>
   );
 };
 
