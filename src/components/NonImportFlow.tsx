@@ -12,6 +12,7 @@ import { arbitrumSepolia } from "viem/chains";
 import { waitForTransactionReceipt } from "viem/actions";
 import { NonImportFlowStep, SelectedEnv } from "@/utils/interfaces";
 import { calculateBaseUrl } from "@/utils/utils";
+import { openInNewTab } from "@/utils";
 import { TbExternalLink } from "react-icons/tb";
 
 const NonImportFlow = ({
@@ -27,6 +28,10 @@ const NonImportFlow = ({
   const [currentStep, setCurrentStep] =
     useState<NonImportFlowStep>("fundToken");
   const [stepLoader, setStepLoader] = useState(false);
+  const [completedSteps, setCompletedSteps] = useState<NonImportFlowStep[]>([
+    "start",
+  ]);
+  const [txHash, setTxHash] = useState<string>("");
 
   // step1: fund  random wallet on arbitrum
   async function fundAccount() {
@@ -39,27 +44,29 @@ const NonImportFlow = ({
           toAddress: address,
         });
         const { txHash: hash, message } = resp.data;
-
         const publicClient = createPublicClient({
           chain: arbitrumSepolia,
           transport: http(
             "https://arbitrum-sepolia.infura.io/v3/dee726a2930e4573a743a5c8f79942c1"
           ),
         });
-        addToast(
-          "success",
-          message || "Successfully Funded test wallet with arbitrum token"
-        );
         // hash won't be there for sufficient balance faucet use case
         if (hash) {
+          setTxHash(`https://sepolia.arbiscan.io/tx/${txHash}`);
           await waitForTransactionReceipt(publicClient, {
             hash,
           });
         }
+        setTxHash(`https://sepolia.arbiscan.io/address/${address}`);
+        setCompletedSteps([...completedSteps, "fundToken"]);
         setCurrentStep("mintNft");
+        addToast(
+          "success",
+          message || "Successfully Funded test wallet with arbitrum token"
+        );
       }
-    } catch (err) {
-      console.error(`error while funding`, err);
+    } catch (err: any) {
+      console.error(`error while funding`, err.message || "");
       addToast("error", "Funding failed");
       throw err;
       // handle error
@@ -71,15 +78,21 @@ const NonImportFlow = ({
   }
   // step2: mint nft
   async function mintNft() {
-    try {
-      if (address) {
+    if (address) {
+      try {
         setStepLoader(true);
         await handleMintNft(address);
+        addToast("success", "Successfully imported account");
+      } catch (err: any) {
+        console.error("error  while minting NFT", err);
+        addToast("error", `error while minting NFT ${err?.message}`);
+      } finally {
+        setStepLoader(false);
+        setCurrentStep("completed");
+        setCompletedSteps([...completedSteps, "mintNft"]);
       }
-    } catch (error) {
-      console.error("error while minting", error);
-    } finally {
-      setStepLoader(false);
+    } else {
+      addToast("error", "Wallet not created!");
     }
   }
 
@@ -109,24 +122,23 @@ const NonImportFlow = ({
       </div>
       <div className="mt-10 w-full flex items-center flex-col sm:flex-row sm:items-stretch justify-center">
         <Card
-          cardClasses={`gap-y-3 p-6 !bg-[#030226] !flex !flex-col !justify-between`}
-          active
+          cardClasses={`gap-y-3 p-6 !bg-[#030226] !flex !flex-col`}
+          active={currentStep === "fundToken"}
           rootClasses="!w-full sm:!w-max"
         >
           <p className="text-26 font-normal flex items-center justify-between w-full">
             01
-            {/* TODO: have to check the complete status */}
-            {false ? (
+            {completedSteps.includes("fundToken") ? (
               <Image
                 src="/icons/badge-check.svg"
-                alt="completed"
-                height={50}
-                width={50}
+                alt="arrow"
+                height={30}
+                width={30}
               />
             ) : (
               <Image
-                src={`/icons/arbitrum.svg`}
-                alt="arbitrum"
+                src="/icons/arbitrum.svg"
+                alt="arrow"
                 height={30}
                 width={30}
               />
@@ -139,23 +151,25 @@ const NonImportFlow = ({
             Load your Web3Pay Account with Arbitrum Test Tokens to test—our
             treat!
           </p>
-          <GradientButton
-            title="Get Test Tokens"
-            handleClick={() => handleStep("fundToken")}
-            loading={stepLoader}
-            btnClass="max-sm:!w-full"
-          />
-          {/* TODO: once completed we have to show the result */}
-          {false && (
+          {currentStep === "fundToken" && (
+            <GradientButton
+              title="Get Test Tokens"
+              handleClick={() => handleStep("fundToken")}
+              loading={stepLoader}
+              btnClass="max-sm:!w-full"
+            />
+          )}
+          {completedSteps.includes("fundToken") && (
             <div
-              className={`flex items-center w-full bg-transparent rounded-full border border-gray-200 justify-center gap-x-2 py-2 opacity-45`}
+              onClick={() => openInNewTab(txHash)}
+              className="flex items-center w-full bg-transparent rounded-full border border-gray-200 justify-center gap-x-2 py-2 opacity-45"
             >
               <Image
-                src={`/icons/arbitrum.svg`}
-                alt="arbitrum"
+                src="/icons/arbitrum.svg"
+                alt="arrow"
                 height={20}
                 width={20}
-              />
+              />{" "}
               <p className="text-base font-medium text-white">
                 Received 0.0001 ETH
               </p>
@@ -177,24 +191,23 @@ const NonImportFlow = ({
           className="hidden sm:block"
         />
         <Card
-          cardClasses={`gap-y-3 p-6 !bg-[#030226] !flex !flex-col !justify-between`}
-          active
+          cardClasses={`gap-y-3 p-6 !bg-[#030226] !flex !flex-col`}
+          active={currentStep === "mintNft"}
           rootClasses="!w-full sm:!w-max"
         >
           <p className="text-26 font-normal flex items-center justify-between w-full">
             02
-            {/* TODO: have to check the complete status */}
-            {false ? (
+            {completedSteps.includes("mintNft") ? (
               <Image
                 src="/icons/badge-check.svg"
-                alt="completed"
-                height={50}
-                width={50}
+                alt="arrow"
+                height={30}
+                width={30}
               />
             ) : (
               <Image
-                src={`/icons/polygon.svg`}
-                alt="polygon"
+                src="/icons/polygon.svg"
+                alt="arrow"
                 height={30}
                 width={30}
               />
@@ -207,16 +220,15 @@ const NonImportFlow = ({
             Use your Arbitrum Test Tokens to mint an NFT on Polygon, no bridges
             required.
           </p>
-          <GradientButton
-            title="Mint NFT"
-            handleClick={() => handleStep("mintNft")}
-            btnClass="max-sm:!w-full"
-          />
-          {/* TODO: once completed we have to show the result */}
-          {false && (
-            <div
-              className={`flex items-center w-full bg-transparent rounded-full border border-gray-200 justify-center gap-x-2 py-2`}
-            >
+          {currentStep === "mintNft" && (
+            <GradientButton
+              title="Mint NFT"
+              handleClick={() => handleStep("mintNft")}
+              loading={stepLoader}
+            />
+          )}
+          {completedSteps.includes("mintNft") && (
+            <div className="flex items-center w-full bg-transparent rounded-full border border-gray-200 justify-center gap-x-2 py-2">
               <p className="text-base font-medium text-white">
                 NFT successfully minted
               </p>

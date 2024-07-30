@@ -16,6 +16,7 @@ import { arbitrumSepolia } from "viem/chains";
 import { TbExternalLink } from "react-icons/tb";
 import { useToast } from "@/context/ToastContext";
 import { calculateBaseUrl } from "@/utils/utils";
+import { sliceAddress, openInNewTab } from "@/utils";
 
 const ImportFlow = ({
   selectedEnv,
@@ -30,6 +31,7 @@ const ImportFlow = ({
 
   const [randomWallet, setRandomWallet] = useState<IRandomWallet>();
   const [currentStep, setCurrentStep] = useState<ImportFlowStep>("start");
+  const [txHash, setTxHash] = useState<string>("");
   const [completedSteps, setCompletedSteps] = useState<ImportFlowStep[]>([]);
   const [stepLoader, setStepLoader] = useState(false);
 
@@ -55,6 +57,7 @@ const ImportFlow = ({
       addToast("success", "Successfully created test wallet on arbitrum chain");
 
       setCurrentStep("fundToken");
+      setCompletedSteps([...completedSteps, "start"]);
     } catch (err) {
       console.error("error while creating random wallet", err);
       addToast("error", "error while creating random wallet");
@@ -73,18 +76,21 @@ const ImportFlow = ({
           toAddress: randomWallet.address,
         });
         const { txHash: hash, message } = resp.data;
-
+        setTxHash(hash);
         const publicClient = createPublicClient({
           chain: arbitrumSepolia,
           transport: http(
             "https://arbitrum-sepolia.infura.io/v3/dee726a2930e4573a743a5c8f79942c1"
           ),
         });
-        await waitForTransactionReceipt(publicClient, {
-          hash,
-        });
+        if (hash) {
+          await waitForTransactionReceipt(publicClient, {
+            hash,
+          });
+        }
         // handle already funded wallet to avoid multiple funding also time limit in faucet contract
         setCurrentStep("import");
+        setCompletedSteps([...completedSteps, "fundToken"]);
         addToast(
           "success",
           message || "Successfully Funded test wallet with arbitrum token"
@@ -102,14 +108,39 @@ const ImportFlow = ({
   // step3: import account
   async function importAccount() {
     if (randomWallet) {
-      await handleImportAccount(randomWallet);
-      setCurrentStep("mintNft");
+      try {
+        setStepLoader(true);
+        await handleImportAccount(randomWallet);
+        addToast("success", "Successfully imported account");
+        setCurrentStep("mintNft");
+        setCompletedSteps([...completedSteps, "import"]);
+      } catch (err: any) {
+        console.error("error while importing account", err);
+        addToast("error", `error while importing account ${err?.message}`);
+      } finally {
+        setStepLoader(false);
+      }
+    } else {
+      addToast("error", "Wallet not created!");
     }
   }
   // step4: mint nft
   async function mintNft() {
     if (randomWallet) {
-      await handleMintNft(randomWallet.address);
+      try {
+        setStepLoader(true);
+        await handleMintNft(randomWallet.address);
+        addToast("success", "Successfully Minted NFT!");
+      } catch (err: any) {
+        console.error("error while importing account", err);
+        addToast("error", `error while minting nft ${err?.message}`);
+      } finally {
+        setStepLoader(false);
+        setCompletedSteps([...completedSteps, "mintNft"]);
+        setCurrentStep("completed");
+      }
+    } else {
+      addToast("error", "Wallet not created!");
     }
   }
 
@@ -117,20 +148,16 @@ const ImportFlow = ({
     switch (step) {
       case "create": {
         await handleCreateRandomWallet();
-        setCompletedSteps([...completedSteps, "start"]);
         break;
       }
       case "fundToken":
         await fundAccount();
-        setCompletedSteps([...completedSteps, "fundToken"]);
         break;
       case "import":
         await importAccount();
-        setCompletedSteps([...completedSteps, "import"]);
         break;
       case "mintNft":
         await mintNft();
-        setCompletedSteps([...completedSteps, "mintNft"]);
         break;
       default:
         break;

@@ -12,3 +12,8 @@ export const getInitials = (name: string) => {
   const nameArr = name.split(" ");
   return `${nameArr[0].charAt(0)}${nameArr[1] ? nameArr[1].charAt(0) : ""}`;
 };
+
+export const openInNewTab = (url: string) => {
+  const newWindow = window.open(url, "_blank", "noopener,noreferrer");
+  if (newWindow) newWindow.opener = null;
+};
