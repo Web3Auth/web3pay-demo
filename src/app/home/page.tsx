@@ -55,7 +55,7 @@ export default function Home() {
         method: "eth_sendTransaction",
         params: {
           from: address,
-          to: "0xa1a97236e4200949bA4CefAA5bdDe070cc92D619",
+          to: "0xFD8e3E880a098F2aCC1F855974e4Ce03Ef4B147F",
           data,
           value: "0",
         },
