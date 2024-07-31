@@ -32,7 +32,7 @@ const ImportFlow = ({
   const [randomWallet, setRandomWallet] = useState<IRandomWallet>();
   const [currentStep, setCurrentStep] = useState<ImportFlowStep>("start");
   const [txHash, setTxHash] = useState<string>("");
-  const [nftUserOpHash, setNftUserOpHash] = useState<string>("");
+  const [nftContractLink, setNftContractLink] = useState<string>("");
 
   const [completedSteps, setCompletedSteps] = useState<ImportFlowStep[]>([]);
   const [stepLoader, setStepLoader] = useState(false);
@@ -148,8 +148,8 @@ const ImportFlow = ({
       try {
         setDisplayErrorPopup(false);
         setStepLoader(true);
-        const userOpHash = await handleMintNft(randomWallet.address);
-        setNftUserOpHash(userOpHash);
+        const nftLink = await handleMintNft(randomWallet.address);
+        setNftContractLink(nftLink);
         setCompletedSteps([...completedSteps, "mintNft"]);
         setCurrentStep("completed");
       } catch (err: any) {
@@ -333,7 +333,7 @@ const ImportFlow = ({
             logo="polygon"
             resultOpacity
             resultText="NFT successfully minted"
-            handleCompletedLink = {() => openInNewTab(`https://jiffyscan.xyz/userOpHash/${nftUserOpHash}`)}
+            handleCompletedLink = {() => openInNewTab(`${nftContractLink}`)}
             resultCustomIcon={<TbExternalLink className="text-white text-xl" />}
             handleClick={() => handleStep("mintNft")}
             btnText="Mint"
