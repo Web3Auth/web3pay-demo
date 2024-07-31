@@ -32,7 +32,7 @@ export default function Home() {
   const [errorRetryFunction, setErrorRetryFunction] = useState<
     () => Promise<void>
   >(() => Promise.resolve());
-  const [displayErrorPopup, setDisplayErrorPopup] = useState(true);
+  const [displayErrorPopup, setDisplayErrorPopup] = useState(false);
 
   useEffect(() => {
     const getWalletURL = () => {
@@ -69,7 +69,7 @@ export default function Home() {
         })) as string[];
         if (account?.length) {
           setAddress(account[0]);
-          // router.push("/home");
+          router.push("/home");
         }
       } catch (err) {
         console.log(err);
