@@ -55,7 +55,7 @@ export default function Home() {
         method: "eth_sendTransaction",
         params: {
           from: address,
-          to: "0xa1a97236e4200949bA4CefAA5bdDe070cc92D619",
+          to: "0xd774B6e1880dC36A3E9787Ea514CBFC275d2ba61",
           data,
           value: "0",
         },
@@ -63,6 +63,7 @@ export default function Home() {
   
       console.log("mint nft resp", resp);
       setNftSuccess(true);
+      return resp;
     } catch (e: unknown) {
       console.error("error minting nft", e);
       throw e;
