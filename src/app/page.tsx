@@ -1,21 +1,111 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import Navbar from "@/components/ui/Navbar";
 import Image from "next/image";
 import Button from "@/components/ui/Button";
 import { HiOutlineArrowSmRight } from "react-icons/hi";
 import Card from "@/components/ui/Card";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { WalletProvider } from "@web3auth/global-accounts-sdk";
+import { calculateBaseUrl } from "@/utils/utils";
+import { SelectedEnv } from "@/utils/interfaces";
+import { useWallet } from "@/context/walletContext";
+import { Modal } from "@/components/ui/Modal";
+import ErrorPopup from "@/components/ErrorPopup";
 
 export default function Home() {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const {
+    setAddress,
+    walletProvider,
+    setLoggedIn,
+    setWalletProvider,
+    loggedIn,
+  } = useWallet();
+  const [chainId, setChainId] = useState(80002);
+  const [selectedEnv, setSelectedEnv] = useState<SelectedEnv>("local");
+  // error message
+  const [errorText, setErrorText] = useState("");
+  const [subErrorText, setSubErrorText] = useState("");
+  const [errorRetryFunction, setErrorRetryFunction] = useState<
+    () => Promise<void>
+  >(() => Promise.resolve());
+  const [displayErrorPopup, setDisplayErrorPopup] = useState(false);
 
-const router = useRouter();
+  useEffect(() => {
+    const getWalletURL = () => {
+      return `${calculateBaseUrl(selectedEnv)}/connect`;
+    };
+
+    // initiate sdk
+    const initWalletProvider = async () => {
+      setIsLoading(true);
+      setWalletProvider(
+        new WalletProvider({
+          metadata: {
+            appChainIds: [chainId],
+            appName: "Demo App",
+            appLogoUrl: "https://web3auth.io/images/web3authlog.png",
+          },
+          preference: {
+            keysUrl: getWalletURL(),
+          },
+        })
+      );
+      setIsLoading(false);
+      setLoggedIn(walletProvider?.connected || false);
+    };
+    initWalletProvider();
+
+    // check if user is already logged in
+    const getAddress = async () => {
+      try {
+        setLoggedIn(walletProvider?.connected || loggedIn);
+        const account = (await walletProvider?.request({
+          method: "eth_accounts",
+          params: [],
+        })) as string[];
+        if (account?.length) {
+          setAddress(account[0]);
+          router.push("/home");
+        }
+      } catch (err) {
+        console.log(err);
+        setAddress("");
+      }
+    };
+    getAddress();
+  }, [walletProvider?.connected, selectedEnv]);
+
+  async function loginOrRegister() {
+    setIsLoading(true);
+    setDisplayErrorPopup(false);
+    try {
+      const response = await walletProvider?.request({
+        method: "eth_requestAccounts",
+        params: [],
+      });
+      const loggedInAddress = (response as string[])[0];
+      setAddress(loggedInAddress);
+      setLoggedIn(walletProvider?.connected || false);
+      // addLog(`Success full login: ${response}`);
+    } catch (err: any) {
+      console.log(`Error during login: ${JSON.stringify(err)}`);
+      setErrorText("Error while creating global pay account");
+      setSubErrorText(err?.message || "");
+      setErrorRetryFunction(() => loginOrRegister);
+      setDisplayErrorPopup(true);
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   return (
     <main className="flex flex-col">
       <section className="lg:h-dvh bg-blend-lighten lg:bg-home bg-no-repeat bg-auto bg-scroll bg-[100%] flex-grow px-6 py-10 md:p-9 md:pb-20 flex flex-col gap-y-10 md:gap-y-20">
-        <Navbar showButton={false} />
         <div className="flex flex-col text-left gap-y-6 lg:pl-16 mt-2.5">
           <div className="text-left text-3xl sm:banner-heading-text flex flex-col gap-y-1">
             <p>Abstract everything, </p>
@@ -23,12 +113,11 @@ const router = useRouter();
             <div className="flex flex-col items-start gap-y-6">
               <p className="gradient-text">with Web3Pay</p>
               <Button
-                handleClick={() => {
-                  return router.push("/home");
-                }}
+                handleClick={loginOrRegister}
                 title="Create Testnet Web3Pay Account"
                 icon={<HiOutlineArrowSmRight className="text-white text-xl" />}
                 otherClasses="tracking-normal"
+                loading={isLoading}
               />
             </div>
           </div>
@@ -179,6 +268,16 @@ const router = useRouter();
           />
         </footer>
       </section>
+      <Modal
+        isOpen={displayErrorPopup}
+        onClose={() => setDisplayErrorPopup(false)}
+      >
+        <ErrorPopup
+          handleTryAgain={() => errorRetryFunction()}
+          subText={subErrorText}
+          text={errorText}
+        />
+      </Modal>
     </main>
   );
 }
