@@ -23,7 +23,7 @@ const NonImportFlow = ({
 }: {
   address: string;
   selectedEnv: SelectedEnv;
-  handleMintNft: (address: string) => Promise<void>;
+  handleMintNft: (address: string) => Promise<string>;
 }) => {
   const [currentStep, setCurrentStep] =
     useState<NonImportFlowStep>("fundToken");
@@ -32,6 +32,7 @@ const NonImportFlow = ({
     "start",
   ]);
   const [txHash, setTxHash] = useState<string>("");
+  const [nftUserOpHash, setNftUserOpHash] = useState<string>("");
   // error message
   const [errorText, setErrorText] = useState("");
   const [subErrorText, setSubErrorText] = useState("");
@@ -87,7 +88,8 @@ const NonImportFlow = ({
       try {
         setDisplayErrorPopup(false);
         setStepLoader(true);
-        await handleMintNft(address);
+        const userOpHash = await handleMintNft(address);
+        setNftUserOpHash(userOpHash);
         setCurrentStep("completed");
         setCompletedSteps([...completedSteps, "mintNft"]);
       } catch (err: any) {
@@ -235,7 +237,9 @@ const NonImportFlow = ({
             />
           )}
           {completedSteps.includes("mintNft") && (
-            <div className="flex items-center w-full bg-transparent rounded-full border border-gray-200 justify-center gap-x-2 py-2">
+            <div className="flex items-center w-full bg-transparent rounded-full border border-gray-200 justify-center gap-x-2 py-2" onClick={() => {
+              openInNewTab(`https://jiffyscan.xyz/userOpHash/${nftUserOpHash}`)
+            }}>
               <p className="text-base font-medium text-white">
                 NFT successfully minted
               </p>
