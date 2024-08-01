@@ -4,6 +4,7 @@ import Button from "./Button";
 import { copyToClipBoard, sliceAddress } from "@/utils";
 import { TbCopy, TbCircleCheck, TbLogout } from "react-icons/tb";
 import Link from "next/link";
+import { useWallet } from "@/context/walletContext";
 
 const Navbar = ({
   address,
@@ -17,6 +18,12 @@ const Navbar = ({
   const [copied, setCopied] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
 
+  const {
+    setAddress,
+    setLoggedIn,
+    setWalletProvider,
+  } = useWallet();
+
   const handleCopy = () => {
     setCopied(true);
     copyToClipBoard(address || "");
@@ -28,6 +35,10 @@ const Navbar = ({
 
   const handleLogout = () => {
     setShowMenu(false);
+    setAddress("");
+    setWalletProvider(null);
+    localStorage.clear();
+    setLoggedIn(false);
   };
 
   const dropdownRef = useRef<HTMLDivElement>(null);
