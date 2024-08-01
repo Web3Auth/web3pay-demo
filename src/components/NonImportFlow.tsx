@@ -6,7 +6,7 @@ import Card from "./ui/Card";
 import Image from "next/image";
 import axios from "axios";
 import GradientButton from "./ui/GradientButton";
-import { createPublicClient, http } from "viem";
+import { createPublicClient, erc20Abi, getContract, Hex, http, parseEther } from "viem";
 import { arbitrumSepolia } from "viem/chains";
 import { waitForTransactionReceipt } from "viem/actions";
 import { NonImportFlowStep, SelectedEnv } from "@/utils/interfaces";
@@ -45,18 +45,40 @@ const NonImportFlow = ({
       if (address) {
         setDisplayErrorPopup(false);
         setStepLoader(true);
-        const baseUrl = calculateBaseUrl(selectedEnv);
-        const resp = await axios.post(`${baseUrl}/api/mint`, {
-          chainId: "421614",
-          toAddress: address,
-        });
-        const { txHash: hash, message } = resp.data;
+        // check if user already has balance
         const publicClient = createPublicClient({
           chain: arbitrumSepolia,
           transport: http(
             "https://arbitrum-sepolia.infura.io/v3/dee726a2930e4573a743a5c8f79942c1"
           ),
         });
+        const contract = getContract({
+          abi: erc20Abi,
+          address: "0xe12349b2E35F6053Ed079E281427fc1F25b3C087",
+          client: publicClient,
+        });
+      
+        // eth balance
+        const [balance, tokenBalance] = await Promise.all([
+          publicClient.getBalance({
+            address: address as Hex,
+          }), 
+          contract.read.balanceOf([address as Hex])
+        ]);
+
+       
+        if (balance >= parseEther("0.0001") && tokenBalance >= 30*(10**6)) {
+          setCompletedSteps([...completedSteps, "fundToken"]);
+          setCurrentStep("mintNft");
+          return
+        }
+        const baseUrl = calculateBaseUrl(selectedEnv);
+        const resp = await axios.post(`${baseUrl}/api/mint`, {
+          chainId: "421614",
+          toAddress: address,
+        });
+        const { txHash: hash, message } = resp.data;
+      
         // hash won't be there for sufficient balance faucet use case
         if (hash) {
           setTxHash(`https://sepolia.arbiscan.io/tx/${txHash}`);
