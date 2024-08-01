@@ -29,6 +29,7 @@ const config: Config = {
         },
         darkCard: "rgba(0, 0, 0, 0.50)",
         modal: "rgba(118, 118, 118, 0.30)",
+        navDropdown: "#1a2043",
       },
       backgroundImage: {
         login: "url('/images/demo-login-bg.svg')",
