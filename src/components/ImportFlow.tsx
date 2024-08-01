@@ -25,13 +25,15 @@ const ImportFlow = ({
   handleImportAccount,
 }: {
   selectedEnv: SelectedEnv;
-  handleMintNft: (address: string) => Promise<void>;
+  handleMintNft: (address: string) => Promise<string>;
   handleImportAccount: (randWallet: IRandomWallet) => Promise<void>;
 }) => {
 
   const [randomWallet, setRandomWallet] = useState<IRandomWallet>();
   const [currentStep, setCurrentStep] = useState<ImportFlowStep>("start");
   const [txHash, setTxHash] = useState<string>("");
+  const [nftContractLink, setNftContractLink] = useState<string>("");
+
   const [completedSteps, setCompletedSteps] = useState<ImportFlowStep[]>([]);
   const [stepLoader, setStepLoader] = useState(false);
   // error message
@@ -146,7 +148,8 @@ const ImportFlow = ({
       try {
         setDisplayErrorPopup(false);
         setStepLoader(true);
-        await handleMintNft(randomWallet.address);
+        const nftLink = await handleMintNft(randomWallet.address);
+        setNftContractLink(nftLink);
         setCompletedSteps([...completedSteps, "mintNft"]);
         setCurrentStep("completed");
       } catch (err: any) {
@@ -217,11 +220,12 @@ const ImportFlow = ({
             isCurrent={currentStep === "start"}
             logo="arbitrum"
             resultOpacity
-            resultText="0x12345...12345"
+            resultText={sliceAddress(randomWallet?.address || "")}
             resultLogo="arbitrum"
             handleClick={() => handleStep("create")}
             btnText="Create"
             loading={stepLoader}
+            handleCompletedLink = {() => openInNewTab(`https://sepolia.arbiscan.io/address/${randomWallet?.address}`)}
           />
           {/* Divider */}
           <Image
@@ -248,9 +252,10 @@ const ImportFlow = ({
             isCurrent={currentStep === "fundToken"}
             logo="arbitrum"
             resultOpacity
-            resultText="Received 0.0001 ETH"
+            resultText="Received 50 W3PTEST tokens"
             resultLogo="arbitrum"
             handleClick={() => handleStep("fundToken")}
+            handleCompletedLink = {() => openInNewTab(`https://sepolia.arbiscan.io/tx/${txHash}`)}
             btnText="Fund"
             loading={stepLoader}
           />
@@ -328,6 +333,7 @@ const ImportFlow = ({
             logo="polygon"
             resultOpacity
             resultText="NFT successfully minted"
+            handleCompletedLink = {() => openInNewTab(`${nftContractLink}`)}
             resultCustomIcon={<TbExternalLink className="text-white text-xl" />}
             handleClick={() => handleStep("mintNft")}
             btnText="Mint"
@@ -352,6 +358,7 @@ const ImportFlowCard = ({
   title,
   description,
   handleClick,
+  handleCompletedLink,
   resultOpacity,
   logo,
   resultText,
@@ -366,6 +373,7 @@ const ImportFlowCard = ({
   title: string;
   description: string;
   handleClick: () => void;
+  handleCompletedLink?: () => void;
   resultOpacity: boolean;
   logo: string;
   resultText: string;
@@ -417,6 +425,7 @@ const ImportFlowCard = ({
           className={`flex items-center w-full bg-transparent rounded-full border border-gray-200 justify-center gap-x-2 py-2 ${
             resultOpacity ? "opacity-45" : ""
           }`}
+          onClick={handleCompletedLink}
         >
           {resultLogo && (
             <Image

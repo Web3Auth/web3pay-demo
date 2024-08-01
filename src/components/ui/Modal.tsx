@@ -2,9 +2,10 @@ import React, { useEffect } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/utils/utils";
+import { HiOutlineX } from "react-icons/hi";
 
 const modalVariants = cva(
-  `absolute bg-modal text-black rounded-[30px] p-6 w-[90%] sm:w-[430px]`,
+  `absolute bg-[#111928] text-black rounded-[30px] p-6 w-[90%] sm:w-[430px]`,
   {
     variants: {
       position: {
@@ -38,7 +39,7 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
       position,
       onClose,
       children,
-      clearIcon = false,
+      clearIcon = true,
       ...props
     },
     ref
@@ -74,7 +75,7 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
     return (
       <div
         className={cn(
-          `fixed w-full inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 ${
+          `fixed w-full inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30 transition-opacity duration-300 ${
             isOpen ? "opacity-100 animate-fadeIn" : "opacity-0 animate-fadeOut"
           }`
         )}
@@ -95,9 +96,10 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
           {clearIcon && (
             <button
               onClick={onClose}
-              className="hover:bg-app-gray-100 dark:hover:bg-app-gray-600 text-black dark:text-white absolute top-2 right-4 h-4 w-4 items-center text-xs rounded-full"
+              className="hover:bg-app-gray-100 dark:hover:bg-app-gray-600 text-black dark:text-white 
+              absolute top-4 right-6 h-6 w-6 hover:bg-darkCard flex items-center justify-center text-xs rounded-full"
             >
-              x
+              <HiOutlineX className="h-5 w-5" />
             </button>
           )}
         </div>

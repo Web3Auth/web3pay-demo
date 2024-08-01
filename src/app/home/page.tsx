@@ -11,9 +11,7 @@ import Navbar from "@/components/ui/Navbar";
 import { erc721Abi } from "@/utils/abis/erc721";
 import { IRandomWallet, SelectedEnv } from "@/utils/interfaces";
 import { OpenloginSessionManager } from "@toruslabs/session-manager";
-import { WalletProvider } from "@web3auth/global-accounts-sdk";
 import { useEffect, useState } from "react";
-import { HiOutlineArrowSmRight } from "react-icons/hi";
 import { encodeFunctionData } from "viem";
 import { calculateBaseUrl } from "@/utils/utils";
 import MintSuccess from "@/components/MintSuccess";
@@ -55,7 +53,7 @@ export default function Home() {
         method: "eth_sendTransaction",
         params: {
           from: address,
-          to: "0xFD8e3E880a098F2aCC1F855974e4Ce03Ef4B147F",
+          to: "0xd774B6e1880dC36A3E9787Ea514CBFC275d2ba61",
           data,
           value: "0",
         },
@@ -63,6 +61,7 @@ export default function Home() {
   
       console.log("mint nft resp", resp);
       setNftSuccess(true);
+      return `${calculateBaseUrl(selectedEnv)}/wallet/nft/0xd774B6e1880dC36A3E9787Ea514CBFC275d2ba61`;
     } catch (e: unknown) {
       console.error("error minting nft", e);
       throw e;
