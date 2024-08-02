@@ -1,0 +1,34 @@
+on: push
+
+permissions:
+  id-token: write
+  contents: read
+
+name: ci check
+
+jobs:
+  test:
+    name: run tests
+    strategy:
+      matrix:
+        node: ["18.x"]
+        os: [ubuntu-latest]
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "pnpm"
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Install dependencies
+        run: pnpm lint
+
+      - name: Build
+        run: pnpm build

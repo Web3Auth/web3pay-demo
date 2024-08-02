@@ -5,7 +5,7 @@ const NFTSuccess = () => {
   return (
     <div className="w-full flex flex-col gap-y-4 items-center justify-center">
       <Image
-        src="/images/nft-success.svg"
+        src="/images/erc721.png"
         alt="success"
         width={300}
         height={200}
