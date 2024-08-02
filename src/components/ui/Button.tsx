@@ -1,25 +1,29 @@
-import React from "react";
+import React, { ButtonHTMLAttributes } from "react";
 import Loader from "./Loader";
 
-const Button = ({
-  title,
-  icon,
-  position = "right",
-  handleClick,
-  otherClasses,
-  loading,
-}: {
+interface IButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   title: string;
   icon?: React.ReactNode;
   position?: "left" | "right";
   handleClick?: () => void;
   otherClasses?: string;
   loading?: boolean;
+}
+
+const Button: React.FC<IButtonProps> = ({
+  title,
+  icon,
+  position = "right",
+  handleClick,
+  otherClasses,
+  loading,
+  ...props
 }) => {
   return (
     <button
       className="relative inline-flex h-12 w-max overflow-hidden rounded-full p-[1px] focus:outline-none"
       onClick={handleClick}
+      {...props}
     >
       <span className="animate-[spin_2s_linear_infinite] gradient-border rounded-full" />
       <span
