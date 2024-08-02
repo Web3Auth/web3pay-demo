@@ -72,15 +72,6 @@ body {
   }
 }
 
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
 .content {
   overflow: hidden;
   line-height: 64px;
@@ -118,6 +109,57 @@ body {
   margin: 0;
 }
 
+.loaderText {
+  background: 50% 100%/50% 50% no-repeat radial-gradient(ellipse at bottom);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-size: 10vw;
+  -webkit-animation: reveal 3000ms ease-in-out forwards 200ms,
+    glow 2500ms linear infinite 2000ms;
+  animation: reveal 3000ms ease-in-out forwards 200ms,
+    glow 2500ms linear infinite 2000ms;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes reveal {
+  80% {
+    letter-spacing: 8px;
+  }
+  100% {
+    background-size: 300% 300%;
+  }
+}
+
+@keyframes reveal {
+  80% {
+    letter-spacing: 8px;
+  }
+  100% {
+    background-size: 300% 300%;
+  }
+}
+
+@-webkit-keyframes glow {
+  40% {
+    text-shadow: 0 0 8px #fff;
+  }
+}
+
+@keyframes glow {
+  40% {
+    text-shadow: 0 0 8px #fff;
+  }
+}
+
 @-webkit-keyframes opacity {
   0%,
   100% {
@@ -127,6 +169,7 @@ body {
     opacity: 1;
   }
 }
+
 @-webkit-keyframes change {
   0%,
   12.66%,
@@ -154,6 +197,7 @@ body {
     transform: translate3d(0, -25%, 0);
   }
 }
+
 @keyframes opacity {
   0%,
   100% {
@@ -163,6 +207,7 @@ body {
     opacity: 1;
   }
 }
+
 @keyframes change {
   0%,
   12.66%,
