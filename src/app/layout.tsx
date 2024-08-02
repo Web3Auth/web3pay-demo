@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import "./globals.css";
-import { ToastProvider } from "@/context/ToastContext";
+import { WalletProviderContext } from "@/context/walletContext";
 
 const inter = DM_Sans({ subsets: ["latin", "latin-ext"] });
 
@@ -27,7 +27,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} relative`}>
-        <ToastProvider>{children}</ToastProvider>
+        <WalletProviderContext >
+          {children}
+        </WalletProviderContext>
       </body>
     </html>
   );

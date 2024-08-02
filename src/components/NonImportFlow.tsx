@@ -6,14 +6,15 @@ import Card from "./ui/Card";
 import Image from "next/image";
 import axios from "axios";
 import GradientButton from "./ui/GradientButton";
-import { useToast } from "@/context/ToastContext";
-import { createPublicClient, http } from "viem";
+import { createPublicClient, erc20Abi, getContract, Hex, http, parseEther } from "viem";
 import { arbitrumSepolia } from "viem/chains";
 import { waitForTransactionReceipt } from "viem/actions";
 import { NonImportFlowStep, SelectedEnv } from "@/utils/interfaces";
 import { calculateBaseUrl } from "@/utils/utils";
 import { openInNewTab } from "@/utils";
 import { TbExternalLink } from "react-icons/tb";
+import { Modal } from "./ui/Modal";
+import ErrorPopup from "./ErrorPopup";
 
 const NonImportFlow = ({
   address,
@@ -22,9 +23,8 @@ const NonImportFlow = ({
 }: {
   address: string;
   selectedEnv: SelectedEnv;
-  handleMintNft: (address: string) => Promise<void>;
+  handleMintNft: (address: string) => Promise<string>;
 }) => {
-  const { addToast } = useToast();
   const [currentStep, setCurrentStep] =
     useState<NonImportFlowStep>("fundToken");
   const [stepLoader, setStepLoader] = useState(false);
@@ -32,24 +32,53 @@ const NonImportFlow = ({
     "start",
   ]);
   const [txHash, setTxHash] = useState<string>("");
+  const [nftContractLink, setNftContractLink] = useState<string>("");
+  // error message
+  const [errorText, setErrorText] = useState("");
+  const [subErrorText, setSubErrorText] = useState("");
+  const [errorRetryFunction, setErrorRetryFunction] = useState<() => Promise<void>>(() => Promise.resolve());
+  const [displayErrorPopup, setDisplayErrorPopup] = useState(false);
 
   // step1: fund  random wallet on arbitrum
   async function fundAccount() {
     try {
       if (address) {
+        setDisplayErrorPopup(false);
         setStepLoader(true);
-        const baseUrl = calculateBaseUrl(selectedEnv);
-        const resp = await axios.post(`${baseUrl}/api/mint`, {
-          chainId: "421614",
-          toAddress: address,
-        });
-        const { txHash: hash, message } = resp.data;
+        // check if user already has balance
         const publicClient = createPublicClient({
           chain: arbitrumSepolia,
           transport: http(
             "https://arbitrum-sepolia.infura.io/v3/dee726a2930e4573a743a5c8f79942c1"
           ),
         });
+        const contract = getContract({
+          abi: erc20Abi,
+          address: "0xe12349b2E35F6053Ed079E281427fc1F25b3C087",
+          client: publicClient,
+        });
+      
+        // eth balance
+        const [balance, tokenBalance] = await Promise.all([
+          publicClient.getBalance({
+            address: address as Hex,
+          }), 
+          contract.read.balanceOf([address as Hex])
+        ]);
+
+       
+        if (balance >= parseEther("0.0001") && tokenBalance >= 30*(10**6)) {
+          setCompletedSteps([...completedSteps, "fundToken"]);
+          setCurrentStep("mintNft");
+          return
+        }
+        const baseUrl = calculateBaseUrl(selectedEnv);
+        const resp = await axios.post(`${baseUrl}/api/mint`, {
+          chainId: "421614",
+          toAddress: address,
+        });
+        const { txHash: hash, message } = resp.data;
+      
         // hash won't be there for sufficient balance faucet use case
         if (hash) {
           setTxHash(`https://sepolia.arbiscan.io/tx/${txHash}`);
@@ -60,14 +89,13 @@ const NonImportFlow = ({
         setTxHash(`https://sepolia.arbiscan.io/address/${address}`);
         setCompletedSteps([...completedSteps, "fundToken"]);
         setCurrentStep("mintNft");
-        addToast(
-          "success",
-          message || "Successfully Funded test wallet with arbitrum token"
-        );
       }
     } catch (err: any) {
       console.error(`error while funding`, err.message || "");
-      addToast("error", "Funding failed");
+      setErrorText("Error while Funding Wallet");
+      setSubErrorText(err?.message || "");
+      setErrorRetryFunction(() => fundAccount);
+      setDisplayErrorPopup(true);
       throw err;
       // handle error
       // check for user balance on asset needed for minting
@@ -80,19 +108,22 @@ const NonImportFlow = ({
   async function mintNft() {
     if (address) {
       try {
+        setDisplayErrorPopup(false);
         setStepLoader(true);
-        await handleMintNft(address);
-        addToast("success", "Successfully imported account");
-      } catch (err: any) {
-        console.error("error  while minting NFT", err);
-        addToast("error", `error while minting NFT ${err?.message}`);
-      } finally {
-        setStepLoader(false);
+        const nftLink = await handleMintNft(address);
+        setNftContractLink(nftLink);
         setCurrentStep("completed");
         setCompletedSteps([...completedSteps, "mintNft"]);
+      } catch (err: any) {
+        console.error("error  while minting NFT", err);
+        setErrorText("Error while minting NFT");
+        setSubErrorText(err?.message || "");
+        setErrorRetryFunction(() => mintNft);
+        setDisplayErrorPopup(true);
+      } finally {
+        setStepLoader(false);
       }
     } else {
-      addToast("error", "Wallet not created!");
     }
   }
 
@@ -110,6 +141,7 @@ const NonImportFlow = ({
   };
 
   return (
+    <>
     <div className="w-full flex flex-col gap-y-6 mt-9">
       <div className="flex flex-col items-center gap-y-4">
         <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-white">
@@ -160,21 +192,20 @@ const NonImportFlow = ({
             />
           )}
           {completedSteps.includes("fundToken") && (
-            <div
-              onClick={() => openInNewTab(txHash)}
-              className="flex items-center w-full bg-transparent rounded-full border border-gray-200 justify-center gap-x-2 py-2 opacity-45"
-            >
-              <Image
-                src="/icons/arbitrum.svg"
-                alt="arrow"
-                height={20}
-                width={20}
-              />{" "}
-              <p className="text-base font-medium text-white">
-                Received 0.0001 ETH
-              </p>
-            </div>
-          )}
+              <div
+                onClick={() => openInNewTab(txHash)}
+                className="flex items-center w-full bg-transparent rounded-full border border-gray-200 justify-center gap-x-2 py-2 opacity-45">
+                <Image
+                  src="/icons/arbitrum.svg"
+                  alt="arrow"
+                  height={20}
+                  width={20}
+                />{" "}
+                <p className="text-base font-medium text-white">
+                  Received 50 W3PTEST tokens
+                </p>
+              </div>
+            )}
         </Card>
         <Image
           src="/icons/arrow-right.svg"
@@ -228,7 +259,9 @@ const NonImportFlow = ({
             />
           )}
           {completedSteps.includes("mintNft") && (
-            <div className="flex items-center w-full bg-transparent rounded-full border border-gray-200 justify-center gap-x-2 py-2">
+            <div className="flex items-center w-full bg-transparent rounded-full border border-gray-200 justify-center gap-x-2 py-2" onClick={() => {
+              openInNewTab(`${nftContractLink}`)
+            }}>
               <p className="text-base font-medium text-white">
                 NFT successfully minted
               </p>
@@ -238,6 +271,11 @@ const NonImportFlow = ({
         </Card>
       </div>
     </div>
+
+    <Modal isOpen={displayErrorPopup} onClose={() => setDisplayErrorPopup(false)}>
+        <ErrorPopup handleTryAgain={() => errorRetryFunction()} subText={subErrorText} text={errorText} />
+      </Modal>
+    </>
   );
 };
 
