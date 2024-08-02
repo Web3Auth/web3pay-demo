@@ -11,35 +11,31 @@ import Navbar from "@/components/ui/Navbar";
 import { erc721Abi } from "@/utils/abis/erc721";
 import { IRandomWallet, SelectedEnv } from "@/utils/interfaces";
 import { OpenloginSessionManager } from "@toruslabs/session-manager";
-import { useEffect, useState } from "react";
-import { encodeFunctionData } from "viem";
+import { useState } from "react";
+import { encodeFunctionData, Hex } from "viem";
 import { calculateBaseUrl } from "@/utils/utils";
 import MintSuccess from "@/components/MintSuccess";
-import NFTSuccess from "@/components/NFTSuccess";
 import { useWallet } from "@/context/walletContext";
-import { useRouter } from "next/navigation";
+
+import { createClient, http } from "viem";
+import { polygonAmoy } from "viem/chains";
+import { bundlerActions, ENTRYPOINT_ADDRESS_V07 } from "permissionless";
 
 export default function Home() {
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [mintSuccess, setMintSuccess] = useState(false);
   const [nftSuccess, setNftSuccess] = useState(false);
-
   // todo: change this before deployment or move it to env
   const [selectedEnv, setSelectedEnv] = useState<SelectedEnv>("local");
-  const [chainId, setChainId] = useState(80002);
 
-  const {
-    walletProvider,
-    loggedIn,
-    address,
-  } = useWallet();
+  const { walletProvider, address } = useWallet();
 
-  useEffect(() => {
-    if(!loggedIn) {
-      router.push("/")
-    }
-  }, [loggedIn]);
+  const [mintNftState, setMintNftState] = useState({
+    minting: false,
+    mintSuccess: false,
+    mintError: "",
+    mintRedirectUrl: "",
+  });
 
   async function mintNft(address: string) {
     try {
@@ -48,7 +44,7 @@ export default function Home() {
         functionName: "mint",
         args: [address],
       });
-  
+
       const resp = await walletProvider?.request({
         method: "eth_sendTransaction",
         params: {
@@ -58,14 +54,48 @@ export default function Home() {
           value: "0",
         },
       });
-  
-      console.log("mint nft resp", resp);
-      setNftSuccess(true);
-      return `${calculateBaseUrl(selectedEnv)}/wallet/nft/0xd774B6e1880dC36A3E9787Ea514CBFC275d2ba61`;
+      if (resp) {
+        // setMintSuccess(true);
+        setMintNftState({
+          mintError: "",
+          minting: true,
+          mintSuccess: false,
+          mintRedirectUrl: `https://jiffyscan.xyz/userOpHash/${resp}`,
+        });
+        waitForMinting(resp);
+      }
+      return `${calculateBaseUrl(
+        selectedEnv
+      )}/wallet/nft/0xd774B6e1880dC36A3E9787Ea514CBFC275d2ba61`;
     } catch (e: unknown) {
       console.error("error minting nft", e);
       throw e;
     } finally {
+    }
+  }
+
+  async function waitForMinting(hash: Hex) {
+    const bundlerClient = createClient({
+      chain: polygonAmoy,
+      transport: http(
+        "https://rpc.zerodev.app/api/v2/bundler/779a8e75-8332-4e4f-b6e5-acfec9f777d9"
+      ),
+    }).extend(bundlerActions(ENTRYPOINT_ADDRESS_V07));
+    
+    // wait for user op hash to be completed
+    const userOperationByHash = await bundlerClient.waitForUserOperationReceipt({
+      hash,
+    });
+    if (userOperationByHash.receipt) {
+      setMintNftState({
+        mintError: "",
+        minting: false,
+        mintSuccess: true,
+        mintRedirectUrl: `${calculateBaseUrl(
+          selectedEnv
+        )}/wallet/nft/0xd774B6e1880dC36A3E9787Ea514CBFC275d2ba61`,
+      });
+      setNftSuccess(true);
     }
   }
 
@@ -98,10 +128,7 @@ export default function Home() {
   return (
     <main className="flex flex-col">
       <section className="flex-grow px-6 py-10 md:p-9 flex flex-col max-md:gap-y-10">
-        <Navbar
-          address={address}
-          loader={isLoading}
-        />
+        <Navbar address={address} loader={isLoading} />
         <div className="flex flex-col text-center gap-y-6 mt-10 md:mt-5 w-full">
           <div className="text-center text-3xl sm:banner-heading-text flex flex-col gap-y-1">
             <div className="flex flex-col md:flex-row items-center gap-x-2 justify-center">
@@ -148,6 +175,7 @@ export default function Home() {
         <div className="flex flex-col items-center justify-center text-center">
           <Button title="Demo"></Button>
           <NonImportFlow
+            mintState={mintNftState}
             handleMintNft={mintNft}
             address={address}
             selectedEnv={selectedEnv}
@@ -175,15 +203,12 @@ export default function Home() {
             handleImportAccount={importAccount}
             handleMintNft={mintNft}
             selectedEnv={selectedEnv}
+            mintState={mintNftState}
           />
         </div>
       </section>
       <Modal isOpen={mintSuccess} onClose={() => setMintSuccess(false)}>
         <MintSuccess />
-      </Modal>
-      {/* todo: test this when paymaster issue resolves */}
-      <Modal isOpen={nftSuccess} onClose={() => setNftSuccess(false)}>
-        <NFTSuccess />
       </Modal>
     </main>
   );
