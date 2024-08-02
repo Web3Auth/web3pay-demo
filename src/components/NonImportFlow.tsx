@@ -258,7 +258,7 @@ const NonImportFlow = ({
                 />
               )}
             </p>
-            {currentStep !== "mintNft" && (
+            {!completedSteps.includes("mintNft") && currentStep !== "mintNft" && (
                 <>
                   <p className="text-base font-bold break-words w-[250px] text-left">
                     Mint your NFT on Polygon Chain
