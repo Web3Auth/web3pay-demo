@@ -24,8 +24,6 @@ export default function Home() {
     setWalletProvider,
     loggedIn,
   } = useWallet();
-  const [chainId, setChainId] = useState(80002);
-  const [selectedEnv, setSelectedEnv] = useState<SelectedEnv>("local");
   // error message
   const [errorText, setErrorText] = useState("");
   const [subErrorText, setSubErrorText] = useState("");
@@ -33,51 +31,6 @@ export default function Home() {
     () => Promise<void>
   >(() => Promise.resolve());
   const [displayErrorPopup, setDisplayErrorPopup] = useState(false);
-
-  useEffect(() => {
-    const getWalletURL = () => {
-      return `${calculateBaseUrl(selectedEnv)}/connect`;
-    };
-
-    // initiate sdk
-    const initWalletProvider = async () => {
-      setIsLoading(true);
-      setWalletProvider(
-        new WalletProvider({
-          metadata: {
-            appChainIds: [chainId],
-            appName: "Demo App",
-            appLogoUrl: "https://web3auth.io/images/web3authlog.png",
-          },
-          preference: {
-            keysUrl: getWalletURL(),
-          },
-        })
-      );
-      setIsLoading(false);
-      setLoggedIn(walletProvider?.connected || false);
-    };
-    initWalletProvider();
-
-    // check if user is already logged in
-    const getAddress = async () => {
-      try {
-        setLoggedIn(walletProvider?.connected || loggedIn);
-        const account = (await walletProvider?.request({
-          method: "eth_accounts",
-          params: [],
-        })) as string[];
-        if (account?.length) {
-          setAddress(account[0]);
-          router.push("/home");
-        }
-      } catch (err) {
-        console.log(err);
-        setAddress("");
-      }
-    };
-    getAddress();
-  }, [walletProvider?.connected, selectedEnv]);
 
   async function loginOrRegister() {
     setIsLoading(true);
