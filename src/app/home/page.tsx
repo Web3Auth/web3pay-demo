@@ -37,7 +37,7 @@ export default function Home() {
     mintRedirectUrl: "",
   });
 
-  async function mintNft(address: string) {
+  async function mintNft() {
     try {
       const data = encodeFunctionData({
         abi: erc721Abi,

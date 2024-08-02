@@ -155,7 +155,7 @@ const ImportFlow = ({
       try {
         setDisplayErrorPopup(false);
         setStepLoader(true);
-        const nftLink = await handleMintNft(randomWallet.address);
+        await handleMintNft(randomWallet.address);
         setCompletedSteps([...completedSteps, "mintNft"]);
         setCurrentStep("completed");
       } catch (err: any) {
