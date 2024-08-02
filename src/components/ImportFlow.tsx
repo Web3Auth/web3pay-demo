@@ -25,7 +25,7 @@ const ImportFlow = ({
   handleImportAccount,
 }: {
   selectedEnv: SelectedEnv;
-  handleMintNft: (address: string) => Promise<string>;
+  handleMintNft: () => Promise<string>;
   handleImportAccount: (randWallet: IRandomWallet) => Promise<void>;
 }) => {
 
@@ -148,7 +148,7 @@ const ImportFlow = ({
       try {
         setDisplayErrorPopup(false);
         setStepLoader(true);
-        const nftLink = await handleMintNft(randomWallet.address);
+        const nftLink = await handleMintNft();
         setNftContractLink(nftLink);
         setCompletedSteps([...completedSteps, "mintNft"]);
         setCurrentStep("completed");

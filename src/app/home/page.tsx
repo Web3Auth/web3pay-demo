@@ -41,7 +41,7 @@ export default function Home() {
     }
   }, [loggedIn]);
 
-  async function mintNft(address: string) {
+  async function mintNft() {
     try {
       const data = encodeFunctionData({
         abi: erc721Abi,
