@@ -25,7 +25,7 @@ export default function Home() {
     loggedIn,
   } = useWallet();
   const [chainId, setChainId] = useState(80002);
-  const [selectedEnv, setSelectedEnv] = useState<SelectedEnv>("local");
+  const [selectedEnv, setSelectedEnv] = useState<SelectedEnv>("production");
   // error message
   const [errorText, setErrorText] = useState("");
   const [subErrorText, setSubErrorText] = useState("");

@@ -26,7 +26,7 @@ export default function Home() {
   const [nftSuccess, setNftSuccess] = useState(false);
 
   // todo: change this before deployment or move it to env
-  const [selectedEnv, setSelectedEnv] = useState<SelectedEnv>("local");
+  const [selectedEnv, setSelectedEnv] = useState<SelectedEnv>("production");
   const [chainId, setChainId] = useState(80002);
 
   const {
