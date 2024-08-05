@@ -21,25 +21,32 @@ import ErrorPopup from "./ErrorPopup";
 
 const ImportFlow = ({
   selectedEnv,
+  mintState,
   handleMintNft,
   handleImportAccount,
 }: {
   selectedEnv: SelectedEnv;
-  handleMintNft: () => Promise<string>;
+  mintState: {
+    minting: boolean;
+    mintSuccess: boolean;
+    mintError: string;
+    mintRedirectUrl: string;
+  };
+  handleMintNft: (address: string) => Promise<string>;
   handleImportAccount: (randWallet: IRandomWallet) => Promise<void>;
 }) => {
-
   const [randomWallet, setRandomWallet] = useState<IRandomWallet>();
   const [currentStep, setCurrentStep] = useState<ImportFlowStep>("start");
   const [txHash, setTxHash] = useState<string>("");
-  const [nftContractLink, setNftContractLink] = useState<string>("");
 
   const [completedSteps, setCompletedSteps] = useState<ImportFlowStep[]>([]);
   const [stepLoader, setStepLoader] = useState(false);
   // error message
   const [errorText, setErrorText] = useState("");
   const [subErrorText, setSubErrorText] = useState("");
-  const [errorRetryFunction, setErrorRetryFunction] = useState<() => Promise<void>>(() => Promise.resolve());
+  const [errorRetryFunction, setErrorRetryFunction] = useState<
+    () => Promise<void>
+  >(() => Promise.resolve());
   const [displayErrorPopup, setDisplayErrorPopup] = useState(false);
 
   // step1: create random wallet
@@ -148,8 +155,7 @@ const ImportFlow = ({
       try {
         setDisplayErrorPopup(false);
         setStepLoader(true);
-        const nftLink = await handleMintNft();
-        setNftContractLink(nftLink);
+        await handleMintNft(randomWallet.address);
         setCompletedSteps([...completedSteps, "mintNft"]);
         setCurrentStep("completed");
       } catch (err: any) {
@@ -190,123 +196,82 @@ const ImportFlow = ({
 
   return (
     <>
-    <div className="w-full flex flex-col gap-y-6 mt-9">
-      <div className="flex flex-col items-center gap-y-4">
-        <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-white">
-          Use your Wallets with Web3Pay
-        </p>
-        <p className="text-lg sm:text-xl md:text-2xl font-normal w-full md:w-[45%]">
-          Mint NFTs with tokens from a different chain with your existing
-          wallets, no deposits required!
-        </p>
-      </div>
-      <div
-        className={`mt-10 w-full flex flex-col xl:flex-row md:gap-y-6 justify-center mx-auto ${
-          completedSteps.length === 4 ? "items-stretch" : ""
-        }`}
-      >
+      <div className="w-full flex flex-col gap-y-6 mt-9">
+        <div className="flex flex-col items-center gap-y-4">
+          <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-white">
+            Use your Wallets with Web3Pay
+          </p>
+          <p className="text-lg sm:text-xl md:text-2xl font-normal w-full md:w-[45%]">
+            Mint NFTs with tokens from a different chain with your existing
+            wallets, no deposits required!
+          </p>
+        </div>
         <div
-          className={`flex flex-col md:flex-row items-center justify-center ${
+          className={`mt-10 w-full flex flex-col xl:flex-row md:gap-y-6 justify-center mx-auto ${
             completedSteps.length === 4 ? "items-stretch" : ""
           }`}
         >
-          {/* Card 1 */}
-          <ImportFlowCard
-            title="Create a test wallet on Arbitrum chain"
-            description=" For demo purposes, we will help you create a test wallet that will
+          <div
+            className={`flex flex-col md:flex-row items-center justify-center ${
+              completedSteps.length === 4 ? "items-stretch" : ""
+            }`}
+          >
+            {/* Card 1 */}
+            <ImportFlowCard
+              title="Create a test wallet on Arbitrum chain"
+              description=" For demo purposes, we will help you create a test wallet that will
               stand in for your external wallets"
-            step="1"
-            isCompleted={completedSteps.includes("start")}
-            isCurrent={currentStep === "start"}
-            logo="arbitrum"
-            resultOpacity
-            resultText={sliceAddress(randomWallet?.address || "")}
-            resultLogo="arbitrum"
-            handleClick={() => handleStep("create")}
-            btnText="Create"
-            loading={stepLoader}
-            handleCompletedLink = {() => openInNewTab(`https://sepolia.arbiscan.io/address/${randomWallet?.address}`)}
-          />
-          {/* Divider */}
-          <Image
-            src="/icons/arrow-right.svg"
-            alt="arrow"
-            height={50}
-            width={50}
-            className="rotate-90 my-5 mx-auto block md:hidden"
-          />
-          <Image
-            src="/icons/arrow-right.svg"
-            alt="arrow"
-            height={50}
-            width={50}
-            className="hidden md:block"
-          />
-          {/* Card 2 */}
-          <ImportFlowCard
-            title="Fund your Web3Pay Account with Arbitrum Tokens"
-            description="Load your Web3Pay Account with Arbitrum Test Tokens to test—our
+              step="1"
+              isCompleted={completedSteps.includes("start")}
+              isCurrent={currentStep === "start"}
+              logo="arbitrum"
+              resultOpacity
+              resultText={sliceAddress(randomWallet?.address || "")}
+              resultLogo="arbitrum"
+              handleClick={() => handleStep("create")}
+              btnText="Create"
+              loading={stepLoader}
+              handleCompletedLink={() =>
+                openInNewTab(
+                  `https://sepolia.arbiscan.io/address/${randomWallet?.address}`
+                )
+              }
+            />
+            {/* Divider */}
+            <Image
+              src="/icons/arrow-right.svg"
+              alt="arrow"
+              height={50}
+              width={50}
+              className="rotate-90 my-5 mx-auto block md:hidden"
+            />
+            <Image
+              src="/icons/arrow-right.svg"
+              alt="arrow"
+              height={50}
+              width={50}
+              className="hidden md:block"
+            />
+            {/* Card 2 */}
+            <ImportFlowCard
+              title="Fund your Web3Pay Account with Arbitrum Tokens"
+              description="Load your Web3Pay Account with Arbitrum Test Tokens to test—our
               treat!"
-            step="2"
-            isCompleted={completedSteps.includes("fundToken")}
-            isCurrent={currentStep === "fundToken"}
-            logo="arbitrum"
-            resultOpacity
-            resultText="Received 50 W3PTEST tokens"
-            resultLogo="arbitrum"
-            handleClick={() => handleStep("fundToken")}
-            handleCompletedLink = {() => openInNewTab(`https://sepolia.arbiscan.io/tx/${txHash}`)}
-            btnText="Fund"
-            loading={stepLoader}
-          />
-        </div>
-        {/* Divider */}
-        <Image
-          src="/icons/arrow-right.svg"
-          alt="arrow"
-          height={50}
-          width={50}
-          className="rotate-90 my-5 mx-auto block md:hidden"
-        />
-        <Image
-          src="/icons/arrow-right.svg"
-          alt="arrow"
-          height={50}
-          width={50}
-          className="hidden xl:block w-[28px]"
-        />
-        <Image
-          src="/icons/arrow-right.svg"
-          alt="arrow"
-          height={80}
-          width={50}
-          className={`ml-auto rotate-90 ${
-            currentStep === "fundToken" || completedSteps.includes("fundToken")
-              ? "mt-0"
-              : "-mt-10"
-          } hidden md:block xl:hidden`}
-        />
-        <div
-          className={`flex flex-col md:flex-row-reverse xl:flex-row items-center justify-center ${
-            completedSteps.length === 4 ? "items-stretch" : ""
-          }`}
-        >
-          {/* Card 3 */}
-          <ImportFlowCard
-            title="Connect your test wallet to your Web3Pay Account"
-            description="Allow your Web3Pay Account to access liquidity from your test
-              wallet."
-            step="3"
-            isCompleted={completedSteps.includes("import")}
-            isCurrent={currentStep === "import"}
-            logo="arbitrum"
-            resultOpacity
-            resultText="Wallet linked Successfully"
-            resultLogo="link-gradient"
-            handleClick={() => handleStep("import")}
-            btnText="Import"
-            loading={stepLoader}
-          />
+              step="2"
+              isCompleted={completedSteps.includes("fundToken")}
+              isCurrent={currentStep === "fundToken"}
+              logo="arbitrum"
+              resultOpacity
+              resultText="Received 50 W3PTEST tokens"
+              resultLogo="arbitrum"
+              handleClick={() => handleStep("fundToken")}
+              handleCompletedLink={() =>
+                openInNewTab(`https://sepolia.arbiscan.io/tx/${txHash}`)
+              }
+              btnText="Fund"
+              loading={stepLoader}
+            />
+          </div>
           {/* Divider */}
           <Image
             src="/icons/arrow-right.svg"
@@ -320,31 +285,77 @@ const ImportFlow = ({
             alt="arrow"
             height={50}
             width={50}
-            className="hidden md:block md:rotate-180 xl:rotate-0"
+            className="hidden xl:block w-[28px]"
           />
-          {/* Card 3 */}
-          <ImportFlowCard
-            title="Mint your NFT on Polygon Chain"
-            description="Use your Arbitrum Test Tokens to mint an NFT on Polygon, no
-              bridges required."
-            step="4"
-            isCompleted={completedSteps.includes("mintNft")}
-            isCurrent={currentStep === "mintNft"}
-            logo="polygon"
-            resultOpacity
-            resultText="NFT successfully minted"
-            handleCompletedLink = {() => openInNewTab(`${nftContractLink}`)}
-            resultCustomIcon={<TbExternalLink className="text-white text-xl" />}
-            handleClick={() => handleStep("mintNft")}
-            btnText="Mint"
-            loading={stepLoader}
+          <Image
+            src="/icons/arrow-right.svg"
+            alt="arrow"
+            height={80}
+            width={50}
+            className={`ml-auto rotate-90 ${
+              currentStep === "fundToken" ||
+              completedSteps.includes("fundToken")
+                ? "mt-0"
+                : "-mt-10"
+            } hidden md:block xl:hidden`}
           />
+          <div
+            className={`flex flex-col md:flex-row-reverse xl:flex-row items-center justify-center ${
+              completedSteps.length === 4 ? "items-stretch" : ""
+            }`}
+          >
+            {/* Card 3 */}
+            <ImportFlowCard
+              title="Connect your test wallet to your Web3Pay Account"
+              description="Allow your Web3Pay Account to access liquidity from your test
+              wallet."
+              step="3"
+              isCompleted={completedSteps.includes("import")}
+              isCurrent={currentStep === "import"}
+              logo="arbitrum"
+              resultOpacity
+              resultText="Wallet linked Successfully"
+              resultLogo="link-gradient"
+              handleClick={() => handleStep("import")}
+              btnText="Import"
+              loading={stepLoader}
+            />
+            {/* Divider */}
+            <Image
+              src="/icons/arrow-right.svg"
+              alt="arrow"
+              height={50}
+              width={50}
+              className="rotate-90 my-5 mx-auto block md:hidden"
+            />
+            <Image
+              src="/icons/arrow-right.svg"
+              alt="arrow"
+              height={50}
+              width={50}
+              className="hidden md:block md:rotate-180 xl:rotate-0"
+            />
+            {/* Card 3 */}
+            <NFTCard
+              completedSteps={completedSteps}
+              currentStep={currentStep}
+              stepLoader={stepLoader}
+              mintState={mintState}
+              handleStep={handleStep}
+            />
+          </div>
         </div>
       </div>
-    </div>
 
-    <Modal isOpen={displayErrorPopup} onClose={() => setDisplayErrorPopup(false)}>
-        <ErrorPopup handleTryAgain={() => errorRetryFunction()} subText={subErrorText} text={errorText} />
+      <Modal
+        isOpen={displayErrorPopup}
+        onClose={() => setDisplayErrorPopup(false)}
+      >
+        <ErrorPopup
+          handleTryAgain={() => errorRetryFunction()}
+          subText={subErrorText}
+          text={errorText}
+        />
       </Modal>
     </>
   );
@@ -439,6 +450,133 @@ const ImportFlowCard = ({
           {resultCustomIcon ?? null}
         </div>
       )}
+    </Card>
+  );
+};
+
+const NFTCard = ({
+  currentStep,
+  completedSteps,
+  stepLoader,
+  mintState,
+  handleStep,
+}: {
+  currentStep: ImportFlowStep;
+  completedSteps: ImportFlowStep[];
+  stepLoader: boolean;
+  mintState: {
+    minting: boolean;
+    mintSuccess: boolean;
+    mintError: string;
+    mintRedirectUrl: string;
+  };
+  handleStep: (step: ImportFlowStep) => void;
+}) => {
+  return (
+    <Card
+      cardClasses={`gap-y-3 !bg-[#030226] p-6 ${
+        currentStep === "mintNft" || completedSteps.includes("mintNft")
+          ? "h-auto"
+          : "h-full md:h-[232px]"
+      }`}
+      active={currentStep === "mintNft"}
+      rootClasses={`!w-full ${
+        currentStep === "mintNft" || completedSteps.includes("mintNft")
+          ? "h-auto"
+          : "h-full md:h-[232px]"
+      }`}
+    >
+      <p className="text-26 font-normal flex items-center justify-between w-full">
+        04
+        {completedSteps.includes("mintNft") ? (
+          <Image
+            src="/icons/badge-check.svg"
+            alt="arrow"
+            height={30}
+            width={30}
+          />
+        ) : (
+          <Image src="/icons/polygon.svg" alt="arrow" height={30} width={30} />
+        )}
+      </p>
+      {!completedSteps.includes("mintNft") && currentStep !== "mintNft" && (
+        <>
+          <p className="text-base font-bold break-words w-full 2xl:w-[250px] text-left text-white">
+            Mint your NFT on Polygon Chain
+          </p>
+          <p className="text-base font-normal break-words w-full 2xl:w-[250px] text-left text-gray-400">
+            Use your Arbitrum Test Tokens to mint an NFT on Polygon, no bridges
+            required.
+          </p>
+        </>
+      )}
+      {currentStep === "mintNft" && (
+        <>
+          <p className="text-base font-bold break-words w-[250px] text-left">
+            Mint your NFT on Polygon Chain
+          </p>
+          <p className="text-base font-normal break-words w-[270px] text-left text-gray-400">
+            Use your Arbitrum Test Tokens to mint an NFT on Polygon, no bridges
+            required.
+          </p>
+          <GradientButton
+            title="Mint NFT"
+            handleClick={() => handleStep("mintNft")}
+            loading={stepLoader}
+          />
+        </>
+      )}
+      {
+        completedSteps.includes("mintNft") &&
+          // miniting
+          (!mintState.mintSuccess ? (
+            <>
+              <p className="text-base font-bold break-words w-full 2xl:w-[250px] text-left text-white">
+                Mint your NFT on Polygon Chain
+              </p>
+              <p className="text-base font-normal break-words w-full 2xl:w-[250px] text-left text-gray-400">
+                Use your Arbitrum Test Tokens to mint an NFT on Polygon, no
+                bridges required.
+              </p>
+              <div
+                className="flex items-center w-full bg-transparent rounded-full border border-gray-200 justify-center gap-x-2 py-2"
+                onClick={() => {
+                  openInNewTab(mintState.mintRedirectUrl);
+                }}
+              >
+                <p className="text-base font-medium text-white">
+                  NFT successfully minted
+                </p>
+                <TbExternalLink className="text-white text-xl" />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex flex-col gap-y-4 w-[250px]">
+                <Image
+                  src="/images/erc-721-success.svg"
+                  alt="success"
+                  width={250}
+                  height={108}
+                  className="animate-scaleIn text-center m-auto"
+                />
+                <div
+                  className="flex items-center gap-y-4 w-full bg-transparent rounded-full border border-gray-200 justify-center gap-x-2 py-2"
+                  onClick={() => {
+                    openInNewTab(`${mintState.mintRedirectUrl}`);
+                  }}
+                >
+                  <p className="text-base font-medium text-white">
+                    View Transaction
+                  </p>
+                  <TbExternalLink className="text-white text-xl" />
+                </div>
+              </div>
+            </>
+          ))
+
+        // minted
+      }
     </Card>
   );
 };
