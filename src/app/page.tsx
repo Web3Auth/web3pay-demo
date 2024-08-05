@@ -6,10 +6,7 @@ import Button from "@/components/ui/Button";
 import { HiOutlineArrowSmRight } from "react-icons/hi";
 import Card from "@/components/ui/Card";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { WalletProvider } from "@web3auth/global-accounts-sdk";
-import { calculateBaseUrl } from "@/utils/utils";
-import { SelectedEnv } from "@/utils/interfaces";
+import { useState } from "react";
 import { useWallet } from "@/context/walletContext";
 import { Modal } from "@/components/ui/Modal";
 import ErrorPopup from "@/components/ErrorPopup";
@@ -21,8 +18,6 @@ export default function Home() {
     setAddress,
     walletProvider,
     setLoggedIn,
-    setWalletProvider,
-    loggedIn,
   } = useWallet();
   // error message
   const [errorText, setErrorText] = useState("");

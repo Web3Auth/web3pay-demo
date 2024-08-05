@@ -26,9 +26,7 @@ export default function Home() {
   const [mintSuccess, setMintSuccess] = useState(false);
   const [nftSuccess, setNftSuccess] = useState(false);
   // todo: change this before deployment or move it to env
-  const [selectedEnv, setSelectedEnv] = useState<SelectedEnv>("local");
-
-  const { walletProvider, address } = useWallet();
+  const { walletProvider, address, selectedEnv } = useWallet();
 
   const [mintNftState, setMintNftState] = useState({
     minting: false,

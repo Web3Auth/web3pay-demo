@@ -9,7 +9,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 
 const WalletContext = createContext({
     address: "",
-    selectedEnv: "",
+    selectedEnv: "production" as SelectedEnv,
     setSelectedEnv: (selectedEnv: SelectedEnv) => {},
     setAddress: (address: string) => {},
     walletProvider: null as any,
@@ -20,7 +20,7 @@ const WalletContext = createContext({
 
 export const WalletProviderContext = ({ children }: { children: React.ReactNode }) => {
   const [address, setAddress] = useState("");
-  const [selectedEnv, setSelectedEnv] = useState<SelectedEnv>("local");
+  const [selectedEnv, setSelectedEnv] = useState<SelectedEnv>("production");
   const [walletProvider, setWalletProvider] = useState<WalletProvider | null>(null);
   const [loggedIn, setLoggedIn] = useState(false);
   const [chainId, setChainId] = useState(80002);
