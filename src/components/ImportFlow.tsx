@@ -219,8 +219,7 @@ const ImportFlow = ({
             {/* Card 1 */}
             <ImportFlowCard
               title="Create a test wallet on Arbitrum chain"
-              description=" For demo purposes, we will help you create a test wallet that will
-              stand in for your external wallets"
+              description="For demo purposes, we will help you create a test wallet that will stand in for your external wallets"
               step="1"
               isCompleted={completedSteps.includes("start")}
               isCurrent={currentStep === "start"}
@@ -229,7 +228,7 @@ const ImportFlow = ({
               resultText={sliceAddress(randomWallet?.address || "")}
               resultLogo="arbitrum"
               handleClick={() => handleStep("create")}
-              btnText="Create"
+              btnText="Create test wallet"
               loading={stepLoader}
               handleCompletedLink={() =>
                 openInNewTab(
@@ -254,8 +253,8 @@ const ImportFlow = ({
             />
             {/* Card 2 */}
             <ImportFlowCard
-              title="Fund your Web3Pay Account with Arbitrum Tokens"
-              description="Load your Web3Pay Account with Arbitrum Test Tokens to test—our
+              title="Fund your test wallet with Arbitrum Tokens"
+              description="Load your test wallet with Arbitrum Test Tokens to test—our
               treat!"
               step="2"
               isCompleted={completedSteps.includes("fundToken")}
@@ -335,7 +334,7 @@ const ImportFlow = ({
               width={50}
               className="hidden md:block md:rotate-180 xl:rotate-0"
             />
-            {/* Card 3 */}
+            {/* Card 4 */}
             <NFTCard
               completedSteps={completedSteps}
               currentStep={currentStep}
@@ -512,10 +511,10 @@ const NFTCard = ({
       )}
       {currentStep === "mintNft" && (
         <>
-          <p className="text-base font-bold break-words w-[250px] text-left">
+          <p className="text-base font-bold break-words w-full 2xl:w-[250px] text-left text-white">
             Mint your NFT on Polygon Chain
           </p>
-          <p className="text-base font-normal break-words w-[270px] text-left text-gray-400">
+          <p className="text-base font-normal break-words w-full 2xl:w-[250px] text-left text-gray-400">
             Use your Arbitrum Test Tokens to mint an NFT on Polygon, no bridges
             required.
           </p>
@@ -552,7 +551,7 @@ const NFTCard = ({
             </>
           ) : (
             <>
-              <div className="flex flex-col gap-y-4 w-[250px]">
+              <div className="flex flex-col justify-around gap-y-4">
                 <Image
                   src="/images/erc-721-success.svg"
                   alt="success"
@@ -561,7 +560,7 @@ const NFTCard = ({
                   className="animate-scaleIn text-center m-auto"
                 />
                 <div
-                  className="flex items-center gap-y-4 w-full bg-transparent rounded-full border border-gray-200 justify-center gap-x-2 py-2"
+                  className="flex items-center w-full bg-transparent rounded-full border border-gray-200 justify-center gap-x-2 py-2"
                   onClick={() => {
                     openInNewTab(`${mintState.mintRedirectUrl}`);
                   }}
