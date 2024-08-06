@@ -60,7 +60,7 @@ const Navbar = ({
   }, []);
 
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex items-center justify-between fixed top-0 p-5 backdrop-blur-3xl gap-y-3 !bg-[#050b32] mb-20 w-full bg-yourBackground z-50">
       <Link href="/">
         <Image
           src="/images/web3auth-logo.svg"

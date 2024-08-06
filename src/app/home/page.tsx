@@ -89,9 +89,7 @@ export default function Home() {
         mintError: "",
         minting: false,
         mintSuccess: true,
-        mintRedirectUrl: `${calculateBaseUrl(
-          selectedEnv
-        )}/wallet/nft/0xd774B6e1880dC36A3E9787Ea514CBFC275d2ba61`,
+        mintRedirectUrl: mintNftState.mintRedirectUrl,
       });
       setNftSuccess(true);
     }
@@ -125,8 +123,8 @@ export default function Home() {
 
   return (
     <main className="flex flex-col">
-      <section className="flex-grow px-6 py-10 md:p-9 flex flex-col max-md:gap-y-10">
-        <Navbar address={address} loader={isLoading} />
+      <Navbar address={address} loader={isLoading} />
+      <section className="flex-grow px-6 py-10 md:p-9 flex flex-col max-md:gap-y-10 mt-7">
         <div className="flex flex-col text-center gap-y-6 mt-10 md:mt-5 w-full">
           <div className="text-center text-3xl sm:banner-heading-text flex flex-col gap-y-1">
             <div className="flex flex-col md:flex-row items-center gap-x-2 justify-center">
