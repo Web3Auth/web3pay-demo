@@ -11,6 +11,8 @@ import { useWallet } from "@/context/walletContext";
 import { Modal } from "@/components/ui/Modal";
 import ErrorPopup from "@/components/ErrorPopup";
 import Navbar from "@/components/ui/Navbar";
+import NewsLetter from "@/components/NewsLetter";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   const router = useRouter();
@@ -51,6 +53,7 @@ export default function Home() {
   return (
     <main className="flex flex-col">
       <Navbar address={""} showButton={false} />
+
       <section className="lg:h-[calc(100dvh_-_80px)] bg-blend-lighten lg:bg-home bg-no-repeat bg-contain bg-scroll bg-[100%] flex-grow px-6 py-10 md:p-9 md:pb-14 flex flex-col gap-y-10 md:gap-y-20 my-20">
         <div className="flex flex-col text-left gap-y-6 lg:pl-16 mt-2.5">
           <div className="text-left text-3xl sm:banner-heading-text flex flex-col gap-y-1">
@@ -94,6 +97,7 @@ export default function Home() {
           />
         </div>
       </section>
+
       <section className="lg:h-[100dvh] flex flex-col gap-y-10 md:gap-y-20 py-10 md:py-20">
         <p className="text-center text-32 lg:text-5xl text-white">
           Use, Interact and Spend Crypto As One
@@ -141,7 +145,8 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <section className="lg:h-[100dvh] flex flex-col py-10 md:py-20">
+
+      <section className="flex flex-col py-10 md:py-20">
         <p className="text-base md:text-lg uppercase text-gray-400 text-center md:text-left mb-4 px-6 md:px-20 font-semibold">
           SERVICES
         </p>
@@ -150,7 +155,7 @@ export default function Home() {
         </p>
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-x-6 items-stretch justify-center w-full p-6 md:px-20 md:py-10">
           <Card
-            cardClasses="flex flex-col items-start p-9 w-auto"
+            cardClasses="flex flex-col items-start p-9 w-full"
             rootClasses="!w-auto"
             active
           >
@@ -169,7 +174,7 @@ export default function Home() {
             </p>
           </Card>
           <Card
-            cardClasses="flex flex-col items-start p-9 w-auto"
+            cardClasses="flex flex-col items-start p-9 w-full"
             rootClasses="!w-auto"
             active
           >
@@ -188,7 +193,7 @@ export default function Home() {
             </p>
           </Card>
           <Card
-            cardClasses="flex flex-col items-start p-9 w-auto"
+            cardClasses="flex flex-col items-start p-9 w-full"
             rootClasses="!w-auto"
             active
           >
@@ -208,6 +213,13 @@ export default function Home() {
           </Card>
         </div>
       </section>
+
+      <section className="mb-16">
+        <NewsLetter />
+      </section>
+
+      <Footer />
+
       <Modal
         isOpen={displayErrorPopup}
         onClose={() => setDisplayErrorPopup(false)}

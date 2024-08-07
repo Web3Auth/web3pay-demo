@@ -20,6 +20,7 @@ import { useWallet } from "@/context/walletContext";
 import { createClient, http } from "viem";
 import { polygonAmoy } from "viem/chains";
 import { bundlerActions, ENTRYPOINT_ADDRESS_V07 } from "permissionless";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
@@ -214,6 +215,9 @@ export default function Home() {
           />
         </div>
       </section>
+
+      <Footer />
+
       <Modal isOpen={mintSuccess} onClose={() => setMintSuccess(false)}>
         <MintSuccess />
       </Modal>
