@@ -33,8 +33,9 @@ const config: Config = {
       },
       backgroundImage: {
         login: "url('/images/demo-login-bg.svg')",
-        home: "url('/images/demo-home-bg.svg')",
+        home: "url('/images/demo-bg.png')",
         crossChain: "url('/images/cross-chain-gradient.png')",
+        nft: "url('/images/cross-chain-home-bg.svg')",
       },
       animation: {
         "bounce-short": "bounce 1s linear 2",

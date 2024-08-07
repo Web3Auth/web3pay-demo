@@ -18,18 +18,14 @@ const Navbar = ({
   const [copied, setCopied] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
 
-  const {
-    setAddress,
-    setLoggedIn,
-    setWalletProvider,
-  } = useWallet();
+  const { setAddress, setLoggedIn, setWalletProvider } = useWallet();
 
   const handleCopy = () => {
     setCopied(true);
     copyToClipBoard(address || "");
-    setShowMenu(false);
     setTimeout(() => {
       setCopied(false);
+      setShowMenu(false);
     }, 2000);
   };
 
@@ -60,7 +56,7 @@ const Navbar = ({
   }, []);
 
   return (
-    <div className="flex items-center justify-between fixed top-0 p-5 backdrop-blur-3xl gap-y-3 !bg-[#050b32] mb-20 w-full bg-yourBackground z-50">
+    <div className="flex items-center justify-between fixed top-0 p-5 backdrop-blur-3xl gap-y-3 bg-[#050b32] w-full z-50">
       <Link href="/">
         <Image
           src="/images/web3auth-logo.svg"
@@ -89,11 +85,13 @@ const Navbar = ({
               onClick={handleCopy}
             >
               {copied ? (
-                <TbCircleCheck className="text-white text-xl" />
+                <TbCircleCheck className="text-green-400 text-xl" />
               ) : (
                 <TbCopy className="text-white text-xl" />
               )}
-              <p className="text-white text-sm font-normal">Copy address</p>
+              <p className="text-white text-sm font-normal">
+                {copied ? "Copied address" : "Copy address"}
+              </p>
             </button>
             <button
               className="appearance-none flex items-center gap-x-2 px-4 py-3 w-full"

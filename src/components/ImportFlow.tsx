@@ -395,12 +395,10 @@ const ImportFlowCard = ({
 }) => {
   return (
     <Card
-      cardClasses={`gap-y-3 !bg-[#030226] p-6 ${
-        isCurrent || isCompleted ? "h-auto" : "h-full md:h-[232px]"
-      }`}
-      active={isCurrent}
+      cardClasses={`gap-y-3 !bg-[#030226] p-6`}
+      active
       rootClasses={`!w-full ${
-        isCurrent || isCompleted ? "h-auto" : "h-full md:h-[232px]"
+        isCurrent || isCompleted ? "h-auto" : "h-full md:h-[233px]"
       }`}
     >
       <p className="text-26 font-normal flex items-center justify-between w-full">
@@ -473,16 +471,12 @@ const NFTCard = ({
 }) => {
   return (
     <Card
-      cardClasses={`gap-y-3 !bg-[#030226] p-6 ${
-        currentStep === "mintNft" || completedSteps.includes("mintNft")
-          ? "h-auto"
-          : "h-full md:h-[232px]"
-      }`}
-      active={currentStep === "mintNft"}
+      cardClasses={`gap-y-3 !bg-[#030226] p-6`}
+      active
       rootClasses={`!w-full ${
         currentStep === "mintNft" || completedSteps.includes("mintNft")
           ? "h-auto"
-          : "h-full md:h-[232px]"
+          : "h-full md:h-[233px]"
       }`}
     >
       <p className="text-26 font-normal flex items-center justify-between w-full">
