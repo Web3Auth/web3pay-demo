@@ -165,10 +165,10 @@ const NonImportFlow = ({
             simple click!
           </p>
         </div>
-        <div className="mt-10 w-full flex items-center flex-col sm:flex-row sm:items-stretch justify-center">
+        <div className="mt-10 w-full flex items-center flex-col sm:flex-row justify-center">
           <Card
             cardClasses={`gap-y-3 p-6 !bg-[#030226] !flex !flex-col`}
-            active={currentStep === "fundToken"}
+            active
             rootClasses="!w-full sm:!w-max"
           >
             <p className="text-26 font-normal flex items-center justify-between w-full">
@@ -237,7 +237,7 @@ const NonImportFlow = ({
           />
           <Card
             cardClasses={`gap-y-3 p-6 !bg-[#030226] !flex !flex-col`}
-            active={currentStep === "mintNft"}
+            active
             rootClasses="!w-full sm:!w-max"
           >
             <p className="text-26 font-normal flex items-center justify-between w-full">
@@ -258,7 +258,8 @@ const NonImportFlow = ({
                 />
               )}
             </p>
-            {!completedSteps.includes("mintNft") && currentStep !== "mintNft" && (
+            {!completedSteps.includes("mintNft") &&
+              currentStep !== "mintNft" && (
                 <>
                   <p className="text-base font-bold break-words w-[250px] text-left">
                     Mint your NFT on Polygon Chain

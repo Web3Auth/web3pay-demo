@@ -79,11 +79,13 @@ export default function Home() {
         "https://rpc.zerodev.app/api/v2/bundler/779a8e75-8332-4e4f-b6e5-acfec9f777d9"
       ),
     }).extend(bundlerActions(ENTRYPOINT_ADDRESS_V07));
-    
+
     // wait for user op hash to be completed
-    const userOperationByHash = await bundlerClient.waitForUserOperationReceipt({
-      hash,
-    });
+    const userOperationByHash = await bundlerClient.waitForUserOperationReceipt(
+      {
+        hash,
+      }
+    );
     if (userOperationByHash.receipt) {
       setMintNftState({
         mintError: "",
@@ -124,14 +126,14 @@ export default function Home() {
   return (
     <main className="flex flex-col">
       <Navbar address={address} loader={isLoading} />
-      <section className="flex-grow px-6 py-10 md:p-9 flex flex-col max-md:gap-y-10 mt-7">
+      <section className="lg:h-[calc(100dvh_-_30px)] lg:bg-nft bg-opacity-35 bg-cover bg-top flex-grow px-6 py-10 md:p-9 flex flex-col max-md:gap-y-10 mt-10">
         <div className="flex flex-col text-center gap-y-6 mt-10 md:mt-5 w-full">
-          <div className="text-center text-3xl sm:banner-heading-text flex flex-col gap-y-1">
+          <div className="text-center text-3xl sm:text-5xl lg:banner-heading-text flex flex-col gap-y-1">
             <div className="flex flex-col md:flex-row items-center gap-x-2 justify-center">
               <p>Experience</p>
               <div className="content">
                 <div className="content__container !px-0 text-center">
-                  <ul className="content__container__list gradient-text text-3xl sm:banner-heading-text max-md:!text-center">
+                  <ul className="content__container__list gradient-text text-3xl sm:text-5xl lg:banner-heading-text max-md:!text-center">
                     <li className="content__container__list__item">
                       Wallet <span className="gradient-tex">Abstraction</span>
                     </li>
@@ -153,14 +155,22 @@ export default function Home() {
           </div>
         </div>
         <Image
-          src="/images/demo-home-bg.svg"
+          src="/images/cross-chain-home-bg.svg"
+          alt="bg"
+          height={200}
+          width={100}
+          className="w-full lg:hidden"
+        />
+        {/* <Image
+          src="/images/cross-chain-home-bg.svg"
           alt="bg"
           height={100}
           width={580}
           className="mx-auto shadow-2xl rounded-3xl opacity-80 w-full lg:w-[62%]  xl:w-[50%] 2xl:w-[60%] md:-mt-24 lg:-mt-28"
-        />
+        /> */}
       </section>
-      <section className="flex-grow relative z-1 bg-darkCard py-11 px-9 pb-20 w-full">
+
+      <section className="lg:h-dvh flex-grow flex flex-col items-center justify-center relative z-1 bg-darkCard py-11 px-9 pb-20 w-full">
         <Image
           src={"/images/cross-chain-gradient.png"}
           alt="cross chain"
@@ -178,14 +188,15 @@ export default function Home() {
           />
         </div>
       </section>
-      <section className="flex-grow p-10 md:py-24 md:px-20 text-center w-full">
+
+      <section className="flex-grow p-10 md:py-32 md:px-20 text-center w-full">
         <p className="gradient-text text-3xl md:text-5xl font-bold md:w-[80%]">
           Keeping track of multiple chains can be overwhelming. Let us make it
           easier for you.
         </p>
       </section>
 
-      <section className="flex-grow relative z-1 bg-darkCard py-11 px-9 pb-20">
+      <section className="lg:h-dvh flex-grow flex flex-col items-center justify-center relative z-1 bg-darkCard py-11 px-9 pb-20">
         <Image
           src={"/images/cross-chain-gradient.png"}
           alt="cross chain"
