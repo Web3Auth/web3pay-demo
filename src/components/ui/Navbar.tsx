@@ -76,8 +76,8 @@ const Navbar = ({
         <Image
           src="/images/web3auth-logo.svg"
           alt="Web3Auth Logo"
-          height={50}
-          width={50}
+          height={40}
+          width={40}
         />
       </Link>
       {showButton ? (
