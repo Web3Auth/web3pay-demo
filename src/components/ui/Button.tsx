@@ -8,6 +8,7 @@ interface IButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   handleClick?: () => void;
   otherClasses?: string;
   loading?: boolean;
+  cursorClassName?: string;
 }
 
 const Button: React.FC<IButtonProps> = ({
@@ -17,6 +18,7 @@ const Button: React.FC<IButtonProps> = ({
   handleClick,
   otherClasses,
   loading,
+  cursorClassName,
   ...props
 }) => {
   return (
@@ -27,7 +29,7 @@ const Button: React.FC<IButtonProps> = ({
     >
       <span className="animate-[spin_2s_linear_infinite] gradient-border rounded-full" />
       <span
-        className={`inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full
+        className={`inline-flex h-full w-full ${cursorClassName ? cursorClassName : "cursor-pointer" } items-center justify-center rounded-full
              bg-opaque px-9 py-5 text-base font-medium text-white backdrop-blur-3xl gap-2 ${otherClasses}`}
       >
         {loading ? (

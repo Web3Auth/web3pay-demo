@@ -182,7 +182,7 @@ export default function Home() {
           className="z-0 w-full h-full opacity-50 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
         />
         <div className="flex flex-col items-center justify-center text-center">
-          <Button otherClasses="cursor-default" title="Demo"></Button>
+          <Button cursorClassName="cursor-default" title="Demo"></Button>
           <NonImportFlow
             mintState={mintNftState}
             handleMintNft={mintNft}
@@ -208,7 +208,7 @@ export default function Home() {
           className="z-0 w-full h-full opacity-50 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
         />
         <div className="flex flex-col items-center justify-center text-center w-full">
-          <Button title="Demo"></Button>
+          <Button cursorClassName="cursor-default" title="Demo"></Button>
           <ImportFlow
             handleImportAccount={importAccount}
             handleMintNft={mintNft}
