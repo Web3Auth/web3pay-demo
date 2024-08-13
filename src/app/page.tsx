@@ -146,7 +146,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="flex flex-col py-10 md:py-20 md:mt-16">
+      <section className="flex flex-col py-10 md:py-20 md:mt-32">
         <p className="text-base md:text-lg uppercase text-gray-400 text-center md:text-left mb-4 px-6 md:px-20 font-semibold">
           SERVICES
         </p>
