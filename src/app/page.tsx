@@ -112,7 +112,7 @@ export default function Home() {
           />
           <div className="flex flex-col gap-y-6 md:gap-y-8 lg:gap-y-10 lg:w-[60%] p-6 md:p-10 lg:pr-16">
             <div className="text-left flex flex-col gap-y-2">
-              <p className="text-xl md:text-32 text-white break-words font-bold">
+              <p className="text-xl md:text-32 text-white break-words font-semibold">
                 Interact effortlessly with any chain with assets you already own
               </p>
               <p className="text-base md:text-2xl font-normal text-gray-400">
@@ -123,7 +123,7 @@ export default function Home() {
             </div>
             <div className="gradient-divider"> </div>
             <div className="text-left flex flex-col gap-y-2">
-              <p className="text-xl md:text-32 text-white break-words font-bold">
+              <p className="text-xl md:text-32 text-white break-words font-semibold">
                 Use your different wallets, no matter the type
               </p>
               <p className="text-base md:text-2xl font-normal text-gray-400">
@@ -133,7 +133,7 @@ export default function Home() {
             </div>
             <div className="gradient-divider"> </div>
             <div className="text-left flex flex-col gap-y-2">
-              <p className="text-xl md:text-32 text-white break-words font-bold">
+              <p className="text-xl md:text-32 text-white break-words font-semibold">
                 Spend anywhere, anytime, directly via wallet or debit card
                 (Coming Soon)
               </p>
@@ -146,7 +146,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="flex flex-col py-10 md:py-20">
+      <section className="flex flex-col py-10 md:py-20 md:mt-16">
         <p className="text-base md:text-lg uppercase text-gray-400 text-center md:text-left mb-4 px-6 md:px-20 font-semibold">
           SERVICES
         </p>
@@ -165,7 +165,7 @@ export default function Home() {
               height={30}
               width={30}
             />
-            <p className="lg:text-2xl text-xl break-words text-left leading-9 text-white font-semibold mt-10 mb-6">
+            <p className="lg:text-2xl text-xl break-words text-left text-white font-semibold mt-10 mb-6">
               Boost engagement for your applications
             </p>
             <p className="text-lg font-normal text-gray-400 text-left">
@@ -184,7 +184,7 @@ export default function Home() {
               height={30}
               width={30}
             />
-            <p className="lg:text-2xl text-xl break-words text-left leading-9 text-white font-semibold mt-10 mb-6">
+            <p className="lg:text-2xl text-xl break-words text-left text-white font-semibold mt-10 mb-6">
               An authentication experience that works
             </p>
             <p className="text-lg font-normal text-gray-400 text-left">
@@ -203,7 +203,7 @@ export default function Home() {
               height={30}
               width={30}
             />
-            <p className="lg:text-2xl text-xl break-words text-left leading-9 text-white font-semibold mt-10 mb-6">
+            <p className="lg:text-2xl text-xl break-words text-left text-white font-semibold mt-10 mb-6">
               Infrastructure that is designed to support all chains and assets
             </p>
             <p className="text-lg font-normal text-gray-400 text-left">

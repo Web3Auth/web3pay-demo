@@ -85,6 +85,8 @@ export default function Home() {
     const userOperationByHash = await bundlerClient.waitForUserOperationReceipt(
       {
         hash,
+        timeout: 1000 * 60 * 3,
+        pollingInterval: 1000 * 3,
       }
     );
     if (userOperationByHash.receipt) {
@@ -127,7 +129,7 @@ export default function Home() {
   return (
     <main className="flex flex-col">
       <Navbar address={address} loader={isLoading} />
-      <section className="lg:h-[calc(100dvh_-_30px)] lg:bg-nft bg-opacity-35 bg-cover bg-top flex-grow px-6 py-10 md:p-9 flex flex-col max-md:gap-y-10 mt-10">
+      <section className="lg:h-[calc(100dvh_-_70px)] lg:bg-nft bg-opacity-35 bg-cover bg-top flex-grow px-6 py-10 md:p-9 flex flex-col max-md:gap-y-10 mt-20">
         <div className="flex flex-col text-center gap-y-6 mt-10 md:mt-5 w-full">
           <div className="text-center text-3xl sm:text-5xl lg:banner-heading-text flex flex-col gap-y-1">
             <div className="flex flex-col md:flex-row items-center gap-x-2 justify-center">
@@ -180,7 +182,7 @@ export default function Home() {
           className="z-0 w-full h-full opacity-50 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
         />
         <div className="flex flex-col items-center justify-center text-center">
-          <Button title="Demo"></Button>
+          <Button otherClasses="cursor-default" title="Demo"></Button>
           <NonImportFlow
             mintState={mintNftState}
             handleMintNft={mintNft}

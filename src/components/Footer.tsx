@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import { openInNewTab } from "@/utils";
 
 const Footer = () => {
   return (
@@ -23,9 +24,10 @@ const Footer = () => {
           <p className="text-[#1AC7FE] text-sm font-bold uppercase w-max">
             FOLLOW US
           </p>
-          <div className="flex items-center justify-between gap-x-4">
-            <Image src={"/icons/x-light.svg"} alt="x" height={30} width={30} />
+          <div className="flex items-center justify-between gap-x-4 cursor-pointer">
+            <Image onClick={() => openInNewTab("https://x.com/Web3Auth")} src={"/icons/x-light.svg"} alt="x" height={30} width={30} />
             <Image
+              onClick={() => openInNewTab("https://warpcast.com/web3auth")}
               src={"/icons/farcaster.svg"}
               alt="x"
               height={30}
