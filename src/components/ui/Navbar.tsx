@@ -11,10 +11,12 @@ const Navbar = ({
   address,
   loader,
   showButton = true,
+  containerClass,
 }: {
   address: string;
   loader?: boolean;
   showButton?: boolean;
+  containerClass?: string;
 }) => {
   const [copied, setCopied] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
@@ -68,8 +70,12 @@ const Navbar = ({
   return (
     <div
       className={cn(
-        "flex items-center justify-between fixed top-0 p-5 bg-primary gap-y-3 w-full z-50",
-        `${scrollPosition > 20 ? "navbar-glass-effect" : "bg-primary"}`
+        "flex items-center justify-between fixed top-0 p-5 gap-y-3 w-full z-50",
+        `${
+          scrollPosition > 20
+            ? "navbar-glass-effect"
+            : containerClass ?? "bg-navBar"
+        }`
       )}
     >
       <Link href="/">
