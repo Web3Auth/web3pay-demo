@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Button from "./Button";
-import { copyToClipBoard, sliceAddress } from "@/utils";
-import { TbCopy, TbCircleCheck, TbLogout } from "react-icons/tb";
+import { copyToClipBoard, openInNewTab, sliceAddress } from "@/utils";
+import { TbCopy, TbCircleCheck, TbLogout, TbWallet } from "react-icons/tb";
 import Link from "next/link";
 import { useWallet } from "@/context/walletContext";
 import { cn } from "@/utils/utils";
@@ -41,6 +41,10 @@ const Navbar = ({
     setLoggedIn(false);
   };
 
+  const handleAddressExplorer = () => {
+    openInNewTab(`https://sepolia.arbiscan.io/address/${address}`);
+  };
+
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleOutsideClick = (event: MouseEvent) => {
@@ -68,7 +72,7 @@ const Navbar = ({
   }, []);
 
   return (
-    <div
+    <div 
       className={cn(
         "flex items-center justify-between fixed top-0 p-5 gap-y-3 w-full z-50",
         `${
@@ -76,16 +80,13 @@ const Navbar = ({
             ? "navbar-glass-effect"
             : containerClass ?? "bg-navBar"
         }`
-      )}
-    >
-      <Link href="/">
-        <Image
-          src="/images/web3auth-logo.svg"
-          alt="Web3Auth Logo"
-          height={40}
-          width={40}
-        />
-      </Link>
+      )}>
+      <Image
+        src="/images/web3auth-logo.svg"
+        alt="Web3Auth Logo"
+        height={40}
+        width={40}
+      />
       {showButton ? (
         <div className="relative" ref={dropdownRef}>
           <Button
@@ -95,7 +96,7 @@ const Navbar = ({
             otherClasses={copied ? "text-green-400" : ""}
           />
           <div
-            className={`bg-navDropdown mt-2 rounded-lg w-full origin-top-right absolute left-0 z-40 transition-transform duration-500 ease-in-out transform ${
+            className={`bg-navDropdown mt-2 rounded-lg w-[220px] origin-top-right absolute right-1 z-40 transition-transform duration-500 ease-in-out transform ${
               showMenu
                 ? "translate-y-0 opacity-100"
                 : "-translate-y-1 opacity-0 pointer-events-none"
@@ -112,6 +113,15 @@ const Navbar = ({
               )}
               <p className="text-white text-sm font-normal">
                 {copied ? "Copied address" : "Copy address"}
+              </p>
+            </button>
+            <button
+              className="appearance-none flex items-center gap-x-2 px-4 py-3 border-b border-gray-700 w-full"
+              onClick={handleAddressExplorer}
+            >
+              <TbWallet className="text-white text-xl" />
+              <p className="text-white text-sm font-normal">
+                View account details
               </p>
             </button>
             <button

@@ -68,8 +68,7 @@ const NewsLetter = () => {
             GET EARLY ACCESS
           </p>
           <p className="text-base md:text-xl font-semibold text-white w-full mt-2">
-            Request for early access and test the new SDK before it launches to
-            the public!
+            Request for early access and test the new SDK before it launches to the public!
           </p>
         </div>
         {success ? (
