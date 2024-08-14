@@ -5,18 +5,22 @@ import { copyToClipBoard, openInNewTab, sliceAddress } from "@/utils";
 import { TbCopy, TbCircleCheck, TbLogout, TbWallet } from "react-icons/tb";
 import Link from "next/link";
 import { useWallet } from "@/context/walletContext";
+import { cn } from "@/utils/utils";
 
 const Navbar = ({
   address,
   loader,
   showButton = true,
+  containerClass,
 }: {
   address: string;
   loader?: boolean;
   showButton?: boolean;
+  containerClass?: string;
 }) => {
   const [copied, setCopied] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const [scrollPosition, setScrollPosition] = useState(0);
 
   const { setAddress, setLoggedIn, setWalletProvider } = useWallet();
 
@@ -53,14 +57,30 @@ const Navbar = ({
   };
 
   useEffect(() => {
-    document.addEventListener("mousedown", handleOutsideClick);
+    const handleScroll = () => {
+      const position = window.scrollY;
+      setScrollPosition(position);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("mousedown", handleOutsideClick);
+
     return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("mousedown", handleOutsideClick);
     };
   }, []);
 
   return (
-    <div className="flex items-center justify-between fixed top-0 p-5 backdrop-blur-3xl gap-y-3 bg-[#050b32] w-full z-50">
+    <div 
+      className={cn(
+        "flex items-center justify-between fixed top-0 p-5 gap-y-3 w-full z-50",
+        `${
+          scrollPosition > 20
+            ? "navbar-glass-effect"
+            : containerClass ?? "bg-navBar"
+        }`
+      )}>
       <Image
         src="/images/web3auth-logo.svg"
         alt="Web3Auth Logo"

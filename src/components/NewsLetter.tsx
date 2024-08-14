@@ -122,7 +122,7 @@ const NewsLetter = () => {
               btnClass="w-full flex justify-center md:w-max mt-0"
               handleClick={handleEmailSubmit}
               loading={isLoading}
-              title="Notify Me"
+              title="Request Early Access"
             ></GradientButton>
           </div>
         )}

@@ -54,7 +54,7 @@ export default function Home() {
     <main className="flex flex-col">
       <Navbar address={""} showButton={false} />
 
-      <section className="lg:h-[calc(100dvh_-_80px)] bg-blend-lighten lg:bg-home bg-no-repeat bg-contain bg-scroll bg-[100%] flex-grow px-6 py-10 md:p-9 md:pb-14 flex flex-col gap-y-10 md:gap-y-20 my-20">
+      <section className="lg:h-[calc(100dvh_-_80px)] bg-blend-lighten lg:bg-home bg-no-repeat home-bg bg-scroll bg-[100%] flex-grow px-6 py-10 md:p-9 md:pb-14 flex flex-col gap-y-10 md:gap-y-20 my-20">
         <div className="flex flex-col text-left gap-y-6 lg:pl-16 mt-2.5">
           <div className="text-left text-3xl sm:banner-heading-text flex flex-col gap-y-1">
             <p>Abstract everything, </p>
