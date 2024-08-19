@@ -27,7 +27,7 @@ const Card = ({
       )}
       <span
         className={cn(
-          "flex flex-col h-full w-full cursor-pointer items-start rounded-30 p-4 xl:p-6 2xl:px-9 2xl:py-6 text-base font-medium text-white backdrop-blur-3xl",
+          "flex flex-col h-full w-full cursor-default items-start rounded-30 p-4 xl:p-6 2xl:px-9 2xl:py-6 text-base font-medium text-white backdrop-blur-3xl",
           {
             "bg-opaque": active,
             "bg-transparent": !active,
