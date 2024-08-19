@@ -40,7 +40,7 @@ export default function Home() {
       // addLog(`Success full login: ${response}`);
     } catch (err: any) {
       console.log(`Error during login: ${JSON.stringify(err)}`);
-      setErrorText("Error while creating global pay account");
+      setErrorText("Error while creating Web3Pay account");
       setSubErrorText(err?.message || "");
       setErrorRetryFunction(() => loginOrRegister);
       setDisplayErrorPopup(true);
