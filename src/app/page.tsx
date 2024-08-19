@@ -112,7 +112,7 @@ export default function Home() {
           />
           <div className="flex flex-col gap-y-6 md:gap-y-8 lg:gap-y-10 lg:w-[60%] p-6 md:p-10 lg:pr-16">
             <div className="text-left flex flex-col gap-y-2">
-              <p className="text-xl text-[32px] font-semibold leading-9 text-white break-words">
+              <p className="text-xl md:text-[32px] font-semibold leading-9 text-white break-words">
                 Interact effortlessly with any chain with assets you already own
               </p>
               <p className="text-base md:text-2xl font-normal text-gray-400">
@@ -123,7 +123,7 @@ export default function Home() {
             </div>
             <div className="gradient-divider"> </div>
             <div className="text-left flex flex-col gap-y-2">
-              <p className="text-xl text-[32px] font-semibold leading-9 text-white break-words">
+              <p className="text-xl md:text-[32px] font-semibold leading-9 text-white break-words">
                 Use your different wallets, no matter the type
               </p>
               <p className="text-base md:text-2xl font-normal text-gray-400">
@@ -133,7 +133,7 @@ export default function Home() {
             </div>
             <div className="gradient-divider"> </div>
             <div className="text-left flex flex-col gap-y-2">
-              <p className="text-xl text-[32px] font-semibold leading-9 text-white break-words">
+              <p className="text-xl md:text-[32px] font-semibold leading-9 text-white break-words">
                 Spend anywhere, anytime, directly via wallet or debit card
                 (Coming Soon)
               </p>
