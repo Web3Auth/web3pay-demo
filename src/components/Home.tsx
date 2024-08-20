@@ -15,14 +15,16 @@ import NewsLetter from "./NewsLetter";
 import Navbar from "./ui/Navbar";
 import { generatePrivate, getPublic } from "@toruslabs/eccrypto";
 import { privateKeyToAddress } from "viem/accounts";
-import { createPublicClient, Hex, http } from "viem";
+import { createClient, createPublicClient, encodeFunctionData, Hex, http } from "viem";
 import { Modal } from "./ui/Modal";
 import ErrorPopup from "./ErrorPopup";
 import { waitForTransactionReceipt } from "viem/actions";
 import axios from "axios";
-import { arbitrumSepolia } from "viem/chains";
+import { arbitrumSepolia, polygonAmoy } from "viem/chains";
 import { OpenloginSessionManager } from "@toruslabs/session-manager";
 import { useWallet } from "@/context/walletContext";
+import { erc721Abi } from "@/utils/abis/erc721";
+import { bundlerActions, ENTRYPOINT_ADDRESS_V07 } from "permissionless";
 
 const STEPS = {
   CONNECT: "Connect",
@@ -31,7 +33,7 @@ const STEPS = {
 };
 
 const Home = ({ address }: { address: string }) => {
-  const [activeStep, setActiveStep] = useState(STEPS.VIEW_SUMMARY);
+  const [activeStep, setActiveStep] = useState(STEPS.CONNECT);
   const [displayErrorPopup, setDisplayErrorPopup] = useState(false);
   const [errorText, setErrorText] = useState("");
   const [subErrorText, setSubErrorText] = useState("");
@@ -76,8 +78,7 @@ const Home = ({ address }: { address: string }) => {
               </p>
             </div>
           )}
-          {(activeStep === STEPS.CONNECT ||
-            activeStep === STEPS.VIEW_SUMMARY) && (
+          {activeStep === STEPS.CONNECT  && (
             <ConnectStep 
               onError={(err) => {
                 setSubErrorText(err);
@@ -98,7 +99,22 @@ const Home = ({ address }: { address: string }) => {
           )}
           {(activeStep === STEPS.CROSS_CHAIN_MINTING ||
             activeStep === STEPS.VIEW_SUMMARY) && (
-            <CrossMintingStep showSummary={activeStep === STEPS.VIEW_SUMMARY} />
+            <CrossMintingStep 
+              onSuccess={() => {
+                setSubErrorText("");
+                setDisplayErrorPopup(false);
+                setActiveStep(STEPS.VIEW_SUMMARY);
+              }}  
+              onError={(err) => {
+                setSubErrorText(err);
+                setDisplayErrorPopup(true);
+              }} 
+              setErrorRetryFunction={(x)=> {
+                setSubErrorText("");
+                setDisplayErrorPopup(false);
+                setErrorRetryFunction(x)
+              }}
+              showSummary={activeStep === STEPS.VIEW_SUMMARY} />
           )}
           {activeStep === STEPS.VIEW_SUMMARY && (
             <div className="flex flex-col items-center justify-center gap-y-20">
@@ -330,23 +346,113 @@ const ConnectStep = ({
 
 const CrossMintingStep = ({
   showSummary = false,
+  onSuccess,
+  onError,
+  setErrorRetryFunction,
 }: {
   showSummary?: boolean;
+  onSuccess: () => void;
+  onError: (err: string) => void;
+  setErrorRetryFunction:  React.Dispatch<React.SetStateAction<() => Promise<void>>>
 }) => {
-  const [isSuccess, setIsSuccess] = useState(true);
+  const { walletProvider, address: web3PayAddress, selectedEnv } = useWallet();
+  const [mintNftState, setMintNftState] = useState({
+    minting: false,
+    mintSuccess: false,
+    mintError: "",
+    mintRedirectUrl: "",
+  });
+   
+  async function mintNft() {
+    try {
+      setMintNftState({
+        mintError: "",
+        minting: true,
+        mintSuccess: false,
+        mintRedirectUrl: "",
+      });
+      const data = encodeFunctionData({
+        abi: erc721Abi,
+        functionName: "mint",
+        args: [web3PayAddress],
+      });
+
+      const resp = await walletProvider?.request({
+        method: "eth_sendTransaction",
+        params: {
+          from: web3PayAddress,
+          to: "0xd774B6e1880dC36A3E9787Ea514CBFC275d2ba61",
+          data,
+          value: "0",
+        },
+      });
+      if (resp) {
+        // setMintSuccess(true);
+        setMintNftState({
+          mintError: "",
+          minting: true,
+          mintSuccess: false,
+          mintRedirectUrl: `https://jiffyscan.xyz/userOpHash/${resp}`,
+        });
+        waitForMinting(resp);
+      }
+      const nftImageUrl = `${calculateBaseUrl(
+        selectedEnv
+      )}/wallet/nft/0xd774B6e1880dC36A3E9787Ea514CBFC275d2ba61`;
+      onSuccess();
+    } catch (e: unknown) {
+      console.error("error minting nft", e);
+      setErrorRetryFunction(async () => await mintNft());
+      onError("Error while minting");
+      setMintNftState({
+        mintError: "Error while minting",
+        minting: false,
+        mintSuccess: false,
+        mintRedirectUrl: "",
+      });
+      throw e;
+    } finally {
+    }
+  }
+
+  async function waitForMinting(hash: Hex) {
+    const bundlerClient = createClient({
+      chain: polygonAmoy,
+      transport: http(
+        "https://rpc.zerodev.app/api/v2/bundler/779a8e75-8332-4e4f-b6e5-acfec9f777d9"
+      ),
+    }).extend(bundlerActions(ENTRYPOINT_ADDRESS_V07));
+
+    // wait for user op hash to be completed
+    const userOperationByHash = await bundlerClient.waitForUserOperationReceipt(
+      {
+        hash,
+        timeout: 1000 * 60 * 3,
+        pollingInterval: 1000 * 3,
+      }
+    );
+    if (userOperationByHash.receipt) {
+      setMintNftState({
+        mintError: "",
+        minting: false,
+        mintSuccess: true,
+        mintRedirectUrl: mintNftState.mintRedirectUrl,
+      });
+    }
+  }
   return (
     <div className="flex flex-col items-center justify-center w-full">
       {!showSummary && (
         <>
           <p className="text-4xl font-bold">
-            {isSuccess ? "Cross-Chain Minting" : "Connecting with Web3Pay"}
+            {mintNftState.mintSuccess ? "Cross-Chain Minting" : "Connecting with Web3Pay"}
           </p>
           <p className="text-2xl font-normal mt-2 w-full md:w-[60%] text-center">
-            {isSuccess
+            {mintNftState.mintSuccess
               ? "Next, use funds from your test wallet to mint your first NFT on a different chain."
               : "For demo purposes, a test funded wallet will be used instead of your external EOA wallets"}
           </p>
-          {isSuccess && (
+          {mintNftState.mintSuccess && (
             <Button
               title="View Demo Summary"
               otherClasses="bg-primary"
@@ -357,23 +463,23 @@ const CrossMintingStep = ({
       )}
       <div
         className={cn("w-full xl:w-[80%] mt-16", {
-          "mt-10": isSuccess,
+          "mt-10": mintNftState.mintSuccess,
           "mt-0": showSummary,
         })}
       >
         <Card
           active
           cardClasses={`${
-            isSuccess ? "!p-6 md:!px-16 md:!py-10" : "!p-0"
+            mintNftState.mintSuccess ? "!p-6 md:!px-16 md:!py-10" : "!p-0"
           } !w-full bg-primary`}
           rootClasses="!w-full"
         >
           <div
             className={cn("flex flex-col md:flex-row items-start gap-x-16", {
-              "items-center": isSuccess,
+              "items-center": mintNftState.mintSuccess,
             })}
           >
-            {isSuccess ? (
+            {mintNftState.mintSuccess ? (
               <span className="relative w-full md:w-[50%]">
                 <Image
                   src={"/images/web3pay-nft.png"}
@@ -401,7 +507,7 @@ const CrossMintingStep = ({
             )}
             <div
               className={cn("flex flex-col w-full p-10 md:pl-0 h-full", {
-                "p-0 mt-6": isSuccess,
+                "p-0 mt-6": mintNftState.mintSuccess,
               })}
             >
               <div className="flex items-center gap-x-2 w-fit">
@@ -420,7 +526,7 @@ const CrossMintingStep = ({
                 />
               </div>
               <p className="text-2xl font-bold text-white w-full mt-4 break-words">
-                {isSuccess
+                {mintNftState.mintSuccess
                   ? "MINT SUCCESSFUL!"
                   : "Mint your first cross-chain NFT with Web3Pay!"}
               </p>
@@ -428,17 +534,17 @@ const CrossMintingStep = ({
                 className={cn(
                   "text-lg font-normal text-gray-400 w-full md:w-[70%] mt-2 mb-6 break-words",
                   {
-                    "md:w-[80%] mb-0": isSuccess,
+                    "md:w-[80%] mb-0": mintNftState.mintSuccess,
                   }
                 )}
               >
-                {isSuccess
+                {mintNftState.mintSuccess
                   ? showSummary
                     ? "Hooray! You just minted a polygon NFT with Arbitrum tokens! "
                     : "You just minted a polygon NFT with Arbitrum tokens! It should appear in your wallet in about 5 minutes."
                   : "Use your Arbitrum Test Tokens to mint an NFT on Polygon, no bridging required."}
               </p>
-              {isSuccess && (
+              {mintNftState.mintSuccess && (
                 <Link
                   href={""}
                   className="text-lg font-normal text-blue-500 mt-6"
@@ -446,7 +552,7 @@ const CrossMintingStep = ({
                   View transaction on Polygon
                 </Link>
               )}
-              {isSuccess && (
+              {mintNftState.mintSuccess && (
                 <Link
                   href={""}
                   className="text-lg font-normal text-blue-500 mt-2"
@@ -454,7 +560,7 @@ const CrossMintingStep = ({
                   View transaction on Arbitrum
                 </Link>
               )}
-              {isSuccess ? (
+              {mintNftState.mintSuccess ? (
                 <Button
                   title="Share your experience on X"
                   otherClasses="bg-primary max-md:!w-full"
@@ -462,8 +568,9 @@ const CrossMintingStep = ({
                 />
               ) : (
                 <GradientButton
+                  loading={mintNftState.minting}
                   title="Mint NFT"
-                  handleClick={() => {}}
+                  handleClick={() => {mintNft()}}
                   btnClass="max-md:!w-full"
                 />
               )}
