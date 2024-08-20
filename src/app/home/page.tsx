@@ -41,6 +41,7 @@ export default function HomePage() {
     mintRedirectUrl: "",
   });
 
+  
   async function mintNft() {
     try {
       const data = encodeFunctionData({

@@ -1,18 +1,28 @@
 import React, { useState } from "react";
 import ImportFlowCard from "./ui/ImportFlowCard";
-import { ConnectWeb3PayStep, IRandomWallet } from "@/utils/interfaces";
+import { ConnectWeb3PayStep, IRandomWallet, SelectedEnv } from "@/utils/interfaces";
 import { openInNewTab, sliceAddress } from "@/utils";
 import Image from "next/image";
 import Card from "./ui/Card";
 import { HiOutlineArrowSmRight } from "react-icons/hi";
 import GradientButton from "./ui/GradientButton";
 import Button from "./ui/Button";
-import { cn } from "@/utils/utils";
+import { calculateBaseUrl, cn } from "@/utils/utils";
 import Link from "next/link";
 import Faq from "./ui/Faq";
 import Footer from "./Footer";
 import NewsLetter from "./NewsLetter";
 import Navbar from "./ui/Navbar";
+import { generatePrivate, getPublic } from "@toruslabs/eccrypto";
+import { privateKeyToAddress } from "viem/accounts";
+import { createPublicClient, Hex, http } from "viem";
+import { Modal } from "./ui/Modal";
+import ErrorPopup from "./ErrorPopup";
+import { waitForTransactionReceipt } from "viem/actions";
+import axios from "axios";
+import { arbitrumSepolia } from "viem/chains";
+import { OpenloginSessionManager } from "@toruslabs/session-manager";
+import { useWallet } from "@/context/walletContext";
 
 const STEPS = {
   CONNECT: "Connect",
@@ -22,6 +32,13 @@ const STEPS = {
 
 const Home = ({ address }: { address: string }) => {
   const [activeStep, setActiveStep] = useState(STEPS.VIEW_SUMMARY);
+  const [displayErrorPopup, setDisplayErrorPopup] = useState(false);
+  const [errorText, setErrorText] = useState("");
+  const [subErrorText, setSubErrorText] = useState("");
+  const [errorRetryFunction, setErrorRetryFunction] = useState<
+    () => Promise<void>
+  >(() => Promise.resolve());
+
 
   return (
     <>
@@ -61,7 +78,23 @@ const Home = ({ address }: { address: string }) => {
           )}
           {(activeStep === STEPS.CONNECT ||
             activeStep === STEPS.VIEW_SUMMARY) && (
-            <ConnectStep showSummary={activeStep === STEPS.VIEW_SUMMARY} />
+            <ConnectStep 
+              onError={(err) => {
+                setSubErrorText(err);
+                setDisplayErrorPopup(true);
+              }}
+              onSuccess={() => {
+                setSubErrorText("");
+                setDisplayErrorPopup(false);
+                setActiveStep(STEPS.CROSS_CHAIN_MINTING);
+              }}    
+              showSummary={activeStep === STEPS.VIEW_SUMMARY}
+              setErrorRetryFunction={(x)=> {
+                setSubErrorText("");
+                setDisplayErrorPopup(false);
+                setErrorRetryFunction(x)
+              }}
+              />
           )}
           {(activeStep === STEPS.CROSS_CHAIN_MINTING ||
             activeStep === STEPS.VIEW_SUMMARY) && (
@@ -76,30 +109,150 @@ const Home = ({ address }: { address: string }) => {
           )}
         </div>
       </section>
+      <Modal
+        isOpen={displayErrorPopup}
+        onClose={() => setDisplayErrorPopup(false)}
+      >
+        <ErrorPopup
+          handleTryAgain={() => errorRetryFunction()}
+          subText={subErrorText}
+          text={errorText}
+        />
+      </Modal>
     </>
   );
 };
 
 export default Home;
 
-const ConnectStep = ({ showSummary = false }: { showSummary?: boolean }) => {
+const ConnectStep = ({ 
+  showSummary = false, 
+  onError, 
+  onSuccess,
+  setErrorRetryFunction,
+}: { 
+  showSummary?: boolean, 
+  onError: (err: string) => void, 
+  onSuccess: () => void,
+  setErrorRetryFunction:  React.Dispatch<React.SetStateAction<() => Promise<void>>>
+ }) => {
   const [randomWallet, setRandomWallet] = useState<IRandomWallet>();
   const [completedSteps, setCompletedSteps] = useState<ConnectWeb3PayStep[]>(
     []
   );
   const [currentStep, setCurrentStep] = useState<ConnectWeb3PayStep>("start");
   const [stepLoader, setStepLoader] = useState(false);
+
+  const { walletProvider, address: web3PayAddress, selectedEnv } = useWallet();
+
   const handleStep = async (step: ConnectWeb3PayStep) => {
     switch (step) {
-      case "start": {
+      case "start": 
+        await handleCreateAndFundRandomWallet();
         break;
-      }
       case "connect":
+        await importAccount(randomWallet as IRandomWallet);
         break;
       default:
         break;
     }
-  };
+  }
+  async function handleCreateAndFundRandomWallet() {
+    try {
+      setStepLoader(true);
+      const privateKeyBuf = generatePrivate();
+      const publicKeyBuf = getPublic(privateKeyBuf);
+
+      const privateKey = privateKeyBuf.toString("hex");
+      const publicKey = publicKeyBuf.toString("hex");
+
+      const address = privateKeyToAddress(
+        privateKey.startsWith("0x") ? (privateKey as Hex) : `0x${privateKey}`
+      );
+
+      await fundAccount(address);
+      setRandomWallet({
+        publicKey,
+        privateKey,
+        address,
+        keyType: "secp256k1",
+      });
+      setCompletedSteps([...completedSteps, "start"]);
+      setCurrentStep("connect");
+    } catch (err: any) {
+      console.error("error while creating random wallet", err);
+      onError("Error while creating or funding wallet");
+      setErrorRetryFunction(() => handleCreateAndFundRandomWallet());
+    } finally {
+      setStepLoader(false);
+    }
+  }
+
+  async function fundAccount(address: string) {
+    try {
+        setStepLoader(true);
+        const baseUrl = calculateBaseUrl(selectedEnv);
+
+        const resp = await axios.post(`${baseUrl}/api/mint`, {
+          chainId: "421614",
+          toAddress: address,
+        });
+        const { txHash: hash, message } = resp.data;
+        // setTxHash(hash);
+        const publicClient = createPublicClient({
+          chain: arbitrumSepolia,
+          transport: http(
+            "https://arbitrum-sepolia.infura.io/v3/dee726a2930e4573a743a5c8f79942c1"
+          ),
+        });
+        if (hash) {
+          await waitForTransactionReceipt(publicClient, {
+            hash,
+          });
+        } else {
+          throw new Error("Failed to fund test wallet");
+        }
+
+    } catch (error: any) {
+      onError("Error while Funding Wallet");
+      // check if user has enough balance and proceed to next step
+    } finally {
+      setStepLoader(false);
+    }
+  }
+
+  async function importAccount(randWallet: IRandomWallet) {
+    try {
+      setStepLoader(true);
+      if (web3PayAddress) {
+        const { privateKey, publicKey, keyType } = randWallet;
+        let sessionId = OpenloginSessionManager.generateRandomSessionKey();
+        const sessionMgr = new OpenloginSessionManager({ sessionId });
+        sessionId = await sessionMgr.createSession({
+          privateKey,
+          publicKey,
+          keyType,
+        });
+
+        const response = await walletProvider?.request({
+          method: "wallet_importW3aSession",
+          params: {
+            sessionId,
+          },
+        });
+        console.log("Response", response);
+        setCompletedSteps([...completedSteps, "connect"]);
+
+        onSuccess();
+      }
+    } catch (e: unknown) {
+      console.error("error importing account", e);
+      onError("Error while connecting account");
+      throw e;
+    } finally {
+      setStepLoader(true);
+    }
+  }
   return (
     <div className="flex flex-col items-center justify-center">
       {!showSummary && (
@@ -127,7 +280,7 @@ const ConnectStep = ({ showSummary = false }: { showSummary?: boolean }) => {
           resultOpacity
           resultText={sliceAddress(randomWallet?.address || "")}
           resultLogo="arbitrum"
-          handleClick={() => handleStep("start")}
+          handleClick={() => handleStep('start')}
           btnText="Create test wallet"
           loading={stepLoader}
           handleCompletedLink={() =>
@@ -173,6 +326,7 @@ const ConnectStep = ({ showSummary = false }: { showSummary?: boolean }) => {
     </div>
   );
 };
+
 
 const CrossMintingStep = ({
   showSummary = false,
@@ -320,3 +474,6 @@ const CrossMintingStep = ({
     </div>
   );
 };
+
+
+
