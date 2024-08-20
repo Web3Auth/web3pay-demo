@@ -92,7 +92,9 @@ const Navbar = ({
           width={40}
         />
         {logoText && (
-          <p className="text-2xl font-normal text-white">{logoText}</p>
+          <p className="text-2xl font-normal text-white hidden md:block">
+            {logoText}
+          </p>
         )}
       </div>
       {showButton ? (

@@ -46,13 +46,13 @@ const Home = ({ address }: { address: string }) => {
           className="z-0 w-full h-full opacity-20 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
         />
 
-        <div className="mt-16 flex flex-col gap-y-20">
+        <div className="mt-16 flex flex-col gap-y-16 md:gap-y-20">
           {activeStep === STEPS.VIEW_SUMMARY && (
             <div className="text-center">
-              <p className="text-3xl sm:banner-heading-text blue-gradient-text">
+              <p className="text-32 sm:banner-heading-text blue-gradient-text">
                 Web3Pay Demo
               </p>
-              <p className="text-2xl font-normal text-white w-[60%] mx-auto mt-6">
+              <p className="text-base md:text-2xl font-normal text-white w-full md:w-[60%] mx-auto mt-6">
                 Here’s what you experienced when leveraging your EOA’s token
                 liquidity for cross-chain transactions without gas fees or
                 bridges
@@ -71,7 +71,7 @@ const Home = ({ address }: { address: string }) => {
             <div className="flex flex-col items-center justify-center gap-y-20">
               <Faq />
               <NewsLetter />
-              <Footer containerClass="mb-0 p-0 sm:px-0 w-[90%]" />
+              <Footer containerClass="mb-0 p-0 sm:px-0 w-full md:w-[90%]" />
             </div>
           )}
         </div>
@@ -111,7 +111,12 @@ const ConnectStep = ({ showSummary = false }: { showSummary?: boolean }) => {
           </p>
         </>
       )}
-      <div className="mt-16 w-full flex items-center flex-col sm:flex-row justify-center md:w-[60%]">
+      <div
+        className={cn(
+          "mt-16 w-full flex items-center flex-col sm:flex-row justify-center lg:w-[85%] xl:w-[60%]",
+          { "mt-0": showSummary }
+        )}
+      >
         <ImportFlowCard
           title="Create your funded wallet on Arbitrum"
           description="Get a funded test wallet for the demo that will stand in for your external wallets"
@@ -174,7 +179,7 @@ const CrossMintingStep = ({
 }: {
   showSummary?: boolean;
 }) => {
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(true);
   return (
     <div className="flex flex-col items-center justify-center w-full">
       {!showSummary && (
@@ -196,23 +201,32 @@ const CrossMintingStep = ({
           )}
         </>
       )}
-      <div className={cn("w-[80%] mt-16", { "mt-10": isSuccess })}>
+      <div
+        className={cn("w-full xl:w-[80%] mt-16", {
+          "mt-10": isSuccess,
+          "mt-0": showSummary,
+        })}
+      >
         <Card
           active
           cardClasses={`${
-            isSuccess ? "!px-16 !py-10" : "!p-0"
+            isSuccess ? "!p-6 md:!px-16 md:!py-10" : "!p-0"
           } !w-full bg-primary`}
           rootClasses="!w-full"
         >
-          <div className="flex flex-col md:flex-row items-start gap-x-16">
+          <div
+            className={cn("flex flex-col md:flex-row items-start gap-x-16", {
+              "items-center": isSuccess,
+            })}
+          >
             {isSuccess ? (
-              <span className="relative w-[50%]">
+              <span className="relative w-full md:w-[50%]">
                 <Image
                   src={"/images/web3pay-nft.png"}
                   alt="cross chain nft mint"
                   height={300}
                   width={300}
-                  className="w-[300px] h-[300px]"
+                  className="w-full h-full md:w-[300px] md:h-[300px]"
                 />
                 <Image
                   src={`/icons/polygon.svg`}
@@ -233,7 +247,7 @@ const CrossMintingStep = ({
             )}
             <div
               className={cn("flex flex-col w-full p-10 md:pl-0 h-full", {
-                "p-0": isSuccess,
+                "p-0 mt-6": isSuccess,
               })}
             >
               <div className="flex items-center gap-x-2 w-fit">
@@ -265,7 +279,9 @@ const CrossMintingStep = ({
                 )}
               >
                 {isSuccess
-                  ? "You just minted a polygon NFT with Arbitrum tokens! It should appear in your wallet in about 5 minutes."
+                  ? showSummary
+                    ? "Hooray! You just minted a polygon NFT with Arbitrum tokens! "
+                    : "You just minted a polygon NFT with Arbitrum tokens! It should appear in your wallet in about 5 minutes."
                   : "Use your Arbitrum Test Tokens to mint an NFT on Polygon, no bridging required."}
               </p>
               {isSuccess && (
@@ -287,11 +303,15 @@ const CrossMintingStep = ({
               {isSuccess ? (
                 <Button
                   title="Share your experience on X"
-                  otherClasses="bg-primary"
+                  otherClasses="bg-primary max-md:!w-full"
                   style={{ marginTop: "24px" }}
                 />
               ) : (
-                <GradientButton title="Mint NFT" handleClick={() => {}} />
+                <GradientButton
+                  title="Mint NFT"
+                  handleClick={() => {}}
+                  btnClass="max-md:!w-full"
+                />
               )}
             </div>
           </div>

@@ -44,7 +44,7 @@ const FAQ = () => {
       <p className="bg-gradient-to-br from-gradient-one via-gradient-two via-60% to-gradient-five inline-block text-transparent bg-clip-text text-4xl md:text-5xl lg:text-[56px] font-bold text-center">
         Frequently Asked Questions
       </p>
-      <div className="w-full max-md:px-10 md:w-[70%] md:mx-auto">
+      <div className="w-full md:w-[70%] mx-0 md:mx-auto">
         {FAQList.map((item, index) => {
           return (
             <div key={item.ques}>
