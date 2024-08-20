@@ -49,7 +49,7 @@ const Home = ({ address }: { address: string }) => {
         <div className="mt-16 flex flex-col gap-y-20">
           {activeStep === STEPS.VIEW_SUMMARY && (
             <div className="text-center">
-              <p className="text-3xl sm:banner-heading-text gradient-text">
+              <p className="text-3xl sm:banner-heading-text blue-gradient-text">
                 Web3Pay Demo
               </p>
               <p className="text-2xl font-normal text-white w-[80%] mx-auto">

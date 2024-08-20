@@ -19,6 +19,10 @@ body {
     @apply bg-gradient-to-r from-gradient-three via-gradient-four to-gradient-five inline-block text-transparent bg-clip-text;
   }
 
+  .blue-gradient-text {
+    @apply bg-gradient-to-br from-gradient-three via-gradient-four to-gradient-two inline-block text-transparent bg-clip-text;
+  }
+
   .gradient-border {
     @apply absolute inset-[-1000%] bg-[conic-gradient(from_90deg_at_50%_50%,#18F6DB_0%,#a65ce6_40%,#66D4F6_100%)];
   }
