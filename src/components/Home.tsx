@@ -397,12 +397,11 @@ const CrossMintingStep = ({
           userOpHashUrl: `https://jiffyscan.xyz/userOpHash/${resp}`,
           txHashUrl: "",
         });
-        waitForMinting(resp);
+        await waitForMinting(resp);
       }
       const nftImageUrl = `${calculateBaseUrl(
         selectedEnv
       )}/wallet/nft/0xd774B6e1880dC36A3E9787Ea514CBFC275d2ba61`;
-      onSuccess();
     } catch (e: unknown) {
       console.error("error minting nft", e);
       setErrorRetryFunction(async () => await mintNft());
@@ -459,6 +458,7 @@ const CrossMintingStep = ({
           </p>
           {mintNftState.mintSuccess && (
             <Button
+              onClick={() => onSuccess()}
               title="View Demo Summary"
               otherClasses="bg-primary"
               style={{ marginTop: "24px" }}
@@ -551,6 +551,7 @@ const CrossMintingStep = ({
               </p>
               {mintNftState.mintSuccess && (
                 <Link
+                  target="_blank"
                   href={mintNftState.txHashUrl || mintNftState.userOpHashUrl}
                   className="text-lg font-normal text-blue-500 mt-6"
                 >
