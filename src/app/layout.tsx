@@ -6,7 +6,7 @@ import { WalletProviderContext } from "@/context/walletContext";
 const inter = DM_Sans({ subsets: ["latin", "latin-ext"] });
 
 export const metadata: Metadata = {
-  title: "Web3Auth | Global Account Demo",
+  title: "Web3Pay | Web3Auth",
   description:
     "Global Account Demo is a simple example of how to use Web3Auth to create a global account system.",
   twitter: {
