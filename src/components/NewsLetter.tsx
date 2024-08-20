@@ -5,8 +5,13 @@ import Button from "./ui/Button";
 import Image from "next/image";
 import Card from "./ui/Card";
 import GradientButton from "./ui/GradientButton";
+import axios from "axios";
+import { useWallet } from "@/context/walletContext";
+import { calculateBaseUrl } from "@/utils/utils";
 
 const NewsLetter = () => {
+  const { selectedEnv } = useWallet();
+
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -25,11 +30,18 @@ const NewsLetter = () => {
         setError("Invalid email address. Please try again.");
         return;
       }
-      setSuccess(true);
-      setEmail("");
-      setTimeout(() => {
-        setSuccess(false);
-      }, 5000);
+      // call the subscribe api here
+      const baseUrl = calculateBaseUrl(selectedEnv);
+      const { data } = await axios.post(`${baseUrl}/api/early-access`, {
+        email,
+      });
+      if(data.success) {
+        setSuccess(true);
+        setEmail("");
+        setTimeout(() => {
+          setSuccess(false);
+        }, 5000);
+      }
 
       //   const response = await fetch("/api/subscribe", {
       //     method: "POST",
@@ -75,7 +87,7 @@ const NewsLetter = () => {
           <Card>
             <div className="flex items-center justify-start gap-4 p-4">
               <Image
-                src={"/success.svg"}
+                src={"/images/success.svg"}
                 alt="success"
                 height={80}
                 width={80}
