@@ -11,7 +11,7 @@ import Navbar from "@/components/ui/Navbar";
 import { erc721Abi } from "@/utils/abis/erc721";
 import { IRandomWallet, SelectedEnv } from "@/utils/interfaces";
 import { OpenloginSessionManager } from "@toruslabs/session-manager";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { encodeFunctionData, Hex } from "viem";
 import { calculateBaseUrl } from "@/utils/utils";
 import MintSuccess from "@/components/MintSuccess";
@@ -21,13 +21,18 @@ import { createClient, http } from "viem";
 import { polygonAmoy } from "viem/chains";
 import { bundlerActions, ENTRYPOINT_ADDRESS_V07 } from "permissionless";
 import Footer from "@/components/Footer";
+import Home from "@/components/Home";
 
-export default function Home() {
-  const [isLoading, setIsLoading] = useState(false);
+export default function HomePage() {
+  const [isLoading, setIsLoading] = useState(true);
   const [mintSuccess, setMintSuccess] = useState(false);
   const [nftSuccess, setNftSuccess] = useState(false);
   // todo: change this before deployment or move it to env
   const { walletProvider, address, selectedEnv } = useWallet();
+
+  useEffect(() => {
+    setTimeout(() => setIsLoading(false), 3000);
+  }, []);
 
   const [mintNftState, setMintNftState] = useState({
     minting: false,
@@ -36,6 +41,7 @@ export default function Home() {
     mintRedirectUrl: "",
   });
 
+  
   async function mintNft() {
     try {
       const data = encodeFunctionData({
@@ -128,105 +134,111 @@ export default function Home() {
 
   return (
     <main className="flex flex-col">
-      <Navbar
-        address={address}
-        loader={isLoading}
-        containerClass="bg-primary"
-      />
-      <section className="lg:h-[calc(100dvh_-_70px)] lg:bg-nft bg-opacity-35 bg-cover bg-top flex-grow px-6 py-10 md:p-9 flex flex-col max-md:gap-y-10 mt-20">
-        <div className="flex flex-col text-center gap-y-6 mt-10 md:mt-5 w-full">
-          <div className="text-center text-3xl sm:text-5xl lg:banner-heading-text flex flex-col gap-y-1">
-            <div className="flex flex-col md:flex-row items-center gap-x-2 justify-center">
-              <p>Experience</p>
-              <div className="content">
-                <div className="content__container !px-0 text-center">
-                  <ul className="content__container__list gradient-text text-3xl sm:text-5xl lg:banner-heading-text max-md:!text-center">
-                    <li className="content__container__list__item">
-                      Wallet <span className="gradient-tex">Abstraction</span>
-                    </li>
-                    <li className="content__container__list__item">
-                      Liquidity{" "}
-                      <span className="gradient-tex">Abstraction</span>
-                    </li>
-                    <li className="content__container__list__item">
-                      Chain <span className="gradient-tex">Abstraction</span>
-                    </li>
-                    <li className="content__container__list__item">
-                      Wallet <span className="gradient-tex">Abstraction</span>
-                    </li>
-                  </ul>
+      <>
+        {isLoading ? (
+          <>
+            <Navbar
+              address={address}
+              containerClass="bg-transparent"
+              showButton={false}
+            />
+            <section className="h-[calc(100dvh_-_70px)] flex-grow px-6 py-10 md:p-9 flex flex-col items-center justify-center relative z-1 max-md:gap-y-10 mt-8">
+              <Image
+                src={"/images/cross-chain-gradient.png"}
+                alt="cross chain"
+                width={400}
+                height={400}
+                className="z-0 w-full h-full opacity-50 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+              />
+              <div className="flex flex-col text-center gap-y-6 mt-10 md:mt-5 w-full">
+                <div className="text-center text-3xl sm:text-5xl lg:banner-heading-text flex flex-col gap-y-1">
+                  <div className="flex flex-col md:flex-row items-center gap-x-2 justify-center">
+                    <p>Experience</p>
+                    <div className="content">
+                      <div className="content__container !px-0 text-center">
+                        <ul className="content__container__list gradient-text text-3xl sm:text-5xl lg:banner-heading-text max-md:!text-center">
+                          <li className="content__container__list__item">
+                            Wallet{" "}
+                            <span className="gradient-tex">Abstraction</span>
+                          </li>
+                          <li className="content__container__list__item">
+                            Liquidity{" "}
+                            <span className="gradient-tex">Abstraction</span>
+                          </li>
+                          <li className="content__container__list__item">
+                            Chain{" "}
+                            <span className="gradient-tex">Abstraction</span>
+                          </li>
+                          <li className="content__container__list__item">
+                            Wallet{" "}
+                            <span className="gradient-tex">Abstraction</span>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <p>All-in-One</p>
                 </div>
               </div>
-            </div>
-            <p>All-in-One</p>
-          </div>
-        </div>
-        <Image
-          src="/images/cross-chain-home-bg.svg"
-          alt="bg"
-          height={200}
-          width={100}
-          className="w-full lg:hidden"
-        />
-        {/* <Image
-          src="/images/cross-chain-home-bg.svg"
-          alt="bg"
-          height={100}
-          width={580}
-          className="mx-auto shadow-2xl rounded-3xl opacity-80 w-full lg:w-[62%]  xl:w-[50%] 2xl:w-[60%] md:-mt-24 lg:-mt-28"
-        /> */}
-      </section>
+            </section>
+          </>
+        ) : (
+          <>
+            <Home address={address} />
 
-      <section className="lg:h-dvh flex-grow flex flex-col items-center justify-center relative z-1 bg-darkCard py-11 px-9 pb-20 w-full">
-        <Image
-          src={"/images/cross-chain-gradient.png"}
-          alt="cross chain"
-          width={400}
-          height={400}
-          className="z-0 w-full h-full opacity-50 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-        />
-        <div className="flex flex-col items-center justify-center text-center">
-          <Button cursorClassName="cursor-default" title="Demo"></Button>
-          <NonImportFlow
-            mintState={mintNftState}
-            handleMintNft={mintNft}
-            address={address}
-            selectedEnv={selectedEnv}
-          />
-        </div>
-      </section>
+            {/* <section className="md:h-dvh flex-grow flex flex-col items-center justify-center relative z-1 bg-darkCard py-11 px-9 pb-20 w-full">
+              <Image
+                src={"/images/cross-chain-gradient.png"}
+                alt="cross chain"
+                width={400}
+                height={400}
+                className="z-0 w-full h-full opacity-50 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+              />
+              <div className="flex flex-col items-center justify-center text-center">
+                <Button cursorClassName="cursor-default" title="Demo"></Button>
+                <NonImportFlow
+                  mintState={mintNftState}
+                  handleMintNft={mintNft}
+                  address={address}
+                  selectedEnv={selectedEnv}
+                />
+              </div>
+            </section>
 
-      <section className="flex-grow p-10 md:py-32 md:px-20 text-center w-full">
-        <p className="gradient-text text-3xl md:text-5xl font-bold md:w-[80%]">
-          Keeping track of multiple chains can be overwhelming. Let us make it
-          easier for you.
-        </p>
-      </section>
+            <section className="flex-grow p-10 md:py-32 md:px-20 text-center w-full">
+              <p className="gradient-text text-3xl md:text-5xl font-bold md:w-[80%]">
+                Keeping track of multiple chains can be overwhelming. Let us
+                make it easier for you.
+              </p>
+            </section>
 
-      <section className="lg:h-dvh flex-grow flex flex-col items-center justify-center relative z-1 bg-darkCard py-11 px-9 pb-20">
-        <Image
-          src={"/images/cross-chain-gradient.png"}
-          alt="cross chain"
-          width={400}
-          height={400}
-          className="z-0 w-full h-full opacity-50 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-        />
-        <div className="flex flex-col items-center justify-center text-center w-full">
-          <Button cursorClassName="cursor-default" title="Demo"></Button>
-          <ImportFlow
-            handleImportAccount={importAccount}
-            handleMintNft={mintNft}
-            selectedEnv={selectedEnv}
-            mintState={mintNftState}
-          />
-        </div>
-      </section>
+            <section className="md:h-dvh flex-grow flex flex-col items-center justify-center relative z-1 bg-darkCard py-11 px-9 pb-20">
+              <Image
+                src={"/images/cross-chain-gradient.png"}
+                alt="cross chain"
+                width={400}
+                height={400}
+                className="z-0 w-full h-full opacity-50 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+              />
+              <div className="flex flex-col items-center justify-center text-center w-full">
+                <Button cursorClassName="cursor-default" title="Demo"></Button>
+                <ImportFlow
+                  handleImportAccount={importAccount}
+                  handleMintNft={mintNft}
+                  selectedEnv={selectedEnv}
+                  mintState={mintNftState}
+                />
+              </div>
+            </section>
 
-      <Footer />
+            <Footer />
 
-      <Modal isOpen={mintSuccess} onClose={() => setMintSuccess(false)}>
-        <MintSuccess />
-      </Modal>
+            <Modal isOpen={mintSuccess} onClose={() => setMintSuccess(false)}>
+              <MintSuccess />
+            </Modal> */}
+          </>
+        )}
+      </>
     </main>
   );
 }

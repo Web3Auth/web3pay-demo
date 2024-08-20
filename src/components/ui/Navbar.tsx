@@ -12,11 +12,13 @@ const Navbar = ({
   loader,
   showButton = true,
   containerClass,
+  logoText,
 }: {
   address: string;
   loader?: boolean;
   showButton?: boolean;
   containerClass?: string;
+  logoText?: string;
 }) => {
   const [copied, setCopied] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
@@ -72,7 +74,7 @@ const Navbar = ({
   }, []);
 
   return (
-    <div 
+    <div
       className={cn(
         "flex items-center justify-between fixed top-0 p-5 gap-y-3 w-full z-50",
         `${
@@ -80,13 +82,21 @@ const Navbar = ({
             ? "navbar-glass-effect"
             : containerClass ?? "bg-navBar"
         }`
-      )}>
-      <Image
-        src="/images/web3auth-logo.svg"
-        alt="Web3Auth Logo"
-        height={40}
-        width={40}
-      />
+      )}
+    >
+      <div className="flex items-center gap-x-6">
+        <Image
+          src="/images/web3auth-logo.svg"
+          alt="Web3Auth Logo"
+          height={40}
+          width={40}
+        />
+        {logoText && (
+          <p className="text-2xl font-normal text-white hidden md:block">
+            {logoText}
+          </p>
+        )}
+      </div>
       {showButton ? (
         <div className="relative" ref={dropdownRef}>
           <Button

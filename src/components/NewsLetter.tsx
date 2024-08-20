@@ -74,13 +74,14 @@ const NewsLetter = () => {
 
   return (
     <>
-      <div className="w-[90%] mx-auto rounded-3xl border border-gray-600 p-6 md:px-8 md:py-16 bg-gradient-to-br from-[#061e58] via-[#031e4d] to-[#29134c] flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-4">
+      <div className="w-full md:w-[90%] mx-auto rounded-3xl border border-gray-600 p-6 md:px-8 md:py-16 bg-gradient-to-br from-[#061e58] via-[#031e4d] to-[#29134c] flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-4">
         <div>
           <p className="text-[#1AC7FE] text-base font-bold uppercase">
             GET EARLY ACCESS
           </p>
           <p className="text-base md:text-xl font-semibold text-white w-full mt-2">
-            Request for early access and test the new SDK before it launches to the public!
+            Request for early access and test the new SDK before it launches to
+            the public!
           </p>
         </div>
         {success ? (

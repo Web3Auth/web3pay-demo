@@ -19,6 +19,10 @@ body {
     @apply bg-gradient-to-r from-gradient-three via-gradient-four to-gradient-five inline-block text-transparent bg-clip-text;
   }
 
+  .blue-gradient-text {
+    @apply bg-gradient-to-br from-gradient-three via-gradient-four to-gradient-two inline-block text-transparent bg-clip-text;
+  }
+
   .gradient-border {
     @apply absolute inset-[-1000%] bg-[conic-gradient(from_90deg_at_50%_50%,#18F6DB_0%,#a65ce6_40%,#66D4F6_100%)];
   }
@@ -133,6 +137,36 @@ body {
     glow 2500ms linear infinite 2000ms;
   animation: reveal 3000ms ease-in-out forwards 200ms,
     glow 2500ms linear infinite 2000ms;
+}
+
+.accordion {
+  transition: 10s;
+}
+
+.accordion:after {
+  content: "\002B";
+  color: #777;
+  font-weight: bold;
+  float: right;
+  margin-left: 5px;
+}
+
+.active:after {
+  content: "\hello";
+}
+
+.panel {
+  padding: 0 18px;
+  background-color: white;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 10s ease-in-out;
+}
+
+.panel-full {
+  max-height: auto;
+  overflow: hidden;
+  transition: max-height 10s ease-in-out;
 }
 
 @keyframes spin {

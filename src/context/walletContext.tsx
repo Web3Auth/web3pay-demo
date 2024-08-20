@@ -24,7 +24,7 @@ export const WalletProviderContext = ({
   children: React.ReactNode;
 }) => {
   const [address, setAddress] = useState("");
-  const [selectedEnv, setSelectedEnv] = useState<SelectedEnv>("production");
+  const [selectedEnv, setSelectedEnv] = useState<SelectedEnv>("local");
   const [walletProvider, setWalletProvider] = useState<WalletProvider | null>(
     null
   );
