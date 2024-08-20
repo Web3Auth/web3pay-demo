@@ -43,8 +43,8 @@ export const WalletProviderContext = ({
         new WalletProvider({
           metadata: {
             appChainIds: [chainId],
-            appName: "Test Wallet",
-            appLogoUrl: "https://web3auth.io/images/web3authlog.png",
+            appName: "Web3Pay Demo",
+            appLogoUrl: "https://lrc-accounts.web3auth.io/images/w3a-light.svg",
           },
           preference: {
             keysUrl: getWalletURL(),
