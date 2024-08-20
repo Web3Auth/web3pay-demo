@@ -3,27 +3,27 @@ import Image from "next/image";
 
 const FAQList = [
   {
-    ques: "What is the Web3Auth Layer?",
+    ques: "What is Web3Pay?",
     answer:
       "The Web3Auth Layer is an open authentication layer that aggregates and abstracts different fragments of users' digital identities, providing an interoperable Proof of Humanity powered by $AUTH. This innovative layer safeguards genuine human interactions online, combating AI deep fakes, bots, Sybil attacks, and other threats with advanced zero-knowledge proofs. It empowers users to control, monetize, and truly own their identities, paving the way for a more secure and equitable internet ecosystem.",
   },
   {
-    ques: "What is the Web3Auth?",
+    ques: "How does Web3Pay work?",
     answer:
       "Web3Auth is the leading Wallet-as-a-Service (WaaS) provider that empowers users to manage a non-custodial wallet intuitively. It leverages enterprise-grade Multi-Party Computation and Account Abstraction tooling, alongside social logins, biometrics, OIDC, and FIDO for a familiar yet seamless user experience. Web3Auth works with Fortune 500 brands like NBCUniversal, Fox Media, McDonald's, SK Planet, and Web3 pioneers like Trust Wallet, Binance, Animoca Brands, and Kukai, among others. To date, it proudly supports thousands of Web3 projects with more than 20 million monthly users.",
   },
   {
-    ques: "What are AUTH points?",
+    ques: "Can i use any chain with Web3Pay?",
     answer:
       "$AUTH points are given to users participating in Phase 1 of Web3Auth Layer. Users with $AUTH points will be eligible for upcoming airdrops and will benefit from exclusive features and rewards within the Web3Auth ecosystem.",
   },
   {
-    ques: "How can I earn $AUTH points?",
+    ques: "How do I integrate Web3Pay?",
     answer:
       "There are several methods to earn points, including weekly quests, completing your profile, daily check-ins, referrals, and partner quests. Partner quests are frequently updated and refreshed. Keep a lookout for more features rolling out in Phase 2.",
   },
   {
-    ques: "Do i have to connect my wallet?",
+    ques: "How much is Web3Pay?",
     answer:
       "Users can choose to connect their preferred wallet on their profile page.",
   },
