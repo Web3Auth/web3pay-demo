@@ -4,7 +4,7 @@ export interface IRandomWallet {
   privateKey: string;
   publicKey: string;
   address: string;
-  keyType: TRandomWalletKeyType; 
+  keyType: TRandomWalletKeyType;
 }
 
 export type SelectedEnv = "local" | "production";
@@ -18,3 +18,5 @@ export type ImportFlowStep =
   | "completed";
 
 export type NonImportFlowStep = "start" | "fundToken" | "mintNft" | "completed";
+
+export type ConnectWeb3PayStep = "start" | "connect";

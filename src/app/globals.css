@@ -135,6 +135,36 @@ body {
     glow 2500ms linear infinite 2000ms;
 }
 
+.accordion {
+  transition: 10s;
+}
+
+.accordion:after {
+  content: "\002B";
+  color: #777;
+  font-weight: bold;
+  float: right;
+  margin-left: 5px;
+}
+
+.active:after {
+  content: "\hello";
+}
+
+.panel {
+  padding: 0 18px;
+  background-color: white;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 10s ease-in-out;
+}
+
+.panel-full {
+  max-height: auto;
+  overflow: hidden;
+  transition: max-height 10s ease-in-out;
+}
+
 @keyframes spin {
   0% {
     transform: rotate(0deg);
