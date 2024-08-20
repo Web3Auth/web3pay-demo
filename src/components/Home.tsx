@@ -360,7 +360,8 @@ const CrossMintingStep = ({
     minting: false,
     mintSuccess: false,
     mintError: "",
-    mintRedirectUrl: "",
+    userOpHashUrl: "",
+    txHashUrl: "",
   });
    
   async function mintNft() {
@@ -369,7 +370,8 @@ const CrossMintingStep = ({
         mintError: "",
         minting: true,
         mintSuccess: false,
-        mintRedirectUrl: "",
+        userOpHashUrl: "",
+        txHashUrl: "",
       });
       const data = encodeFunctionData({
         abi: erc721Abi,
@@ -391,8 +393,9 @@ const CrossMintingStep = ({
         setMintNftState({
           mintError: "",
           minting: true,
-          mintSuccess: false,
-          mintRedirectUrl: `https://jiffyscan.xyz/userOpHash/${resp}`,
+          mintSuccess: true,
+          userOpHashUrl: `https://jiffyscan.xyz/userOpHash/${resp}`,
+          txHashUrl: "",
         });
         waitForMinting(resp);
       }
@@ -408,7 +411,8 @@ const CrossMintingStep = ({
         mintError: "Error while minting",
         minting: false,
         mintSuccess: false,
-        mintRedirectUrl: "",
+        userOpHashUrl: "",
+        txHashUrl: "",
       });
       throw e;
     } finally {
@@ -436,7 +440,8 @@ const CrossMintingStep = ({
         mintError: "",
         minting: false,
         mintSuccess: true,
-        mintRedirectUrl: mintNftState.mintRedirectUrl,
+        userOpHashUrl: `https://jiffyscan.xyz/userOpHash/${hash}`,
+        txHashUrl: `https://amoy.polygonscan.com/tx/${userOperationByHash.receipt.transactionHash}`,
       });
     }
   }
@@ -546,20 +551,20 @@ const CrossMintingStep = ({
               </p>
               {mintNftState.mintSuccess && (
                 <Link
-                  href={""}
+                  href={mintNftState.txHashUrl || mintNftState.userOpHashUrl}
                   className="text-lg font-normal text-blue-500 mt-6"
                 >
                   View transaction on Polygon
                 </Link>
               )}
-              {mintNftState.mintSuccess && (
+              {/* {mintNftState.mintSuccess && (
                 <Link
                   href={""}
                   className="text-lg font-normal text-blue-500 mt-2"
                 >
                   View transaction on Arbitrum
                 </Link>
-              )}
+              )} */}
               {mintNftState.mintSuccess ? (
                 <Button
                   title="Share your experience on X"
