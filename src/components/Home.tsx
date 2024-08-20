@@ -52,7 +52,7 @@ const Home = ({ address }: { address: string }) => {
               <p className="text-3xl sm:banner-heading-text blue-gradient-text">
                 Web3Pay Demo
               </p>
-              <p className="text-2xl font-normal text-white w-[80%] mx-auto">
+              <p className="text-2xl font-normal text-white w-[60%] mx-auto mt-6">
                 Here’s what you experienced when leveraging your EOA’s token
                 liquidity for cross-chain transactions without gas fees or
                 bridges
