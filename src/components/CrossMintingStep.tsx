@@ -14,6 +14,7 @@ import { erc721Abi } from "@/utils/abis/erc721";
 import ErrorPopup from "./ErrorPopup";
 import { Modal } from "./ui/Modal";
 import { useRouter } from "next/navigation";
+import { openInNewTab } from "@/utils";
 
 const CrossMintingStep = ({
   showSummary = false,
@@ -258,6 +259,9 @@ const CrossMintingStep = ({
                   title="Share your experience on X"
                   otherClasses="bg-primary max-md:!w-full"
                   style={{ marginTop: "24px" }}
+                  onClick={() => {
+                    openInNewTab("https://twitter.com/intent/tweet?text=I%27ve%20managed%20to%20mint%20an%20NFT%20on%20Polygon%20using%20Arbitrum%20tokens!%20Try%20it%20here!%20%23web3pay&url=https://demo-web3pay.tor.us/home")
+                  }}
                 />
               ) : (
                 <GradientButton
