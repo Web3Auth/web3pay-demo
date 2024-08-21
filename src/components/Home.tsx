@@ -392,7 +392,7 @@ const CrossMintingStep = ({
         // setMintSuccess(true);
         setMintNftState({
           mintError: "",
-          minting: true,
+          minting: false,
           mintSuccess: true,
           userOpHashUrl: `https://jiffyscan.xyz/userOpHash/${resp}`,
           txHashUrl: "",
@@ -422,7 +422,7 @@ const CrossMintingStep = ({
     const bundlerClient = createClient({
       chain: polygonAmoy,
       transport: http(
-        "https://rpc.zerodev.app/api/v2/bundler/779a8e75-8332-4e4f-b6e5-acfec9f777d9"
+        "https://rpc-proxy.web3auth.io/?network=80002"
       ),
     }).extend(bundlerActions(ENTRYPOINT_ADDRESS_V07));
 
