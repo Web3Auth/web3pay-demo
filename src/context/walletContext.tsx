@@ -44,7 +44,7 @@ export const WalletProviderContext = ({
           metadata: {
             appChainIds: [chainId],
             appName: "Web3Pay Demo",
-            appLogoUrl: "https://lrc-accounts.web3auth.io/images/w3a-light.svg",
+            appLogoUrl: "https://demo-web3pay.tor.us/images/w3a-light.svg",
           },
           preference: {
             keysUrl: getWalletURL(),
