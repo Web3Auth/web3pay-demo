@@ -120,6 +120,7 @@ const NonImportFlow = ({
   }
   // step2: mint nft
   async function mintNft() {
+    console.log("onClick mintNft")
     if (address) {
       try {
         setDisplayErrorPopup(false);
