@@ -13,6 +13,7 @@ import GradientButton from "./ui/GradientButton";
 import { erc721Abi } from "@/utils/abis/erc721";
 import ErrorPopup from "./ErrorPopup";
 import { Modal } from "./ui/Modal";
+import { useRouter } from "next/navigation";
 
 const CrossMintingStep = ({
   showSummary = false,
@@ -21,7 +22,8 @@ const CrossMintingStep = ({
   showSummary?: boolean;
   onSuccess: () => void;
 }) => {
-  const { walletProvider, address: web3PayAddress, selectedEnv } = useWallet();
+  const router = useRouter();
+  const { walletProvider, address: web3PayAddress, selectedEnv, setLoggedIn } = useWallet();
   const [displayErrorPopup, setDisplayErrorPopup] = useState(false);
   const [errorStep, setErrorStep] = useState<string | undefined>();
   const [errorText, setErrorText] = useState("");
@@ -74,8 +76,14 @@ const CrossMintingStep = ({
       )}/wallet/nft/0xd774B6e1880dC36A3E9787Ea514CBFC275d2ba61`;
     } catch (e: unknown) {
       console.error("error minting nft", e);
+      const walletError = e as { code: number; message: string; };
+      if (walletError.code === 4100) {
+        // unauthorized, user not logged in
+        setLoggedIn(false);
+        router.push("/");
+      }
       setErrorStep("mintNft");
-      setErrorText("Error while minting");
+      setErrorText(walletError.message || "Error while minting");
       setDisplayErrorPopup(true);
       setMintNftState({
         mintError: "Error while minting",
@@ -84,7 +92,6 @@ const CrossMintingStep = ({
         userOpHashUrl: "",
         txHashUrl: "",
       });
-      throw e;
     } finally {
     }
   }

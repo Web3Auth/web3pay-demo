@@ -110,8 +110,12 @@ const ConnectStep = ({
     }
   }
 
-  async function importAccount(randWallet: IRandomWallet) {
+  async function importAccount(randWallet?: IRandomWallet) {
     try {
+      if (!randWallet) {
+        throw new Error("Please generate a wallet first!");
+      }
+
       setStepLoader(true);
       if (web3PayAddress) {
         const { privateKey, publicKey, keyType } = randWallet;
@@ -136,10 +140,12 @@ const ConnectStep = ({
       }
     } catch (e: unknown) {
       console.error("error importing account", e);
-      setErrorText("Error while connecting account");
-      throw e;
+      const walletError = e as { code: number; message: string; }
+      setErrorStep("import");
+      setDisplayErrorPopup(true);
+      setErrorText(walletError.message || "Error while connecting account");
     } finally {
-      setStepLoader(true);
+      setStepLoader(false);
     }
   }
 
@@ -147,6 +153,8 @@ const ConnectStep = ({
     console.log("onRetry::errorStep", errorStep);
     if (errorStep === "connect") {
       await handleCreateAndFundRandomWallet();
+    } else if (errorStep === "import") {
+      await importAccount(randomWallet);
     }
   }
 
