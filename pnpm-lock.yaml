@@ -27,8 +27,8 @@ importers:
         specifier: ^18.3.0
         version: 18.3.0
       '@web3auth/global-accounts-sdk':
-        specifier: file:web3auth-global-accounts-sdk-0.1.1-1.tgz
-        version: file:web3auth-global-accounts-sdk-0.1.1-1.tgz
+        specifier: file:web3auth-global-accounts-sdk-0.1.1-2.tgz
+        version: file:web3auth-global-accounts-sdk-0.1.1-2.tgz
       axios:
         specifier: ^1.7.2
         version: 1.7.2
@@ -57,7 +57,7 @@ importers:
         specifier: ^2.4.0
         version: 2.4.0
       viem:
-        specifier: ^2.18.0
+        specifier: ^2.17.11
         version: 2.18.2(typescript@5.5.4)
       web-vitals:
         specifier: ^4.2.2
@@ -327,9 +327,9 @@ packages:
   '@ungap/structured-clone@1.2.0':
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
 
-  '@web3auth/global-accounts-sdk@file:web3auth-global-accounts-sdk-0.1.1-1.tgz':
-    resolution: {integrity: sha512-AL2mn9A0PHy6gwYenZ3IBoBJL3TvEJSOl5i632eN1cWv2C5UXeogXnJnqNoI+mkJbPJGnuIM0z4FFGn5JoYWFw==, tarball: file:web3auth-global-accounts-sdk-0.1.1-1.tgz}
-    version: 0.1.1-1
+  '@web3auth/global-accounts-sdk@file:web3auth-global-accounts-sdk-0.1.1-2.tgz':
+    resolution: {integrity: sha512-WAZHwwyHhNukKgPgYB76JHD25wFuxatoLkVDB6cbd7NjjL0KpzbCJJy7B5abLZqQgRPXNmg9C/Uj4h9AHmvRyQ==, tarball: file:web3auth-global-accounts-sdk-0.1.1-2.tgz}
+    version: 0.1.1-2
     engines: {node: '>=20.x'}
 
   abitype@1.0.5:
@@ -1895,7 +1895,7 @@ snapshots:
 
   '@scure/bip32@1.4.0':
     dependencies:
-      '@noble/curves': 1.4.0
+      '@noble/curves': 1.4.2
       '@noble/hashes': 1.4.0
       '@scure/base': 1.1.7
 
@@ -2000,7 +2000,7 @@ snapshots:
 
   '@ungap/structured-clone@1.2.0': {}
 
-  '@web3auth/global-accounts-sdk@file:web3auth-global-accounts-sdk-0.1.1-1.tgz':
+  '@web3auth/global-accounts-sdk@file:web3auth-global-accounts-sdk-0.1.1-2.tgz':
     dependencies:
       loglevel: 1.9.1
       tseep: 1.2.2
@@ -3630,7 +3630,7 @@ snapshots:
 
   webauthn-p256@0.0.5:
     dependencies:
-      '@noble/curves': 1.4.0
+      '@noble/curves': 1.4.2
       '@noble/hashes': 1.4.0
 
   which-boxed-primitive@1.0.2:
