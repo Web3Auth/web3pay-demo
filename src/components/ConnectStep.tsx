@@ -125,6 +125,7 @@ const ConnectStep = ({
           privateKey,
           publicKey,
           keyType,
+          displayName: "Test Wallet",
         });
 
         const response = await walletProvider?.request({
