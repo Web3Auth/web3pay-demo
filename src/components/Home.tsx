@@ -383,7 +383,7 @@ const CrossMintingStep = ({
         method: "eth_sendTransaction",
         params: {
           from: web3PayAddress,
-          to: "0xd774B6e1880dC36A3E9787Ea514CBFC275d2ba61",
+          to: "0xD0f3053e39040Eb2e0bc8B4eF8f7bF92636aCd25",
           data,
           value: "0",
         },
