@@ -54,7 +54,7 @@ export default function HomePage() {
         method: "eth_sendTransaction",
         params: {
           from: address,
-          to: "0xd774B6e1880dC36A3E9787Ea514CBFC275d2ba61",
+          to: "0xD0f3053e39040Eb2e0bc8B4eF8f7bF92636aCd25",
           data,
           value: "0",
         },
@@ -71,7 +71,7 @@ export default function HomePage() {
       }
       return `${calculateBaseUrl(
         selectedEnv
-      )}/wallet/nft/0xd774B6e1880dC36A3E9787Ea514CBFC275d2ba61`;
+      )}/wallet/nft/0xD0f3053e39040Eb2e0bc8B4eF8f7bF92636aCd25`;
     } catch (e: unknown) {
       console.error("error minting nft", e);
       throw e;
