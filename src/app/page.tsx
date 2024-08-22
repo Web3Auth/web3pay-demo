@@ -6,7 +6,7 @@ import Button from "@/components/ui/Button";
 import { HiOutlineArrowSmRight } from "react-icons/hi";
 import Card from "@/components/ui/Card";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useWallet } from "@/context/walletContext";
 import { Modal } from "@/components/ui/Modal";
 import ErrorPopup from "@/components/ErrorPopup";
@@ -17,7 +17,7 @@ import Footer from "@/components/Footer";
 export default function Home() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const { setAddress, walletProvider, setLoggedIn } = useWallet();
+  const { setAddress, walletProvider, setLoggedIn, loggedIn } = useWallet();
   // error message
   const [errorText, setErrorText] = useState("");
   const [subErrorText, setSubErrorText] = useState("");
@@ -49,6 +49,12 @@ export default function Home() {
       setIsLoading(false);
     }
   }
+
+  useEffect(() => {
+    if (walletProvider?.connected && loggedIn) {
+      router.push("/home");
+    } 
+  }, [walletProvider, loggedIn, router])
 
   return (
     <main className="flex flex-col">

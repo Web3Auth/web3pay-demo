@@ -20,14 +20,14 @@ const ErrorPopup = ({
           {subText}
         </p>
       </div>
-      <div
+      <button
         className="flex justify-center items-center grow gap-2 w-full px-5 py-3 rounded-full cursor-pointer border border-gray-300"
         onClick={handleTryAgain}
       >
         <div className="text-white text-base font-medium leading-normal">
           Try again
         </div>
-      </div>
+      </button>
     </div>
   );
 };
