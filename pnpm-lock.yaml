@@ -27,8 +27,8 @@ importers:
         specifier: ^18.3.0
         version: 18.3.0
       '@web3auth/global-accounts-sdk':
-        specifier: file:web3auth-global-accounts-sdk-0.1.1-2.tgz
-        version: file:web3auth-global-accounts-sdk-0.1.1-2.tgz
+        specifier: file:web3auth-global-accounts-sdk-0.1.1-0.tgz
+        version: file:web3auth-global-accounts-sdk-0.1.1-0.tgz
       axios:
         specifier: ^1.7.2
         version: 1.7.4
@@ -327,9 +327,9 @@ packages:
   '@ungap/structured-clone@1.2.0':
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
 
-  '@web3auth/global-accounts-sdk@file:web3auth-global-accounts-sdk-0.1.1-2.tgz':
-    resolution: {integrity: sha512-u73GDwQt444KYNaQbSKl5numZ5Ffs1bxtH2bgmIjpTppfVF11eIIrZPpoqJeoVu+qXC8V7tUnAkcHam4oOELkQ==, tarball: file:web3auth-global-accounts-sdk-0.1.1-2.tgz}
-    version: 0.1.1-2
+  '@web3auth/global-accounts-sdk@file:web3auth-global-accounts-sdk-0.1.1-0.tgz':
+    resolution: {integrity: sha512-rJaz9hEGxCuiaBJ9o4KRAiXdZZeVEAR0An7eCCBH5l68tqG/c4brPjHHU4VnyIDPwCawRiyDEjMXomUzDLxYsA==, tarball: file:web3auth-global-accounts-sdk-0.1.1-0.tgz}
+    version: 0.1.1-0
     engines: {node: '>=20.x'}
 
   abitype@1.0.5:
@@ -2000,7 +2000,7 @@ snapshots:
 
   '@ungap/structured-clone@1.2.0': {}
 
-  '@web3auth/global-accounts-sdk@file:web3auth-global-accounts-sdk-0.1.1-2.tgz':
+  '@web3auth/global-accounts-sdk@file:web3auth-global-accounts-sdk-0.1.1-0.tgz':
     dependencies:
       loglevel: 1.9.1
       tseep: 1.2.2
