@@ -13,3 +13,5 @@ export const calculateBaseUrl = (selectedEnv: SelectedEnv) => {
     return "https://lrc-accounts.web3auth.io";
   }
 };
+
+export const nftContractAddress = "0xD0f3053e39040Eb2e0bc8B4eF8f7bF92636aCd25"
