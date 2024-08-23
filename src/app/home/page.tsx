@@ -1,34 +1,27 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import ImportFlow from "@/components/ImportFlow";
-import NonImportFlow from "@/components/NonImportFlow";
-import Button from "@/components/ui/Button";
 import Image from "next/image";
-import { Modal } from "@/components/ui/Modal";
 
 import Navbar from "@/components/ui/Navbar";
 import { erc721Abi } from "@/utils/abis/erc721";
-import { IRandomWallet, SelectedEnv } from "@/utils/interfaces";
-import { OpenloginSessionManager } from "@toruslabs/session-manager";
 import { useEffect, useState } from "react";
 import { encodeFunctionData, Hex } from "viem";
-import { calculateBaseUrl } from "@/utils/utils";
-import MintSuccess from "@/components/MintSuccess";
+import { BROADCAST_LOGOUT_CHANNEL, calculateBaseUrl, MESSAGE_EVENT_LOGOUT_COMPLETED, MESSAGE_EVENT_LOGOUT_START } from "@/utils/utils";
 import { useWallet } from "@/context/walletContext";
 
 import { createClient, http } from "viem";
 import { polygonAmoy } from "viem/chains";
 import { bundlerActions, ENTRYPOINT_ADDRESS_V07 } from "permissionless";
-import Footer from "@/components/Footer";
 import Home from "@/components/Home";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
-  const [mintSuccess, setMintSuccess] = useState(false);
   const [nftSuccess, setNftSuccess] = useState(false);
   // todo: change this before deployment or move it to env
-  const { walletProvider, address, selectedEnv } = useWallet();
+  const { walletProvider, address, selectedEnv, walletUrl, setAddress, setLoggedIn, setWalletProvider } = useWallet();
 
   useEffect(() => {
     setTimeout(() => setIsLoading(false), 3000);
@@ -106,31 +99,38 @@ export default function HomePage() {
     }
   }
 
-  async function importAccount(randWallet: IRandomWallet) {
-    try {
-      if (address) {
-        const { privateKey, publicKey, keyType } = randWallet;
-        let sessionId = OpenloginSessionManager.generateRandomSessionKey();
-        const sessionMgr = new OpenloginSessionManager({ sessionId });
-        sessionId = await sessionMgr.createSession({
-          privateKey,
-          publicKey,
-          keyType,
-        });
-
-        const response = await walletProvider?.request({
-          method: "wallet_importW3aSession",
-          params: {
-            sessionId,
-          },
-        });
-        console.log("Response", response);
-      }
-    } catch (e: unknown) {
-      console.error("error importing account", e);
-      throw e;
-    }
+  const logout = () => {
+    setAddress("");
+    setWalletProvider(null);
+    localStorage.clear();
+    setLoggedIn(false);
   }
+
+  useEffect(() => {
+    const bc = new BroadcastChannel(BROADCAST_LOGOUT_CHANNEL);
+
+    const messageEventHandler = (e: MessageEvent) => {
+      const walletOrigin = walletUrl.split("/connect")[0];
+      if (e.origin === walletOrigin && e.data === MESSAGE_EVENT_LOGOUT_START) {
+        logout();
+        // send the logout message to opened Demo apps in other tabs (if any)
+        bc.postMessage(MESSAGE_EVENT_LOGOUT_START);
+        // ack to Wallet that log out has been done, so that wallet start doing cleanup etc..
+        window.top?.postMessage(MESSAGE_EVENT_LOGOUT_COMPLETED, e.origin);
+      }
+    }
+    // Recevie `LOGOUT` event from Wallet
+    window.addEventListener("message", messageEventHandler);
+    // Recevie `LOGOUT` event from Demo app in other opend tab
+    bc.onmessage = (e: MessageEvent) => {
+      logout();
+      router.push("/");
+    };
+
+    return () => {
+      window.removeEventListener("message", messageEventHandler);
+    }
+  }, []);
 
   return (
     <main className="flex flex-col">

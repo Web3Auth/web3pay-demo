@@ -13,3 +13,7 @@ export const calculateBaseUrl = (selectedEnv: SelectedEnv) => {
     return "https://lrc-accounts.web3auth.io";
   }
 };
+
+export const BROADCAST_LOGOUT_CHANNEL = "BROADCAST_LOGOUT";
+export const MESSAGE_EVENT_LOGOUT_START = "START_LOGOUT_FROM_DEMO";
+export const MESSAGE_EVENT_LOGOUT_COMPLETED = "COMPLETED_LOGOUT_FROM_DEMO";

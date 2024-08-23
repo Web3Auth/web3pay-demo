@@ -16,6 +16,7 @@ const WalletContext = createContext({
   setWalletProvider: (provider: any) => {},
   loggedIn: false,
   setLoggedIn: (loggedIn: boolean) => {},
+  walletUrl: "",
 });
 
 export const WalletProviderContext = ({
@@ -24,19 +25,18 @@ export const WalletProviderContext = ({
   children: React.ReactNode;
 }) => {
   const [address, setAddress] = useState("");
-  const [selectedEnv, setSelectedEnv] = useState<SelectedEnv>("production");
+  const [selectedEnv, setSelectedEnv] = useState<SelectedEnv>("local");
   const [walletProvider, setWalletProvider] = useState<WalletProvider | null>(
     null
   );
+  const [walletUrl, setWalletUrl] = useState<string>("");
   const [loggedIn, setLoggedIn] = useState(false);
   const [chainId, setChainId] = useState(80002);
   const router = useRouter();
 
   useEffect(() => {
-    const getWalletURL = () => {
-      return `${calculateBaseUrl(selectedEnv)}/connect`;
-    };
-
+    const _walletUrl = `${calculateBaseUrl(selectedEnv)}/connect`;
+    setWalletUrl(_walletUrl);
     // initiate sdk
     const initWalletProvider = async () => {
       setWalletProvider(
@@ -47,7 +47,7 @@ export const WalletProviderContext = ({
             appLogoUrl: "https://demo-web3pay.tor.us/images/w3a-light.svg",
           },
           preference: {
-            keysUrl: getWalletURL(),
+            keysUrl: _walletUrl,
           },
         })
       );
@@ -70,7 +70,6 @@ export const WalletProviderContext = ({
           router.push("/");
         }
       } catch (err) {
-        console.log(err);
         setAddress("");
       }
     };
@@ -88,6 +87,7 @@ export const WalletProviderContext = ({
         setWalletProvider,
         loggedIn,
         setLoggedIn,
+        walletUrl,
       }}
     >
       {children}
