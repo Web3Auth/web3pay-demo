@@ -77,10 +77,10 @@ body {
 }
 
 .home-bg {
-  background-size: 1000px;
+  background-size: 1200px;
 
   @media only screen and (min-width: 1500px) {
-    background-size: 1200px;
+    background-size: 1400px;
   }
 }
 
