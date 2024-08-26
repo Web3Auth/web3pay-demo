@@ -1,10 +1,10 @@
 import { useWallet } from "@/context/walletContext";
 import { sliceAddress, openInNewTab } from "@/utils";
-import { IRandomWallet, ConnectWeb3PayStep } from "@/utils/interfaces";
+import { IRandomWallet, ConnectWeb3PayStep, TRandomWalletKeyType } from "@/utils/interfaces";
 import { calculateBaseUrl, cn } from "@/utils/utils";
 import { generatePrivate, getPublic } from "@toruslabs/eccrypto";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createPublicClient, Hex, http } from "viem";
 import { privateKeyToAddress } from "viem/accounts";
 import ImportFlowCard from "./ui/ImportFlowCard";
@@ -34,6 +34,16 @@ const ConnectStep = ({
   const [currentStep, setCurrentStep] = useState<ConnectWeb3PayStep>("start");
   const [stepLoader, setStepLoader] = useState(false);
 
+  useEffect(() => {
+    if(showSummary) {
+      setRandomWallet(
+        JSON.parse(sessionStorage.getItem("randomWallet") || "{}")
+      );
+      setCurrentStep("completed");
+      setCompletedSteps(["start", "connect"]);
+    }
+  }, [showSummary]);
+
   const handleStep = async (step: ConnectWeb3PayStep) => {
     switch (step) {
       case "start":
@@ -59,12 +69,15 @@ const ConnectStep = ({
         privateKey.startsWith("0x") ? (privateKey as Hex) : `0x${privateKey}`
       );
       await fundAccount(address);
-      setRandomWallet({
+      const newWallet = {
         publicKey,
         privateKey,
         address,
-        keyType: "secp256k1",
-      });
+        keyType: "secp256k1" as TRandomWalletKeyType,
+      };
+      setRandomWallet(newWallet);
+      sessionStorage.setItem("randomWallet", JSON.stringify(newWallet));
+
       setCompletedSteps([...completedSteps, "start"]);
       setCurrentStep("connect");
     } catch (err: any) {
@@ -218,8 +231,8 @@ const ConnectStep = ({
           isCurrent={currentStep === "connect"}
           logo="arbitrum"
           resultOpacity
-          resultText={sliceAddress(randomWallet?.address || "")}
-          resultLogo="arbitrum"
+          resultText={"Wallet linked Successfully"}
+          resultLogo="link-gradient"
           handleClick={() => handleStep("connect")}
           btnText="Connect Test Wallet"
           loading={stepLoader}

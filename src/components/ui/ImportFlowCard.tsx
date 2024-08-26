@@ -69,8 +69,8 @@ const ImportFlowCard = ({
       )}
       {isCompleted && (
         <Card
-          rootClasses="w-full"
-          cardClasses={`flex flex-row bg-primary items-center w-full rounded-full justify-center gap-x-2 !p-2`}
+          rootClasses="w-full cursor-pointer"
+          cardClasses={`flex flex-row bg-primary items-center w-full rounded-full justify-center gap-x-2 !p-2 hover:cursor-pointer`}
           handleClick={handleCompletedLink}
           active
         >

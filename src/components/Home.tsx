@@ -53,7 +53,8 @@ const Home = ({ address }: { address: string }) => {
               </p>
             </div>
           )}
-          {activeStep === STEPS.CONNECT && (
+          {(activeStep === STEPS.CONNECT ||
+            activeStep === STEPS.VIEW_SUMMARY) && (
             <ConnectStep
               onSuccess={() => {
                 setActiveStep(STEPS.CROSS_CHAIN_MINTING);
