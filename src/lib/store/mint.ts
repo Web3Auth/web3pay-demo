@@ -2,7 +2,7 @@ import { IRandomWallet } from "@/utils/interfaces";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-const STEPS = {
+export const STEPS = {
     CONNECT: "Connect",
     CROSS_CHAIN_MINTING: "Cross_Chain_Minting",
     VIEW_SUMMARY: "View_Summary",

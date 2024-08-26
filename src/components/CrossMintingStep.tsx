@@ -155,7 +155,7 @@ const CrossMintingStep = ({
               otherClasses="bg-primary"
               style={{ marginTop: "24px" }}
             />
-          )}
+          )} 
 
           <Button
               onClick={() => resetMintState()}
