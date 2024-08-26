@@ -8,6 +8,7 @@ import Navbar from "./ui/Navbar";
 import CrossMintingStep from "./CrossMintingStep";
 import ConnectStep from "./ConnectStep";
 import { IRandomWallet } from "@/utils/interfaces";
+import useMintStore from "@/lib/store/mint";
 
 const STEPS = {
   CONNECT: "Connect",
@@ -16,7 +17,7 @@ const STEPS = {
 };
 
 const Home = ({ address }: { address: string }) => {
-  const [activeStep, setActiveStep] = useState(STEPS.CONNECT);
+  const { activeStep, setActiveStep } = useMintStore();
   const [randomWallet, setRandomWallet] = useState<IRandomWallet>();
 
   const onImportAccount = (randomWallet: IRandomWallet) => {

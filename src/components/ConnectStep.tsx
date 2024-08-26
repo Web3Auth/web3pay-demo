@@ -14,6 +14,7 @@ import axios from "axios";
 import { waitForTransactionReceipt } from "viem/actions";
 import { arbitrumSepolia } from "viem/chains";
 import { OpenloginSessionManager } from "@toruslabs/session-manager";
+import useMintStore from "@/lib/store/mint";
 
 const ConnectStep = ({
   showSummary = false,
@@ -24,6 +25,7 @@ const ConnectStep = ({
   onSuccess: (randomWallet: IRandomWallet) => void;
   existingWallet: undefined | IRandomWallet;
 }) => {
+  const { isTestWalletConnected, testWalletInfo, setTestWalletConnected, setTestWalletInfo } = useMintStore();
   const { walletProvider, address: web3PayAddress, selectedEnv } = useWallet();
   const [randomWallet, setRandomWallet] = useState<IRandomWallet>();
   const [completedSteps, setCompletedSteps] = useState<ConnectWeb3PayStep[]>(
@@ -35,6 +37,20 @@ const ConnectStep = ({
   const [subErrorText, setSubErrorText] = useState("");
   const [currentStep, setCurrentStep] = useState<ConnectWeb3PayStep>("start");
   const [stepLoader, setStepLoader] = useState(false);
+
+  useEffect(()=>{
+    if (testWalletInfo.address) {
+      setRandomWallet(testWalletInfo);
+      setCompletedSteps(["start"]);
+      setCurrentStep("connect");
+    }
+    if (isTestWalletConnected) {
+      setCompletedSteps(["start", "connect"]);
+
+      onSuccess(testWalletInfo);
+      setTestWalletConnected(true)
+    }
+  }, [])
 
   useEffect(() => {
     if(showSummary) {
@@ -78,6 +94,7 @@ const ConnectStep = ({
       setRandomWallet(newWallet);
       setCompletedSteps([...completedSteps, "start"]);
       setCurrentStep("connect");
+      setTestWalletInfo(newWallet);
     } catch (err: any) {
       setErrorStep("connect");
       setDisplayErrorPopup(true);
@@ -148,6 +165,7 @@ const ConnectStep = ({
         setCompletedSteps([...completedSteps, "connect"]);
 
         randomWallet && onSuccess(randomWallet);
+        setTestWalletConnected(true)
       }
     } catch (e: unknown) {
       console.error("error importing account", e);

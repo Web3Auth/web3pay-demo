@@ -15,6 +15,7 @@ import ErrorPopup from "./ErrorPopup";
 import { Modal } from "./ui/Modal";
 import { useRouter } from "next/navigation";
 import { openInNewTab } from "@/utils";
+import useMintStore from "@/lib/store/mint";
 
 const CrossMintingStep = ({
   showSummary = false,
@@ -24,6 +25,7 @@ const CrossMintingStep = ({
   onSuccess: () => void;
 }) => {
   const router = useRouter();
+  const { resetMintState} = useMintStore();
   const {
     walletProvider,
     address: web3PayAddress,
@@ -154,6 +156,13 @@ const CrossMintingStep = ({
               style={{ marginTop: "24px" }}
             />
           )}
+
+          <Button
+              onClick={() => resetMintState()}
+              title="Restart Demo"
+              otherClasses="bg-primary"
+              style={{ marginTop: "24px" }}
+            />
         </>
       )}
       <div
