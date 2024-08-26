@@ -1,11 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import ImportFlow from "@/components/ImportFlow";
-import NonImportFlow from "@/components/NonImportFlow";
-import Button from "@/components/ui/Button";
 import Image from "next/image";
-import { Modal } from "@/components/ui/Modal";
 
 import Navbar from "@/components/ui/Navbar";
 import { erc721Abi } from "@/utils/abis/erc721";
@@ -13,14 +9,12 @@ import { IRandomWallet, SelectedEnv } from "@/utils/interfaces";
 import { OpenloginSessionManager } from "@toruslabs/session-manager";
 import { useEffect, useState } from "react";
 import { encodeFunctionData, Hex } from "viem";
-import { calculateBaseUrl } from "@/utils/utils";
-import MintSuccess from "@/components/MintSuccess";
+import { calculateBaseUrl, nftContractAddress } from "@/utils/utils";
 import { useWallet } from "@/context/walletContext";
 
 import { createClient, http } from "viem";
 import { polygonAmoy } from "viem/chains";
 import { bundlerActions, ENTRYPOINT_ADDRESS_V07 } from "permissionless";
-import Footer from "@/components/Footer";
 import Home from "@/components/Home";
 
 export default function HomePage() {
@@ -54,7 +48,7 @@ export default function HomePage() {
         method: "eth_sendTransaction",
         params: {
           from: address,
-          to: "0xd774B6e1880dC36A3E9787Ea514CBFC275d2ba61",
+          to: nftContractAddress,
           data,
           value: "0",
         },
@@ -71,7 +65,7 @@ export default function HomePage() {
       }
       return `${calculateBaseUrl(
         selectedEnv
-      )}/wallet/nft/0xd774B6e1880dC36A3E9787Ea514CBFC275d2ba61`;
+      )}/wallet/nft/${nftContractAddress}`;
     } catch (e: unknown) {
       console.error("error minting nft", e);
       throw e;
