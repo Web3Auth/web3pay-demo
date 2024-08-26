@@ -24,7 +24,12 @@ const CrossMintingStep = ({
   onSuccess: () => void;
 }) => {
   const router = useRouter();
-  const { walletProvider, address: web3PayAddress, selectedEnv, setLoggedIn } = useWallet();
+  const {
+    walletProvider,
+    address: web3PayAddress,
+    selectedEnv,
+    setLoggedIn,
+  } = useWallet();
   const [displayErrorPopup, setDisplayErrorPopup] = useState(false);
   const [errorStep, setErrorStep] = useState<string | undefined>();
   const [errorText, setErrorText] = useState("");
@@ -36,7 +41,7 @@ const CrossMintingStep = ({
     userOpHashUrl: "",
     txHashUrl: "",
   });
-   
+
   async function mintNft() {
     try {
       setMintNftState({
@@ -77,7 +82,7 @@ const CrossMintingStep = ({
       )}/wallet/nft/0xd774B6e1880dC36A3E9787Ea514CBFC275d2ba61`;
     } catch (e: unknown) {
       console.error("error minting nft", e);
-      const walletError = e as { code: number; message: string; };
+      const walletError = e as { code: number; message: string };
       if (walletError.code === 4100) {
         // unauthorized, user not logged in
         setLoggedIn(false);
@@ -100,9 +105,7 @@ const CrossMintingStep = ({
   async function waitForMinting(hash: Hex) {
     const bundlerClient = createClient({
       chain: polygonAmoy,
-      transport: http(
-        "https://rpc-proxy.web3auth.io/?network=80002"
-      ),
+      transport: http("https://rpc-proxy.web3auth.io/?network=80002"),
     }).extend(bundlerActions(ENTRYPOINT_ADDRESS_V07));
 
     // wait for user op hash to be completed
@@ -136,13 +139,12 @@ const CrossMintingStep = ({
     <div className="flex flex-col items-center justify-center w-full">
       {!showSummary && (
         <>
-          <p className="text-4xl font-bold">
-            {mintNftState.mintSuccess ? "Cross-Chain Minting" : "Connecting with Web3Pay"}
+          <p className="text-3xl md:text-4xl font-bold text-center">
+            Cross-Chain Minting
           </p>
-          <p className="text-2xl font-normal mt-2 w-full md:w-[60%] text-center">
-            {mintNftState.mintSuccess
-              ? "Next, use funds from your test wallet to mint your first NFT on a different chain."
-              : "For demo purposes, a test funded wallet will be used instead of your external EOA wallets"}
+          <p className="text-base md:text-2xl font-normal mt-2 w-full md:w-[60%] text-center">
+            Next, use funds from your test wallet to mint your first NFT on a
+            different chain.
           </p>
           {mintNftState.mintSuccess && (
             <Button
@@ -155,7 +157,7 @@ const CrossMintingStep = ({
         </>
       )}
       <div
-        className={cn("w-full xl:w-[80%] mt-16", {
+        className={cn("w-full xl:w-[90%] mt-16", {
           "mt-10": mintNftState.mintSuccess,
           "mt-0": showSummary,
         })}
@@ -225,7 +227,7 @@ const CrossMintingStep = ({
               </p>
               <p
                 className={cn(
-                  "text-lg font-normal text-gray-400 w-full md:w-[70%] mt-2 mb-6 break-words",
+                  "text-lg font-normal text-gray-400 w-full md:w-[80%] mt-2 mb-6 break-words",
                   {
                     "md:w-[80%] mb-0": mintNftState.mintSuccess,
                   }
@@ -233,7 +235,7 @@ const CrossMintingStep = ({
               >
                 {mintNftState.mintSuccess
                   ? showSummary
-                    ? "Hooray! You just minted a polygon NFT with Arbitrum tokens! "
+                    ? "Hooray! You just minted a polygon NFT with Arbitrum tokens!"
                     : "You just minted a polygon NFT with Arbitrum tokens! It should appear in your wallet in about 5 minutes."
                   : "Use your Arbitrum Test Tokens to mint an NFT on Polygon, no bridging required."}
               </p>
@@ -260,14 +262,18 @@ const CrossMintingStep = ({
                   otherClasses="bg-primary max-md:!w-full"
                   style={{ marginTop: "24px" }}
                   onClick={() => {
-                    openInNewTab("https://twitter.com/intent/tweet?text=I%27ve%20managed%20to%20mint%20an%20NFT%20on%20Polygon%20using%20Arbitrum%20tokens!%20Try%20it%20here!%20%23web3pay&url=https://demo-web3pay.tor.us/home")
+                    openInNewTab(
+                      "https://twitter.com/intent/tweet?text=I%27ve%20managed%20to%20mint%20an%20NFT%20on%20Polygon%20using%20Arbitrum%20tokens!%20Try%20it%20here!%20%23web3pay&url=https://demo-web3pay.tor.us/home"
+                    );
                   }}
                 />
               ) : (
                 <GradientButton
                   loading={mintNftState.minting}
                   title="Mint NFT"
-                  handleClick={() => {mintNft()}}
+                  handleClick={() => {
+                    mintNft();
+                  }}
                   btnClass="max-md:!w-full"
                 />
               )}

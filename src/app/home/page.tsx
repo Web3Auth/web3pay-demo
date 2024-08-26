@@ -31,7 +31,7 @@ export default function HomePage() {
   const { walletProvider, address, selectedEnv } = useWallet();
 
   useEffect(() => {
-    setTimeout(() => setIsLoading(false), 3000);
+    setTimeout(() => setIsLoading(false), 4000);
   }, []);
 
   const [mintNftState, setMintNftState] = useState({
@@ -41,7 +41,6 @@ export default function HomePage() {
     mintRedirectUrl: "",
   });
 
-  
   async function mintNft() {
     try {
       const data = encodeFunctionData({

@@ -38,9 +38,7 @@ const ImportFlowCard = ({
     <Card
       cardClasses={`gap-y-3 !bg-[#030226] p-6`}
       active
-      rootClasses={`!w-full ${
-        isCurrent || isCompleted ? "h-auto" : "h-full md:h-[233px]"
-      }`}
+      rootClasses={`!w-full !h-auto`}
     >
       <p className="text-26 font-normal flex items-center justify-between w-full">
         0{step}
@@ -70,11 +68,11 @@ const ImportFlowCard = ({
         />
       )}
       {isCompleted && (
-        <div
-          className={`flex items-center w-full bg-transparent rounded-full border border-gray-200 justify-center gap-x-2 py-2 ${
-            resultOpacity ? "opacity-45" : ""
-          }`}
-          onClick={handleCompletedLink}
+        <Card
+          rootClasses="w-full"
+          cardClasses={`flex flex-row bg-primary items-center w-full rounded-full justify-center gap-x-2 !p-2`}
+          handleClick={handleCompletedLink}
+          active
         >
           {resultLogo && (
             <Image
@@ -86,7 +84,7 @@ const ImportFlowCard = ({
           )}
           <p className="text-base font-medium text-white">{resultText}</p>
           {resultCustomIcon ?? null}
-        </div>
+        </Card>
       )}
     </Card>
   );

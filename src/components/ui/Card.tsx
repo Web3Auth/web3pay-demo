@@ -6,11 +6,13 @@ const Card = ({
   cardClasses,
   active = false,
   rootClasses,
+  handleClick,
 }: {
   children: React.ReactNode;
   cardClasses?: string;
   active?: boolean;
   rootClasses?: string;
+  handleClick?: () => void;
 }) => {
   return (
     <div
@@ -21,6 +23,7 @@ const Card = ({
         },
         rootClasses
       )}
+      onClick={() => handleClick && handleClick()}
     >
       {active && (
         <span className="animate-[spin_2s_linear_infinite] gradient-border rounded-30" />
