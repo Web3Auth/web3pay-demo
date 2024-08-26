@@ -55,7 +55,7 @@ const ConnectStep = ({
       onSuccess(testWalletInfo);
       setTestWalletConnected(true)
     }
-  }, [])
+  }, [activeStep])
 
   const handleStep = async (step: ConnectWeb3PayStep) => {
     switch (step) {
