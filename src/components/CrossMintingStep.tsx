@@ -1,5 +1,5 @@
 import { useWallet } from "@/context/walletContext";
-import { calculateBaseUrl, cn } from "@/utils/utils";
+import { calculateBaseUrl, cn, nftContractAddress } from "@/utils/utils";
 import Link from "next/link";
 import Image from "next/image";
 import { bundlerActions, ENTRYPOINT_ADDRESS_V07 } from "permissionless";
@@ -61,7 +61,7 @@ const CrossMintingStep = ({
         method: "eth_sendTransaction",
         params: {
           from: web3PayAddress,
-          to: "0xd774B6e1880dC36A3E9787Ea514CBFC275d2ba61",
+          to: nftContractAddress,
           data,
           value: "0",
         },
@@ -79,7 +79,7 @@ const CrossMintingStep = ({
       }
       const nftImageUrl = `${calculateBaseUrl(
         selectedEnv
-      )}/wallet/nft/0xd774B6e1880dC36A3E9787Ea514CBFC275d2ba61`;
+      )}/wallet/nft/${nftContractAddress}`;
     } catch (e: unknown) {
       console.error("error minting nft", e);
       const walletError = e as { code: number; message: string };
