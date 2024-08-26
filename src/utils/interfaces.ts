@@ -19,4 +19,4 @@ export type ImportFlowStep =
 
 export type NonImportFlowStep = "start" | "fundToken" | "mintNft" | "completed";
 
-export type ConnectWeb3PayStep = "start" | "connect";
+export type ConnectWeb3PayStep = "start" | "connect" | "completed";
