@@ -53,8 +53,8 @@ export default function Home() {
   useEffect(() => {
     if (walletProvider?.connected && loggedIn) {
       router.push("/home");
-    } 
-  }, [walletProvider, loggedIn, router])
+    }
+  }, [walletProvider, loggedIn, router]);
 
   return (
     <main className="flex flex-col">
@@ -78,7 +78,7 @@ export default function Home() {
           </div>
         </div>
         <Image
-          src="/images/demo-home-bg.svg"
+          src="/images/newhero.png"
           alt="bg"
           height={200}
           width={100}
@@ -119,33 +119,32 @@ export default function Home() {
           <div className="flex flex-col gap-y-6 md:gap-y-8 lg:gap-y-10 lg:w-[60%] p-6 md:p-10 lg:pr-16">
             <div className="text-left flex flex-col gap-y-2">
               <p className="text-xl md:text-[32px] font-semibold leading-9 text-white break-words">
-                Interact effortlessly with any chain with assets you already own
+                Interact with any dApp, no matter where your assets are
               </p>
               <p className="text-base md:text-2xl font-normal text-gray-400">
-                Easily transact with any chain, regardless of their native token
-                or wallet you’re using. Use any chain without complicated
-                bridging steps.
+                Break free from native token barriers and complex
+                bridges—transact instantly on any chain using the assets you
+                own.
               </p>
             </div>
             <div className="gradient-divider"> </div>
             <div className="text-left flex flex-col gap-y-2">
               <p className="text-xl md:text-[32px] font-semibold leading-9 text-white break-words">
-                Use your different wallets, no matter the type
+                Connect any wallet, from any chain
               </p>
               <p className="text-base md:text-2xl font-normal text-gray-400">
-                Effortlessly connect liquidity across multiple wallets and
-                blockchains, enabling you to transact and spend easily.
+                Unify your liquidity across various and blockchains—manage,
+                store, send, and bridge effortlessly.
               </p>
             </div>
             <div className="gradient-divider"> </div>
             <div className="text-left flex flex-col gap-y-2">
               <p className="text-xl md:text-[32px] font-semibold leading-9 text-white break-words">
-                Spend anywhere, anytime, directly via wallet or debit card
-                (Coming Soon)
+                Spend anytime, with your Web3Pay card
               </p>
               <p className="text-base md:text-2xl font-normal text-gray-400">
-                Always be able to spend using your crypto, be it directly or
-                with a virtual/physical card.
+                Spend your crypto anywhere with Web3Pay card at millions of
+                merchants worldwide.
               </p>
             </div>
           </div>
@@ -175,8 +174,8 @@ export default function Home() {
               Boost engagement for your applications
             </p>
             <p className="text-lg font-normal text-gray-400 text-left">
-              Keeping user activities within the dApp/wallet so that your users
-              can focus on what truly matters
+              Keeping user activities within the dApp so that your users can
+              focus on what truly matters.
             </p>
           </Card>
           <Card
@@ -191,11 +190,11 @@ export default function Home() {
               width={30}
             />
             <p className="lg:text-2xl text-xl break-words text-left text-white font-semibold mt-10 mb-6">
-              An authentication experience that works
+              Seamless User Onboarding
             </p>
             <p className="text-lg font-normal text-gray-400 text-left">
-              Passkeys provides your users a more secure login method, doing
-              away with passwords
+              From first-timers to pros—instantly create a non-custodial wallet
+              with Passkeys or social login, or import an existing one.
             </p>
           </Card>
           <Card
@@ -210,11 +209,11 @@ export default function Home() {
               width={30}
             />
             <p className="lg:text-2xl text-xl break-words text-left text-white font-semibold mt-10 mb-6">
-              Infrastructure that is designed to support all chains and assets
+              Infrastructure designed to support all chains and assets
             </p>
             <p className="text-lg font-normal text-gray-400 text-left">
-              Enhancing your user’s experience by simplifying interactions on
-              multiple chains
+              Build with ease on one chain and extend your reach across all
+              chains.
             </p>
           </Card>
         </div>
