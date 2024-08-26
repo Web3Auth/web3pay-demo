@@ -25,7 +25,7 @@ const CrossMintingStep = ({
   onSuccess: () => void;
 }) => {
   const router = useRouter();
-  const { resetMintState} = useMintStore();
+  const { resetMintState, mintNftState, setMintNftState } = useMintStore();
   const {
     walletProvider,
     address: web3PayAddress,
@@ -36,13 +36,6 @@ const CrossMintingStep = ({
   const [errorStep, setErrorStep] = useState<string | undefined>();
   const [errorText, setErrorText] = useState("");
   const [subErrorText, setSubErrorText] = useState("");
-  const [mintNftState, setMintNftState] = useState({
-    minting: false,
-    mintSuccess: false,
-    mintError: "",
-    userOpHashUrl: "",
-    txHashUrl: "",
-  });
 
   async function mintNft() {
     try {
@@ -156,13 +149,6 @@ const CrossMintingStep = ({
               style={{ marginTop: "24px" }}
             />
           )} 
-
-          <Button
-              onClick={() => resetMintState()}
-              title="Restart Demo"
-              otherClasses="bg-primary"
-              style={{ marginTop: "24px" }}
-            />
         </>
       )}
       <div
