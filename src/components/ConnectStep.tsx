@@ -15,13 +15,13 @@ import { waitForTransactionReceipt } from "viem/actions";
 import { arbitrumSepolia } from "viem/chains";
 import { OpenloginSessionManager } from "@toruslabs/session-manager";
 
-const ConnectStep = ({ 
+const ConnectStep = ({
   showSummary = false,
   onSuccess,
-}: { 
-  showSummary?: boolean,
-  onSuccess: () => void,
- }) => {
+}: {
+  showSummary?: boolean;
+  onSuccess: () => void;
+}) => {
   const { walletProvider, address: web3PayAddress, selectedEnv } = useWallet();
   const [randomWallet, setRandomWallet] = useState<IRandomWallet>();
   const [completedSteps, setCompletedSteps] = useState<ConnectWeb3PayStep[]>(
@@ -36,7 +36,7 @@ const ConnectStep = ({
 
   const handleStep = async (step: ConnectWeb3PayStep) => {
     switch (step) {
-      case "start": 
+      case "start":
         await handleCreateAndFundRandomWallet();
         break;
       case "connect":
@@ -45,7 +45,7 @@ const ConnectStep = ({
       default:
         break;
     }
-  }
+  };
   async function handleCreateAndFundRandomWallet() {
     try {
       setStepLoader(true);
@@ -79,29 +79,28 @@ const ConnectStep = ({
 
   async function fundAccount(address: string) {
     try {
-        setStepLoader(true);
-        const baseUrl = calculateBaseUrl(selectedEnv);
+      setStepLoader(true);
+      const baseUrl = calculateBaseUrl(selectedEnv);
 
-        const resp = await axios.post(`${baseUrl}/api/mint`, {
-          chainId: "421614",
-          toAddress: address,
+      const resp = await axios.post(`${baseUrl}/api/mint`, {
+        chainId: "421614",
+        toAddress: address,
+      });
+      const { txHash: hash, message } = resp.data;
+      // setTxHash(hash);
+      const publicClient = createPublicClient({
+        chain: arbitrumSepolia,
+        transport: http(
+          "https://arbitrum-sepolia.infura.io/v3/dee726a2930e4573a743a5c8f79942c1"
+        ),
+      });
+      if (hash) {
+        await waitForTransactionReceipt(publicClient, {
+          hash,
         });
-        const { txHash: hash, message } = resp.data;
-        // setTxHash(hash);
-        const publicClient = createPublicClient({
-          chain: arbitrumSepolia,
-          transport: http(
-            "https://arbitrum-sepolia.infura.io/v3/dee726a2930e4573a743a5c8f79942c1"
-          ),
-        });
-        if (hash) {
-          await waitForTransactionReceipt(publicClient, {
-            hash,
-          });
-        } else {
-          throw new Error("Failed to fund test wallet");
-        }
-
+      } else {
+        throw new Error("Failed to fund test wallet");
+      }
     } catch (error: any) {
       setErrorText("Error while Funding Wallet");
       // check if user has enough balance and proceed to next step
@@ -141,7 +140,7 @@ const ConnectStep = ({
       }
     } catch (e: unknown) {
       console.error("error importing account", e);
-      const walletError = e as { code: number; message: string; }
+      const walletError = e as { code: number; message: string };
       setErrorStep("import");
       setDisplayErrorPopup(true);
       setErrorText(walletError.message || "Error while connecting account");
@@ -163,22 +162,24 @@ const ConnectStep = ({
     <div className="flex flex-col items-center justify-center">
       {!showSummary && (
         <>
-          <p className="text-4xl font-bold">Connecting with Web3Pay</p>
-          <p className="text-2xl font-normal mt-2 w-full md:w-[60%] text-center">
+          <p className="text-3xl md:text-4xl font-bold text-center">
+            Connecting with Web3Pay
+          </p>
+          <p className="text-xl md:text-2xl font-normal mt-2 w-full md:w-[60%] text-center">
             For demo purposes, a test funded wallet will be used instead of your
-            external EOA wallets
+            external EOA wallets.
           </p>
         </>
       )}
       <div
         className={cn(
-          "mt-16 w-full flex items-center flex-col sm:flex-row justify-center lg:w-[85%] xl:w-[60%]",
+          "mt-16 w-full flex items-center flex-col sm:flex-row justify-center lg:w-[85%] xl:w-[65%]",
           { "mt-0": showSummary }
         )}
       >
         <ImportFlowCard
           title="Create your funded wallet on Arbitrum"
-          description="Get a funded test wallet for the demo that will stand in for your external wallets"
+          description="Get a funded test wallet for the demo that will stand in for your external wallets."
           step="1"
           isCompleted={completedSteps.includes("start")}
           isCurrent={currentStep === "start"}
@@ -186,7 +187,7 @@ const ConnectStep = ({
           resultOpacity
           resultText={sliceAddress(randomWallet?.address || "")}
           resultLogo="arbitrum"
-          handleClick={() => handleStep('start')}
+          handleClick={() => handleStep("start")}
           btnText="Create test wallet"
           loading={stepLoader}
           handleCompletedLink={() =>

@@ -17,7 +17,6 @@ const STEPS = {
 const Home = ({ address }: { address: string }) => {
   const [activeStep, setActiveStep] = useState(STEPS.CONNECT);
 
-
   return (
     <>
       <Navbar
@@ -29,7 +28,7 @@ const Home = ({ address }: { address: string }) => {
         className={cn(
           "flex-grow flex flex-col items-center justify-center relative z-1 bg-darkCard py-11 px-9 w-full",
           {
-            "h-dvh": activeStep !== STEPS.VIEW_SUMMARY,
+            "h-full md:h-dvh": activeStep !== STEPS.VIEW_SUMMARY,
           }
         )}
       >
@@ -54,21 +53,22 @@ const Home = ({ address }: { address: string }) => {
               </p>
             </div>
           )}
-          {activeStep === STEPS.CONNECT  && (
-            <ConnectStep 
+          {activeStep === STEPS.CONNECT && (
+            <ConnectStep
               onSuccess={() => {
                 setActiveStep(STEPS.CROSS_CHAIN_MINTING);
-              }}    
+              }}
               showSummary={activeStep === STEPS.VIEW_SUMMARY}
-              />
+            />
           )}
           {(activeStep === STEPS.CROSS_CHAIN_MINTING ||
             activeStep === STEPS.VIEW_SUMMARY) && (
-            <CrossMintingStep 
+            <CrossMintingStep
               onSuccess={() => {
                 setActiveStep(STEPS.VIEW_SUMMARY);
               }}
-              showSummary={activeStep === STEPS.VIEW_SUMMARY} />
+              showSummary={activeStep === STEPS.VIEW_SUMMARY}
+            />
           )}
           {activeStep === STEPS.VIEW_SUMMARY && (
             <div className="flex flex-col items-center justify-center gap-y-20">
@@ -84,4 +84,3 @@ const Home = ({ address }: { address: string }) => {
 };
 
 export default Home;
-

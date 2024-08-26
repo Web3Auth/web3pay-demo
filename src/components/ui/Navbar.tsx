@@ -84,7 +84,7 @@ const Navbar = ({
         }`
       )}
     >
-      <div className="flex items-center gap-x-6">
+      <Link href="/" className="flex items-center gap-x-6">
         <Image
           src="/images/web3auth-logo.svg"
           alt="Web3Auth Logo"
@@ -96,7 +96,7 @@ const Navbar = ({
             {logoText}
           </p>
         )}
-      </div>
+      </Link>
       {showButton ? (
         <div className="relative" ref={dropdownRef}>
           <Button
