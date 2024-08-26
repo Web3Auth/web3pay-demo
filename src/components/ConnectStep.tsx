@@ -18,9 +18,11 @@ import { OpenloginSessionManager } from "@toruslabs/session-manager";
 const ConnectStep = ({
   showSummary = false,
   onSuccess,
+  existingWallet,
 }: {
   showSummary?: boolean;
-  onSuccess: () => void;
+  onSuccess: (randomWallet: IRandomWallet) => void;
+  existingWallet: undefined | IRandomWallet;
 }) => {
   const { walletProvider, address: web3PayAddress, selectedEnv } = useWallet();
   const [randomWallet, setRandomWallet] = useState<IRandomWallet>();
@@ -36,9 +38,7 @@ const ConnectStep = ({
 
   useEffect(() => {
     if(showSummary) {
-      setRandomWallet(
-        JSON.parse(sessionStorage.getItem("randomWallet") || "{}")
-      );
+      setRandomWallet(existingWallet);
       setCurrentStep("completed");
       setCompletedSteps(["start", "connect"]);
     }
@@ -76,8 +76,6 @@ const ConnectStep = ({
         keyType: "secp256k1" as TRandomWalletKeyType,
       };
       setRandomWallet(newWallet);
-      sessionStorage.setItem("randomWallet", JSON.stringify(newWallet));
-
       setCompletedSteps([...completedSteps, "start"]);
       setCurrentStep("connect");
     } catch (err: any) {
@@ -149,7 +147,7 @@ const ConnectStep = ({
         console.log("Response", response);
         setCompletedSteps([...completedSteps, "connect"]);
 
-        onSuccess();
+        randomWallet && onSuccess(randomWallet);
       }
     } catch (e: unknown) {
       console.error("error importing account", e);

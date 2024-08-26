@@ -7,6 +7,7 @@ import NewsLetter from "./NewsLetter";
 import Navbar from "./ui/Navbar";
 import CrossMintingStep from "./CrossMintingStep";
 import ConnectStep from "./ConnectStep";
+import { IRandomWallet } from "@/utils/interfaces";
 
 const STEPS = {
   CONNECT: "Connect",
@@ -16,7 +17,12 @@ const STEPS = {
 
 const Home = ({ address }: { address: string }) => {
   const [activeStep, setActiveStep] = useState(STEPS.CONNECT);
+  const [randomWallet, setRandomWallet] = useState<IRandomWallet>();
 
+  const onImportAccount = (randomWallet: IRandomWallet) => {
+    setRandomWallet(randomWallet);
+    setActiveStep(STEPS.CROSS_CHAIN_MINTING);
+  }
   return (
     <>
       <Navbar
@@ -56,10 +62,9 @@ const Home = ({ address }: { address: string }) => {
           {(activeStep === STEPS.CONNECT ||
             activeStep === STEPS.VIEW_SUMMARY) && (
             <ConnectStep
-              onSuccess={() => {
-                setActiveStep(STEPS.CROSS_CHAIN_MINTING);
-              }}
+              onSuccess={onImportAccount}
               showSummary={activeStep === STEPS.VIEW_SUMMARY}
+              existingWallet = {randomWallet}
             />
           )}
           {(activeStep === STEPS.CROSS_CHAIN_MINTING ||
