@@ -6,6 +6,7 @@ import { TbCopy, TbCircleCheck, TbLogout, TbWallet } from "react-icons/tb";
 import Link from "next/link";
 import { useWallet } from "@/context/walletContext";
 import { cn } from "@/utils/utils";
+import useMintStore from "@/lib/store/mint";
 
 const Navbar = ({
   address,
@@ -23,7 +24,7 @@ const Navbar = ({
   const [copied, setCopied] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);
-
+  const { resetMintState } = useMintStore()
   const { setAddress, setLoggedIn, setWalletProvider } = useWallet();
 
   const handleCopy = () => {
@@ -40,6 +41,7 @@ const Navbar = ({
     setAddress("");
     setWalletProvider(null);
     localStorage.clear();
+    resetMintState();
     setLoggedIn(false);
   };
 

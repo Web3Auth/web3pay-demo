@@ -88,7 +88,6 @@ const ConnectStep = ({
         address,
         keyType: "secp256k1" as TRandomWalletKeyType,
       };
-      setTestWalletInfo(newWallet);
       setCompletedSteps([...completedSteps, "start"]);
       setCurrentStep("connect");
       setTestWalletInfo(newWallet);
