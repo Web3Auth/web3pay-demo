@@ -175,7 +175,7 @@ const ConnectStep = ({
   }
 
   async function onRetry() {
-    console.log("onRetry::errorStep", errorStep);
+    setDisplayErrorPopup(false);
     if (errorStep === "connect") {
       await handleCreateAndFundRandomWallet();
     } else if (errorStep === "import") {
