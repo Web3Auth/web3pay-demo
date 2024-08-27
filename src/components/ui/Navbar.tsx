@@ -100,7 +100,7 @@ const Navbar = ({
           width={40}
         />
         {logoText && (
-          <p className="text-2xl font-normal text-white hidden md:block">
+          <p className="text-2xl font-normal text-white hidden md:block hover:underline">
             {logoText}
           </p>
         )}

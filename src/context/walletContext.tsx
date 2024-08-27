@@ -31,7 +31,7 @@ export const WalletProviderContext = ({
   const [loggedIn, setLoggedIn] = useState(false);
   const [chainId, setChainId] = useState(80002);
   const router = useRouter();
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   useEffect(() => {
     const getWalletURL = () => {
