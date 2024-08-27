@@ -10,6 +10,7 @@ export const STEPS = {
 
 export interface MintNftState {
     minting: boolean;
+    waitForMintSuccess: boolean;
     mintSuccess: boolean;
     mintError: string;
     userOpHashUrl: string;
@@ -39,6 +40,7 @@ const useMintStore = create<MintState>()(
         },
         mintNftState: {
             minting: false,
+            waitForMintSuccess:false,
             mintSuccess: false,
             mintError: "",
             userOpHashUrl: "",
@@ -60,6 +62,7 @@ const useMintStore = create<MintState>()(
             activeStep: STEPS.CONNECT,
             mintNftState: {
                 minting: false,
+                waitForMintSuccess: false,
                 mintSuccess: false,
                 mintError: "",
                 userOpHashUrl: "",
