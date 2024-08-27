@@ -22,7 +22,7 @@ export default function Home() {
       <Web3Pay onActionButtonClick={() => {
         router.push("/home")
       }} isLoading={isLoading} 
-        actionButtonText="Enter Testnet Demo"
+        actionButtonText="Enter Web3Pay Demo"
       />
     </main>
   );

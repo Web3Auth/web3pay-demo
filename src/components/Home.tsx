@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { cn } from "@/utils/utils";
-import Faq from "./ui/Faq";
 import Footer from "./Footer";
 import NewsLetter from "./NewsLetter";
 import Navbar from "./ui/Navbar";
@@ -25,7 +24,7 @@ const Home = ({ address }: { address: string }) => {
       <Navbar
         address={address}
         containerClass="bg-transparent"
-        redirectRoute={activeStep === STEPS.VIEW_SUMMARY ? "/about" : "/"}
+        redirectRoute={activeStep === STEPS.VIEW_SUMMARY ? "/about" : ""}
         logoText={activeStep === STEPS.VIEW_SUMMARY ? "About Web3Pay" : ""}
       />
       <section
