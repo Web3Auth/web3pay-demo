@@ -40,11 +40,11 @@ const Navbar = ({
   };
 
   const handleLogout = () => {
+    resetMintState();
     setShowMenu(false);
     setAddress("");
     setWalletProvider(null);
     localStorage.clear();
-    resetMintState();
     setLoggedIn(false);
   };
 
