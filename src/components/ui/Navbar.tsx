@@ -3,9 +3,10 @@ import Image from "next/image";
 import Button from "./Button";
 import { copyToClipBoard, openInNewTab, sliceAddress } from "@/utils";
 import { TbCopy, TbCircleCheck, TbLogout, TbWallet } from "react-icons/tb";
-import Link from "next/link";
 import { useWallet } from "@/context/walletContext";
 import { cn } from "@/utils/utils";
+import useMintStore from "@/lib/store/mint";
+import { useRouter } from "next/navigation";
 
 const Navbar = ({
   address,
@@ -13,17 +14,20 @@ const Navbar = ({
   showButton = true,
   containerClass,
   logoText,
+  redirectRoute,
 }: {
   address: string;
   loader?: boolean;
   showButton?: boolean;
   containerClass?: string;
   logoText?: string;
+  redirectRoute?: string;
 }) => {
+  const router = useRouter();
   const [copied, setCopied] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);
-
+  const { resetMintState } = useMintStore()
   const { setAddress, setLoggedIn, setWalletProvider } = useWallet();
 
   const handleCopy = () => {
@@ -36,6 +40,7 @@ const Navbar = ({
   };
 
   const handleLogout = () => {
+    resetMintState();
     setShowMenu(false);
     setAddress("");
     setWalletProvider(null);
@@ -44,7 +49,7 @@ const Navbar = ({
   };
 
   const handleAddressExplorer = () => {
-    openInNewTab(`https://sepolia.arbiscan.io/address/${address}`);
+    openInNewTab(`https://amoy.polygonscan.com/address/${address}`);
   };
 
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -84,7 +89,10 @@ const Navbar = ({
         }`
       )}
     >
-      <Link href="/" className="flex items-center gap-x-6">
+      <div onClick={() => {
+        redirectRoute && router.push(redirectRoute) ;
+      }} className={`${redirectRoute ? "cursor-pointer": "cursor-default"} flex items-center gap-x-6`}
+      >
         <Image
           src="/images/web3auth-logo.svg"
           alt="Web3Auth Logo"
@@ -96,7 +104,7 @@ const Navbar = ({
             {logoText}
           </p>
         )}
-      </Link>
+      </div>
       {showButton ? (
         <div className="relative" ref={dropdownRef}>
           <Button

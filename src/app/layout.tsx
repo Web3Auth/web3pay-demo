@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import { WalletProviderContext } from "@/context/walletContext";
+import ZustandProvider from "@/components/ZustandProvider";
 
 const inter = DM_Sans({ subsets: ["latin", "latin-ext"] });
 
@@ -27,9 +28,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} relative`}>
-        <WalletProviderContext >
-          {children}
-        </WalletProviderContext>
+        <ZustandProvider>
+          <WalletProviderContext >
+            {children}
+          </WalletProviderContext>
+        </ZustandProvider>
       </body>
     </html>
   );

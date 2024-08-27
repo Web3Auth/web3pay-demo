@@ -15,6 +15,7 @@ import ErrorPopup from "./ErrorPopup";
 import { Modal } from "./ui/Modal";
 import { useRouter } from "next/navigation";
 import { openInNewTab } from "@/utils";
+import useMintStore from "@/lib/store/mint";
 
 const CrossMintingStep = ({
   showSummary = false,
@@ -24,6 +25,7 @@ const CrossMintingStep = ({
   onSuccess: () => void;
 }) => {
   const router = useRouter();
+  const { resetMintState, mintNftState, setMintNftState } = useMintStore();
   const {
     walletProvider,
     address: web3PayAddress,
@@ -34,18 +36,12 @@ const CrossMintingStep = ({
   const [errorStep, setErrorStep] = useState<string | undefined>();
   const [errorText, setErrorText] = useState("");
   const [subErrorText, setSubErrorText] = useState("");
-  const [mintNftState, setMintNftState] = useState({
-    minting: false,
-    mintSuccess: false,
-    mintError: "",
-    userOpHashUrl: "",
-    txHashUrl: "",
-  });
 
   async function mintNft() {
     try {
       setMintNftState({
         mintError: "",
+        waitForMintSuccess: false,
         minting: true,
         mintSuccess: false,
         userOpHashUrl: "",
@@ -71,7 +67,8 @@ const CrossMintingStep = ({
         setMintNftState({
           mintError: "",
           minting: false,
-          mintSuccess: true,
+          waitForMintSuccess: true,
+          mintSuccess: false,
           userOpHashUrl: `https://jiffyscan.xyz/userOpHash/${resp}`,
           txHashUrl: "",
         });
@@ -94,6 +91,7 @@ const CrossMintingStep = ({
       setMintNftState({
         mintError: "Error while minting",
         minting: false,
+        waitForMintSuccess: false,
         mintSuccess: false,
         userOpHashUrl: "",
         txHashUrl: "",
@@ -120,6 +118,7 @@ const CrossMintingStep = ({
       setMintNftState({
         mintError: "",
         minting: false,
+        waitForMintSuccess: false,
         mintSuccess: true,
         userOpHashUrl: `https://jiffyscan.xyz/userOpHash/${hash}`,
         txHashUrl: `https://amoy.polygonscan.com/tx/${userOperationByHash.receipt.transactionHash}`,
@@ -146,14 +145,14 @@ const CrossMintingStep = ({
             Next, use funds from your test wallet to mint your first NFT on a
             different chain.
           </p>
-          {mintNftState.mintSuccess && (
+          {mintNftState.txHashUrl && (
             <Button
               onClick={() => onSuccess()}
               title="View Demo Summary"
               otherClasses="bg-primary"
               style={{ marginTop: "24px" }}
             />
-          )}
+          )} 
         </>
       )}
       <div
@@ -269,14 +268,17 @@ const CrossMintingStep = ({
                 />
               ) : (
                 <GradientButton
-                  loading={mintNftState.minting}
+                  loading={mintNftState.minting || mintNftState.waitForMintSuccess}
                   title="Mint NFT"
                   handleClick={() => {
                     mintNft();
                   }}
-                  btnClass="max-md:!w-full"
+                  btnClass={`max-md:!w-full ${mintNftState.waitForMintSuccess? 'opacity-25 pointer-events-none': ''} `}
+
                 />
               )}
+              { mintNftState.waitForMintSuccess && 
+               <div className="mt-5"> Minting In Progress.... </div>}
             </div>
           </div>
         </Card>

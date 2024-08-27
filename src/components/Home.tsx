@@ -1,27 +1,30 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { cn } from "@/utils/utils";
-import Faq from "./ui/Faq";
 import Footer from "./Footer";
 import NewsLetter from "./NewsLetter";
 import Navbar from "./ui/Navbar";
 import CrossMintingStep from "./CrossMintingStep";
 import ConnectStep from "./ConnectStep";
+import { IRandomWallet } from "@/utils/interfaces";
+import useMintStore, { STEPS } from "@/lib/store/mint";
+import Button from "./ui/Button";
 
-const STEPS = {
-  CONNECT: "Connect",
-  CROSS_CHAIN_MINTING: "Cross_Chain_Minting",
-  VIEW_SUMMARY: "View_Summary",
-};
 
 const Home = ({ address }: { address: string }) => {
-  const [activeStep, setActiveStep] = useState(STEPS.CONNECT);
+  const { activeStep, setActiveStep, resetMintState } = useMintStore();
+  const [randomWallet, setRandomWallet] = useState<IRandomWallet>();
 
+  const onImportAccount = (randomWallet: IRandomWallet) => {
+    setRandomWallet(randomWallet);
+    setActiveStep(STEPS.CROSS_CHAIN_MINTING);
+  }
   return (
     <>
       <Navbar
         address={address}
         containerClass="bg-transparent"
+        redirectRoute={activeStep === STEPS.VIEW_SUMMARY ? "/about" : ""}
         logoText={activeStep === STEPS.VIEW_SUMMARY ? "About Web3Pay" : ""}
       />
       <section
@@ -51,14 +54,19 @@ const Home = ({ address }: { address: string }) => {
                 liquidity for cross-chain transactions without gas fees or
                 bridges
               </p>
+              <Button
+              onClick={() => resetMintState()}
+              title="Restart Demo"
+              otherClasses="bg-primary"
+              style={{ marginTop: "24px" }}
+            />
             </div>
           )}
-          {activeStep === STEPS.CONNECT && (
+          {(activeStep === STEPS.CONNECT ||
+            activeStep === STEPS.VIEW_SUMMARY) && (
             <ConnectStep
-              onSuccess={() => {
-                setActiveStep(STEPS.CROSS_CHAIN_MINTING);
-              }}
-              showSummary={activeStep === STEPS.VIEW_SUMMARY}
+              onSuccess={onImportAccount}
+              existingWallet = {randomWallet}
             />
           )}
           {(activeStep === STEPS.CROSS_CHAIN_MINTING ||
@@ -72,7 +80,7 @@ const Home = ({ address }: { address: string }) => {
           )}
           {activeStep === STEPS.VIEW_SUMMARY && (
             <div className="flex flex-col items-center justify-center gap-y-20">
-              <Faq />
+              {/* <Faq /> */}
               <NewsLetter />
               <Footer containerClass="mb-0 p-0 sm:px-0 w-full md:w-[90%]" />
             </div>

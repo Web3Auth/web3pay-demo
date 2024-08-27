@@ -4,7 +4,7 @@ import { SelectedEnv } from "@/utils/interfaces";
 import { calculateBaseUrl } from "@/utils/utils";
 // WalletContext.js
 import { WalletProvider } from "@web3auth/global-accounts-sdk";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 const WalletContext = createContext({
@@ -31,6 +31,7 @@ export const WalletProviderContext = ({
   const [loggedIn, setLoggedIn] = useState(false);
   const [chainId, setChainId] = useState(80002);
   const router = useRouter();
+  const pathname = usePathname()
 
   useEffect(() => {
     const getWalletURL = () => {
@@ -65,7 +66,7 @@ export const WalletProviderContext = ({
         })) as string[];
         if (account?.length) {
           setAddress(account[0]);
-          router.push("/home");
+          pathname === "/" ? router.push("/home") : router.push(pathname);
         } else {
           router.push("/");
         }

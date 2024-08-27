@@ -1,10 +1,10 @@
 import { useWallet } from "@/context/walletContext";
 import { sliceAddress, openInNewTab } from "@/utils";
-import { IRandomWallet, ConnectWeb3PayStep } from "@/utils/interfaces";
+import { IRandomWallet, ConnectWeb3PayStep, TRandomWalletKeyType } from "@/utils/interfaces";
 import { calculateBaseUrl, cn } from "@/utils/utils";
 import { generatePrivate, getPublic } from "@toruslabs/eccrypto";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createPublicClient, Hex, http } from "viem";
 import { privateKeyToAddress } from "viem/accounts";
 import ImportFlowCard from "./ui/ImportFlowCard";
@@ -14,16 +14,17 @@ import axios from "axios";
 import { waitForTransactionReceipt } from "viem/actions";
 import { arbitrumSepolia } from "viem/chains";
 import { OpenloginSessionManager } from "@toruslabs/session-manager";
+import useMintStore, { STEPS } from "@/lib/store/mint";
 
 const ConnectStep = ({
-  showSummary = false,
   onSuccess,
+  existingWallet,
 }: {
-  showSummary?: boolean;
-  onSuccess: () => void;
+  onSuccess: (randomWallet: IRandomWallet) => void;
+  existingWallet: undefined | IRandomWallet;
 }) => {
+  const { activeStep, isTestWalletConnected, testWalletInfo, setTestWalletConnected, setTestWalletInfo } = useMintStore();
   const { walletProvider, address: web3PayAddress, selectedEnv } = useWallet();
-  const [randomWallet, setRandomWallet] = useState<IRandomWallet>();
   const [completedSteps, setCompletedSteps] = useState<ConnectWeb3PayStep[]>(
     []
   );
@@ -34,13 +35,35 @@ const ConnectStep = ({
   const [currentStep, setCurrentStep] = useState<ConnectWeb3PayStep>("start");
   const [stepLoader, setStepLoader] = useState(false);
 
+  useEffect(()=>{
+    if (activeStep === STEPS.VIEW_SUMMARY) {
+      setTestWalletInfo(testWalletInfo);
+      setCurrentStep("completed");
+      setCompletedSteps(["start", "connect"]);
+      return
+    }
+    if (testWalletInfo.address) {
+      setTestWalletInfo(testWalletInfo);
+      setCompletedSteps(["start"]);
+      setCurrentStep("connect");
+    } else {
+      setCompletedSteps([]);
+      setCurrentStep("start");
+    }
+    if (isTestWalletConnected) {
+      setCompletedSteps(["start", "connect"]);
+      onSuccess(testWalletInfo);
+      setTestWalletConnected(true)
+    }
+  }, [activeStep])
+
   const handleStep = async (step: ConnectWeb3PayStep) => {
     switch (step) {
       case "start":
         await handleCreateAndFundRandomWallet();
         break;
       case "connect":
-        await importAccount(randomWallet as IRandomWallet);
+        await importAccount(testWalletInfo as IRandomWallet);
         break;
       default:
         break;
@@ -59,14 +82,15 @@ const ConnectStep = ({
         privateKey.startsWith("0x") ? (privateKey as Hex) : `0x${privateKey}`
       );
       await fundAccount(address);
-      setRandomWallet({
+      const newWallet = {
         publicKey,
         privateKey,
         address,
-        keyType: "secp256k1",
-      });
+        keyType: "secp256k1" as TRandomWalletKeyType,
+      };
       setCompletedSteps([...completedSteps, "start"]);
       setCurrentStep("connect");
+      setTestWalletInfo(newWallet);
     } catch (err: any) {
       setErrorStep("connect");
       setDisplayErrorPopup(true);
@@ -136,7 +160,8 @@ const ConnectStep = ({
         console.log("Response", response);
         setCompletedSteps([...completedSteps, "connect"]);
 
-        onSuccess();
+        testWalletInfo && onSuccess(testWalletInfo);
+        setTestWalletConnected(true)
       }
     } catch (e: unknown) {
       console.error("error importing account", e);
@@ -154,13 +179,13 @@ const ConnectStep = ({
     if (errorStep === "connect") {
       await handleCreateAndFundRandomWallet();
     } else if (errorStep === "import") {
-      await importAccount(randomWallet);
+      await importAccount(testWalletInfo);
     }
   }
 
   return (
     <div className="flex flex-col items-center justify-center">
-      {!showSummary && (
+      {activeStep !== STEPS.VIEW_SUMMARY && (
         <>
           <p className="text-3xl md:text-4xl font-bold text-center">
             Connecting with Web3Pay
@@ -174,7 +199,7 @@ const ConnectStep = ({
       <div
         className={cn(
           "mt-16 w-full flex items-center flex-col sm:flex-row justify-center lg:w-[85%] xl:w-[65%]",
-          { "mt-0": showSummary }
+          { "mt-0": activeStep === STEPS.VIEW_SUMMARY }
         )}
       >
         <ImportFlowCard
@@ -185,14 +210,14 @@ const ConnectStep = ({
           isCurrent={currentStep === "start"}
           logo="arbitrum"
           resultOpacity
-          resultText={sliceAddress(randomWallet?.address || "")}
+          resultText={sliceAddress(testWalletInfo?.address || "")}
           resultLogo="arbitrum"
           handleClick={() => handleStep("start")}
           btnText="Create test wallet"
           loading={stepLoader}
           handleCompletedLink={() =>
             openInNewTab(
-              `https://sepolia.arbiscan.io/address/${randomWallet?.address}`
+              `https://sepolia.arbiscan.io/address/${testWalletInfo?.address}`
             )
           }
         />
@@ -218,14 +243,14 @@ const ConnectStep = ({
           isCurrent={currentStep === "connect"}
           logo="arbitrum"
           resultOpacity
-          resultText={sliceAddress(randomWallet?.address || "")}
-          resultLogo="arbitrum"
+          resultText={"Wallet linked Successfully"}
+          resultLogo="link-gradient"
           handleClick={() => handleStep("connect")}
           btnText="Connect Test Wallet"
           loading={stepLoader}
           handleCompletedLink={() =>
             openInNewTab(
-              `https://sepolia.arbiscan.io/address/${randomWallet?.address}`
+              `https://sepolia.arbiscan.io/address/${testWalletInfo?.address}`
             )
           }
         />
