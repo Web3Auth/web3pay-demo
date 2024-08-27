@@ -66,7 +66,7 @@ export const WalletProviderContext = ({
         })) as string[];
         if (account?.length) {
           setAddress(account[0]);
-          router.push(pathname);
+          pathname === "/" ? router.push("/home") : router.push(pathname);
         } else {
           router.push("/");
         }
