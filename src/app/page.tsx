@@ -1,21 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import Image from "next/image";
-import Button from "@/components/ui/Button";
-import { HiOutlineArrowSmRight } from "react-icons/hi";
-import Card from "@/components/ui/Card";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useWallet } from "@/context/walletContext";
 import { Modal } from "@/components/ui/Modal";
 import ErrorPopup from "@/components/ErrorPopup";
 import Navbar from "@/components/ui/Navbar";
-import NewsLetter from "@/components/NewsLetter";
-import Footer from "@/components/Footer";
+import Web3Pay from "@/components/Web3Pay";
 
 export default function Home() {
   const router = useRouter();
+
   const [isLoading, setIsLoading] = useState(false);
   const { setAddress, walletProvider, setLoggedIn, loggedIn } = useWallet();
   // error message
@@ -59,171 +55,7 @@ export default function Home() {
   return (
     <main className="flex flex-col">
       <Navbar address={""} showButton={false} />
-
-      <section className="lg:h-[calc(100dvh_-_80px)] bg-blend-lighten lg:bg-home bg-no-repeat home-bg bg-scroll bg-[100%] flex-grow px-6 py-10 md:p-9 md:pb-14 flex flex-col gap-y-10 md:gap-y-20 my-20">
-        <div className="flex flex-col text-left gap-y-6 lg:pl-16 mt-2.5">
-          <div className="text-left text-3xl sm:banner-heading-text flex flex-col gap-y-1">
-            <p>Abstract everything, </p>
-            <p>everywhere, all at once,</p>
-            <div className="flex flex-col items-start gap-y-6">
-              <p className="gradient-text">with Web3Pay</p>
-              <Button
-                handleClick={loginOrRegister}
-                title="Create Testnet Web3Pay Account"
-                icon={<HiOutlineArrowSmRight className="text-white text-xl" />}
-                otherClasses="tracking-normal"
-                loading={isLoading}
-              />
-            </div>
-          </div>
-        </div>
-        <Image
-          src="/images/newhero.png"
-          alt="bg"
-          height={200}
-          width={100}
-          className="w-full lg:hidden"
-        />
-        <div className="flex flex-col text-left gap-y-4 max-lg:mx-auto lg:pl-16 lg:mt-auto">
-          <Image
-            src="/images/stroke-divider.svg"
-            alt="stroke"
-            height={50}
-            width={280}
-          />
-          <div className="text-base font-normal text-gray-400 uppercase">
-            <p>EXPERIENCE HOW WEB3PAY CAN </p>
-            <p>UNIFY A FRAGMENTED ECOSYSTEM</p>
-          </div>
-          <Image
-            src="/images/stroke-divider.svg"
-            alt="stroke"
-            height={50}
-            width={280}
-          />
-        </div>
-      </section>
-
-      <section className="lg:h-[100dvh] flex flex-col gap-y-10 md:gap-y-20 py-10 md:py-20">
-        <p className="text-center text-32 lg:text-5xl text-white">
-          Use, Interact and Spend Crypto As One
-        </p>
-        <div className="flex flex-col lg:flex-row items-center gap-y-6 lg:gap-x-10">
-          <Image
-            src="/images/web3pay-user.svg"
-            alt="Web3PayUser"
-            height={500}
-            width={600}
-            className="w-full lg:w-[40%] md:h-[480px] lg:h-[500px]"
-          />
-          <div className="flex flex-col gap-y-6 md:gap-y-8 lg:gap-y-10 lg:w-[60%] p-6 md:p-10 lg:pr-16">
-            <div className="text-left flex flex-col gap-y-2">
-              <p className="text-xl md:text-[32px] font-semibold leading-9 text-white break-words">
-                Interact with any dApp, no matter where your assets are
-              </p>
-              <p className="text-base md:text-2xl font-normal text-gray-400">
-                Break free from native token barriers and complex
-                bridges—transact instantly on any chain using the assets you
-                own.
-              </p>
-            </div>
-            <div className="gradient-divider"> </div>
-            <div className="text-left flex flex-col gap-y-2">
-              <p className="text-xl md:text-[32px] font-semibold leading-9 text-white break-words">
-                Connect any wallet, from any chain
-              </p>
-              <p className="text-base md:text-2xl font-normal text-gray-400">
-                Unify your liquidity across various and blockchains—manage,
-                store, send, and bridge effortlessly.
-              </p>
-            </div>
-            <div className="gradient-divider"> </div>
-            <div className="text-left flex flex-col gap-y-2">
-              <p className="text-xl md:text-[32px] font-semibold leading-9 text-white break-words">
-                Spend anytime, with your Web3Pay card
-              </p>
-              <p className="text-base md:text-2xl font-normal text-gray-400">
-                Spend your crypto anywhere with Web3Pay card at millions of
-                merchants worldwide.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="flex flex-col py-10 md:py-20 md:mt-32">
-        <p className="text-base md:text-lg uppercase text-gray-400 text-center md:text-left mb-4 px-6 md:px-20 font-semibold">
-          SERVICES
-        </p>
-        <p className="text-center text-32 lg:text-5xl text-white mb-4 px-4 md:px-20 md:text-left">
-          Web3Pay for Developers
-        </p>
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-x-6 items-stretch justify-center w-full p-6 md:px-20 md:py-10">
-          <Card
-            cardClasses="flex flex-col items-start p-9 w-full"
-            rootClasses="!w-auto"
-            active
-          >
-            <Image
-              src="/icons/thunder.svg"
-              alt="Service 1"
-              height={30}
-              width={30}
-            />
-            <p className="lg:text-2xl text-xl break-words text-left text-white font-semibold mt-10 mb-6">
-              Boost engagement for your applications
-            </p>
-            <p className="text-lg font-normal text-gray-400 text-left">
-              Keeping user activities within the dApp so that your users can
-              focus on what truly matters.
-            </p>
-          </Card>
-          <Card
-            cardClasses="flex flex-col items-start p-9 w-full"
-            rootClasses="!w-auto"
-            active
-          >
-            <Image
-              src="/icons/finger-print.svg"
-              alt="Service 1"
-              height={30}
-              width={30}
-            />
-            <p className="lg:text-2xl text-xl break-words text-left text-white font-semibold mt-10 mb-6">
-              Seamless User Onboarding
-            </p>
-            <p className="text-lg font-normal text-gray-400 text-left">
-              From first-timers to pros—instantly create a non-custodial wallet
-              with Passkeys or social login, or import an existing one.
-            </p>
-          </Card>
-          <Card
-            cardClasses="flex flex-col items-start p-9 w-full"
-            rootClasses="!w-auto"
-            active
-          >
-            <Image
-              src="/icons/link.svg"
-              alt="Service 1"
-              height={30}
-              width={30}
-            />
-            <p className="lg:text-2xl text-xl break-words text-left text-white font-semibold mt-10 mb-6">
-              Infrastructure designed to support all chains and assets
-            </p>
-            <p className="text-lg font-normal text-gray-400 text-left">
-              Build with ease on one chain and extend your reach across all
-              chains.
-            </p>
-          </Card>
-        </div>
-      </section>
-
-      <section className="mb-16">
-        <NewsLetter />
-      </section>
-
-      <Footer />
+      <Web3Pay actionButtonText="Create Testnet Web3Pay Account" onActionButtonClick={loginOrRegister} isLoading={isLoading} />
 
       <Modal
         isOpen={displayErrorPopup}

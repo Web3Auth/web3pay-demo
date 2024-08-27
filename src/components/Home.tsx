@@ -25,6 +25,7 @@ const Home = ({ address }: { address: string }) => {
       <Navbar
         address={address}
         containerClass="bg-transparent"
+        redirectRoute={activeStep === STEPS.VIEW_SUMMARY ? "/about" : "/"}
         logoText={activeStep === STEPS.VIEW_SUMMARY ? "About Web3Pay" : ""}
       />
       <section
