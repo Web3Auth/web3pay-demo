@@ -35,7 +35,6 @@ const CrossMintingStep = ({
     setLoggedIn,
   } = useWallet();
   const [displayErrorPopup, setDisplayErrorPopup] = useState(false);
-  const [errorStep, setErrorStep] = useState<string | undefined>();
   const [errorText, setErrorText] = useState("");
   const [subErrorText, setSubErrorText] = useState("");
 
@@ -94,9 +93,6 @@ const CrossMintingStep = ({
         });
         return;
       }
-      setErrorStep("mintNft");
-      setErrorText(walletError.message || "Error while minting");
-      setDisplayErrorPopup(true);
       setMintNftState({
         mintError: "Error while minting",
         mintStep: MINT_STEPS.FAILED,
@@ -117,8 +113,8 @@ const CrossMintingStep = ({
     const userOperationByHash = await bundlerClient.waitForUserOperationReceipt(
       {
         hash,
-        timeout: 1000 * 60 * 3,
-        pollingInterval: 1000 * 3,
+        timeout: 1000 * 35,
+        pollingInterval: 2000,
       }
     );
     if (userOperationByHash.receipt) {
