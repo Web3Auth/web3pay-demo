@@ -26,7 +26,8 @@
     "react-icons": "^5.2.1",
     "tailwind-merge": "^2.4.0",
     "viem": "^2.17.11",
-    "web-vitals": "^4.2.2"
+    "web-vitals": "^4.2.2",
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
     "@types/node": "^20",

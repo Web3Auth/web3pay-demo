@@ -8,15 +8,12 @@ import Navbar from "./ui/Navbar";
 import CrossMintingStep from "./CrossMintingStep";
 import ConnectStep from "./ConnectStep";
 import { IRandomWallet } from "@/utils/interfaces";
+import useMintStore, { STEPS } from "@/lib/store/mint";
+import Button from "./ui/Button";
 
-const STEPS = {
-  CONNECT: "Connect",
-  CROSS_CHAIN_MINTING: "Cross_Chain_Minting",
-  VIEW_SUMMARY: "View_Summary",
-};
 
 const Home = ({ address }: { address: string }) => {
-  const [activeStep, setActiveStep] = useState(STEPS.CONNECT);
+  const { activeStep, setActiveStep, resetMintState } = useMintStore();
   const [randomWallet, setRandomWallet] = useState<IRandomWallet>();
 
   const onImportAccount = (randomWallet: IRandomWallet) => {
@@ -57,13 +54,18 @@ const Home = ({ address }: { address: string }) => {
                 liquidity for cross-chain transactions without gas fees or
                 bridges
               </p>
+              <Button
+              onClick={() => resetMintState()}
+              title="Restart Demo"
+              otherClasses="bg-primary"
+              style={{ marginTop: "24px" }}
+            />
             </div>
           )}
           {(activeStep === STEPS.CONNECT ||
             activeStep === STEPS.VIEW_SUMMARY) && (
             <ConnectStep
               onSuccess={onImportAccount}
-              showSummary={activeStep === STEPS.VIEW_SUMMARY}
               existingWallet = {randomWallet}
             />
           )}
@@ -78,7 +80,7 @@ const Home = ({ address }: { address: string }) => {
           )}
           {activeStep === STEPS.VIEW_SUMMARY && (
             <div className="flex flex-col items-center justify-center gap-y-20">
-              <Faq />
+              {/* <Faq /> */}
               <NewsLetter />
               <Footer containerClass="mb-0 p-0 sm:px-0 w-full md:w-[90%]" />
             </div>
