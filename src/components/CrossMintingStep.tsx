@@ -141,7 +141,7 @@ const CrossMintingStep = ({
             Next, use funds from your test wallet to mint your first NFT on a
             different chain.
           </p>
-          {mintNftState.mintSuccess && (
+          {mintNftState.txHashUrl && (
             <Button
               onClick={() => onSuccess()}
               title="View Demo Summary"
