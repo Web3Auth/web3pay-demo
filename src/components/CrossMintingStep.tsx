@@ -179,8 +179,8 @@ const CrossMintingStep = ({
             })}
           >
             {mintNftState.mintStep === MINT_STEPS.WAITING && (
-              <div className="w-full ml-20">
-                <Loader size="3xl" />
+              <div className="w-full ml-24">
+                <Loader size="xl" />
               </div>
             )}
             {mintNftState.mintError && (
