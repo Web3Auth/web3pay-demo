@@ -128,9 +128,11 @@ const CrossMintingStep = ({
 
   async function onRetry() {
     try {
+      setDisplayErrorPopup(false);
       await mintNft();
     } catch (e: unknown) {
       console.error("error on retrying mint", e);
+      setDisplayErrorPopup(true);
     }
   }
 
