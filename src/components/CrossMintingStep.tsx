@@ -15,7 +15,7 @@ import ErrorPopup from "./ErrorPopup";
 import { Modal } from "./ui/Modal";
 import { useRouter } from "next/navigation";
 import { openInNewTab } from "@/utils";
-import useMintStore, { MINT_STEPS } from "@/lib/store/mint";
+import useMintStore, { MINT_STEPS, STEPS } from "@/lib/store/mint";
 import Loader from "./ui/Loader";
 
 const CrossMintingStep = ({
@@ -26,7 +26,8 @@ const CrossMintingStep = ({
   onSuccess: () => void;
 }) => {
   const router = useRouter();
-  const { resetMintState, mintNftState, setMintNftState } = useMintStore();
+  const { resetMintState, mintNftState, setMintNftState, setActiveStep } =
+    useMintStore();
   const {
     walletProvider,
     address: web3PayAddress,
@@ -40,6 +41,7 @@ const CrossMintingStep = ({
 
   async function mintNft() {
     try {
+      setActiveStep(STEPS.CROSS_CHAIN_MINTING);
       setMintNftState({
         mintStep: MINT_STEPS.MINTING,
         mintError: "",
