@@ -15,7 +15,7 @@ import ErrorPopup from "./ErrorPopup";
 import { Modal } from "./ui/Modal";
 import { useRouter } from "next/navigation";
 import { openInNewTab } from "@/utils";
-import useMintStore from "@/lib/store/mint";
+import useMintStore, { MINT_STEPS, STEPS } from "@/lib/store/mint";
 import Loader from "./ui/Loader";
 
 const CrossMintingStep = ({
@@ -26,7 +26,8 @@ const CrossMintingStep = ({
   onSuccess: () => void;
 }) => {
   const router = useRouter();
-  const { resetMintState, mintNftState, setMintNftState } = useMintStore();
+  const { resetMintState, mintNftState, setMintNftState, setActiveStep } =
+    useMintStore();
   const {
     walletProvider,
     address: web3PayAddress,
@@ -40,11 +41,10 @@ const CrossMintingStep = ({
 
   async function mintNft() {
     try {
+      setActiveStep(STEPS.CROSS_CHAIN_MINTING);
       setMintNftState({
+        mintStep: MINT_STEPS.MINTING,
         mintError: "",
-        waitForMintSuccess: false,
-        minting: true,
-        mintSuccess: false,
         userOpHashUrl: "",
         txHashUrl: "",
       });
@@ -66,10 +66,8 @@ const CrossMintingStep = ({
       if (resp) {
         // setMintSuccess(true);
         setMintNftState({
+          mintStep: MINT_STEPS.WAITING,
           mintError: "",
-          minting: false,
-          waitForMintSuccess: true,
-          mintSuccess: false,
           userOpHashUrl: `https://jiffyscan.xyz/userOpHash/${resp}`,
           txHashUrl: "",
         });
@@ -86,14 +84,22 @@ const CrossMintingStep = ({
         setLoggedIn(false);
         router.push("/");
       }
+      // user closed popup without completing transaction
+      if (walletError.code === 4001) {
+        setMintNftState({
+          mintError: "",
+          mintStep: MINT_STEPS.START,
+          userOpHashUrl: "",
+          txHashUrl: "",
+        });
+        return;
+      }
       setErrorStep("mintNft");
       setErrorText(walletError.message || "Error while minting");
       setDisplayErrorPopup(true);
       setMintNftState({
         mintError: "Error while minting",
-        minting: false,
-        waitForMintSuccess: false,
-        mintSuccess: false,
+        mintStep: MINT_STEPS.FAILED,
         userOpHashUrl: "",
         txHashUrl: "",
       });
@@ -118,9 +124,7 @@ const CrossMintingStep = ({
     if (userOperationByHash.receipt) {
       setMintNftState({
         mintError: "",
-        minting: false,
-        waitForMintSuccess: false,
-        mintSuccess: true,
+        mintStep: MINT_STEPS.SUCCESS,
         userOpHashUrl: `https://jiffyscan.xyz/userOpHash/${hash}`,
         txHashUrl: `https://amoy.polygonscan.com/tx/${userOperationByHash.receipt.transactionHash}`,
       });
@@ -160,28 +164,30 @@ const CrossMintingStep = ({
       )}
       <div
         className={cn("w-full lg:w-[80%] xl:w-[900px] mt-6 md:mt-16", {
-          "mt-6 md:mt-10": true,
+          "mt-6 md:mt-10": mintNftState.mintStep === MINT_STEPS.SUCCESS,
           "mt-0": showSummary,
         })}
       >
         <Card
           active
           cardClasses={`${
-            true ? "!p-6 lg:!px-16 lg:!py-10" : "!p-0"
+            mintNftState.mintStep !== MINT_STEPS.START
+              ? "!p-6 lg:!px-16 lg:!py-10"
+              : "!p-0"
           } !w-full bg-primary`}
           rootClasses="!w-full"
         >
           <div
             className={cn("grid grid-cols-1 md:grid-cols-2 items-start", {
-              "items-center": true,
+              "items-center": mintNftState.mintStep !== MINT_STEPS.START,
             })}
           >
-            {/* Loading State */}
-            <div className="w-full ml-20">
-              <Loader size="3xl" />
-            </div>
-            {/* Failed State */}
-            {false && (
+            {mintNftState.mintStep === MINT_STEPS.WAITING && (
+              <div className="w-full ml-20">
+                <Loader size="3xl" />
+              </div>
+            )}
+            {mintNftState.mintError && (
               <div className="w-full h-full md:w-[317px] md:h-[317px]">
                 <span className="relative w-full h-full md:w-[317px] md:h-[317px]">
                   <Image
@@ -195,7 +201,7 @@ const CrossMintingStep = ({
               </div>
             )}
             {/* Success State */}
-            {false && (
+            {mintNftState.mintStep === MINT_STEPS.SUCCESS && (
               <div className="w-full h-full md:w-[317px] md:h-[317px]">
                 <span className="relative w-full h-full md:w-[317px] md:h-[317px]">
                   <Image
@@ -216,7 +222,8 @@ const CrossMintingStep = ({
               </div>
             )}
             {/* Mint State */}
-            {false && (
+            {(mintNftState.mintStep === MINT_STEPS.START ||
+              mintNftState.mintStep === MINT_STEPS.MINTING) && (
               <Image
                 src={"/images/cross-chain-nft-mint.png"}
                 alt="cross chain nft mint"
@@ -226,11 +233,11 @@ const CrossMintingStep = ({
               />
             )}
             <div
-              className={cn("flex flex-col w-full p-10 md:pl-0 h-full", {
-                "p-0 mt-6": true,
+              className={cn("flex flex-col w-full p-10 h-full", {
+                "p-0 mt-6": mintNftState.mintStep !== MINT_STEPS.START,
               })}
             >
-              <div className="flex items-center gap-x-2 w-fit">
+              <div className="flex items-center gap-x-2 w-fit max-md:mt-4">
                 <Image
                   src={`/icons/arbitrum.svg`}
                   alt={"arbitrum"}
@@ -249,58 +256,92 @@ const CrossMintingStep = ({
               <p
                 className={cn(
                   "text-2xl font-bold text-white w-full mt-4 break-words",
-                  { "text-2xl md:text-4xl": false }
+                  {
+                    "text-2xl md:text-4xl":
+                      mintNftState.mintStep === MINT_STEPS.SUCCESS ||
+                      mintNftState.mintStep === MINT_STEPS.FAILED,
+                  }
                 )}
               >
                 {/* Loading */}
-                {true && "NFT minting in progress..."}
+                {mintNftState.mintStep === MINT_STEPS.WAITING &&
+                  "NFT minting in progress..."}
                 {/* Failed */}
-                {false && "MINT FAILED!"}
+                {mintNftState.mintStep === MINT_STEPS.FAILED && "MINT FAILED!"}
                 {/* Successful */}
-                {false && "MINT SUCCESSFUL!"}
+                {(mintNftState.mintStep === MINT_STEPS.SUCCESS ||
+                  showSummary) &&
+                  (showSummary
+                    ? "Try minting cross-chain NFT with Web3Pay again!"
+                    : "MINT SUCCESSFUL!")}
                 {/* Mint NFT state */}
-                {false && "Mint your first cross-chain NFT with Web3Pay!"}
+                {(mintNftState.mintStep === MINT_STEPS.START ||
+                  mintNftState.mintStep === MINT_STEPS.MINTING) &&
+                  "Mint your first cross-chain NFT with Web3Pay!"}
               </p>
 
               <p
                 className={cn(
-                  "text-lg font-normal text-gray-400 w-full md:w-[80%] mt-2 mb-6 break-words",
+                  "text-lg font-normal text-gray-400 w-full mt-2 mb-6 break-words",
                   {
-                    "md:w-full mb-0": true,
+                    "md:w-full mb-0":
+                      mintNftState.mintStep === MINT_STEPS.START,
                   }
                 )}
               >
-                {/* Loading State */}
-                {true &&
+                {/* waiting State */}
+                {mintNftState.mintStep === MINT_STEPS.WAITING &&
                   "You just minted a polygon NFT with Arbitrum tokens! It should appear in your wallet in about 5 minutes."}
                 {/* Failed State */}
-                {false &&
+                {mintNftState.mintStep === MINT_STEPS.FAILED &&
                   "Sorry, there was a little problem. Let’s try minting again to get the experience right."}
                 {/* Success and ShowSummary */}
-                {false &&
+                {mintNftState.mintStep === MINT_STEPS.SUCCESS &&
                   showSummary &&
-                  "Hooray! You just minted a polygon NFT with Arbitrum tokens!"}
+                  "Use your Arbitrum Test Tokens to mint an NFT on Polygon, no bridging required."}
                 {/* success and not show summary */}
-                {false &&
+                {mintNftState.mintStep === MINT_STEPS.SUCCESS &&
+                  !showSummary &&
                   !showSummary &&
                   "You just minted a polygon NFT with Arbitrum tokens! It should appear in your wallet in about 5 minutes."}
                 {/* not success */}
-                {false &&
+                {(mintNftState.mintStep === MINT_STEPS.START ||
+                  mintNftState.mintStep === MINT_STEPS.MINTING) &&
                   "Use your Arbitrum Test Tokens to mint an NFT on Polygon, no bridging required."}
               </p>
 
               {/* Success state */}
-              {false && (
+              {mintNftState.mintStep === MINT_STEPS.SUCCESS && !showSummary && (
                 <Link
                   target="_blank"
                   href={mintNftState.txHashUrl || mintNftState.userOpHashUrl}
-                  className="text-lg font-normal text-blue-500 mt-6"
+                  className="text-lg font-normal text-blue-500"
                 >
                   View transaction on Polygon
                 </Link>
               )}
 
-              {/* {true && (
+              <div className="flex flex-col gap-y-2 mt-4 max-md:w-full">
+                {mintNftState.mintStep === MINT_STEPS.SUCCESS &&
+                  showSummary && (
+                    <GradientButton
+                      loading={
+                        mintNftState.mintStep === MINT_STEPS.MINTING ||
+                        mintNftState.mintStep === MINT_STEPS.WAITING
+                      }
+                      title="Mint NFT"
+                      handleClick={() => {
+                        mintNft();
+                      }}
+                      btnClass={`max-md:!w-full ${
+                        mintNftState.mintStep === MINT_STEPS.WAITING
+                          ? "opacity-25 pointer-events-none"
+                          : ""
+                      } `}
+                    />
+                  )}
+
+                {/* {true && (
                 <Link
                   href={""}
                   className="text-lg font-normal text-blue-500 mt-2"
@@ -309,55 +350,52 @@ const CrossMintingStep = ({
                 </Link>
               )} */}
 
-              {/* Failed State */}
-              {false && (
-                <Button
-                  title="Retry"
-                  otherClasses="bg-primary max-md:!w-full"
-                  style={{ marginTop: "24px" }}
-                  onClick={() => {
-                    openInNewTab(
-                      "https://twitter.com/intent/tweet?text=I%27ve%20managed%20to%20mint%20an%20NFT%20on%20Polygon%20using%20Arbitrum%20tokens!%20Try%20it%20here!%20%23web3pay&url=https://demo-web3pay.tor.us/home"
-                    );
-                  }}
-                />
-              )}
+                {/* Failed State */}
+                {mintNftState.mintStep === MINT_STEPS.FAILED && (
+                  <Button
+                    title="Retry"
+                    otherClasses="bg-primary max-md:!w-full"
+                    rootClass="max-md:!w-full"
+                    onClick={() => {
+                      mintNft();
+                    }}
+                  />
+                )}
 
-              {/* Success State */}
-              {false && (
-                <Button
-                  title="Share your experience on X"
-                  otherClasses="bg-primary max-md:!w-full"
-                  style={{ marginTop: "24px" }}
-                  onClick={() => {
-                    openInNewTab(
-                      "https://twitter.com/intent/tweet?text=I%27ve%20managed%20to%20mint%20an%20NFT%20on%20Polygon%20using%20Arbitrum%20tokens!%20Try%20it%20here!%20%23web3pay&url=https://demo-web3pay.tor.us/home"
-                    );
-                  }}
-                />
-              )}
+                {/* Success State */}
+                {mintNftState.mintStep === MINT_STEPS.SUCCESS &&
+                  !showSummary && (
+                    <Button
+                      title="Share your experience on X"
+                      otherClasses="bg-primary max-md:!w-full"
+                      onClick={() => {
+                        openInNewTab(
+                          "https://twitter.com/intent/tweet?text=I%27ve%20managed%20to%20mint%20an%20NFT%20on%20Polygon%20using%20Arbitrum%20tokens!%20Try%20it%20here!%20%23web3pay&url=https://demo-web3pay.tor.us/home"
+                        );
+                      }}
+                    />
+                  )}
 
-              {/* Mint NFT state */}
-              {false && (
-                <GradientButton
-                  loading={
-                    mintNftState.minting || mintNftState.waitForMintSuccess
-                  }
-                  title="Mint NFT"
-                  handleClick={() => {
-                    mintNft();
-                  }}
-                  btnClass={`max-md:!w-full ${
-                    mintNftState.waitForMintSuccess
-                      ? "opacity-25 pointer-events-none"
-                      : ""
-                  } `}
-                />
-              )}
-
-              {mintNftState.waitForMintSuccess && (
-                <div className="mt-5"> Minting In Progress.... </div>
-              )}
+                {/* Mint NFT state */}
+                {(mintNftState.mintStep === MINT_STEPS.START ||
+                  mintNftState.mintStep === MINT_STEPS.MINTING) && (
+                  <GradientButton
+                    loading={
+                      mintNftState.mintStep === MINT_STEPS.MINTING ||
+                      mintNftState.mintStep === MINT_STEPS.WAITING
+                    }
+                    title="Mint NFT"
+                    handleClick={() => {
+                      mintNft();
+                    }}
+                    btnClass={`max-md:!w-full ${
+                      mintNftState.mintStep === MINT_STEPS.WAITING
+                        ? "opacity-25 pointer-events-none"
+                        : ""
+                    } `}
+                  />
+                )}
+              </div>
             </div>
           </div>
         </Card>

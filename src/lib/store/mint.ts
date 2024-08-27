@@ -8,10 +8,17 @@ export const STEPS = {
     VIEW_SUMMARY: "View_Summary",
   };
 
+  export const MINT_STEPS = {
+    START: "start",
+    MINTING: "minting",
+    WAITING: "waiting",
+    SUCCESS: "success",
+    FAILED: "failed",
+  };
+
+
 export interface MintNftState {
-    minting: boolean;
-    waitForMintSuccess: boolean;
-    mintSuccess: boolean;
+    mintStep: string
     mintError: string;
     userOpHashUrl: string;
     txHashUrl: string;
@@ -26,6 +33,7 @@ interface MintState {
     setTestWalletInfo: (walletInfo: IRandomWallet) => void;
     setTestWalletConnected: (isConnected: boolean) => void;
     resetMintState: () => void;
+    resetMintNftState: () => void;
 }
 
 const useMintStore = create<MintState>()(
@@ -39,13 +47,18 @@ const useMintStore = create<MintState>()(
             keyType: "secp256k1",
         },
         mintNftState: {
-            minting: false,
-            waitForMintSuccess:false,
-            mintSuccess: false,
+            mintStep: MINT_STEPS.START,
             mintError: "",
             userOpHashUrl: "",
             txHashUrl: "",
         },
+        resetMintNftState: () => set((state) => ({ mintNftState: {  
+            mintStep: MINT_STEPS.START,
+            mintError: "",
+            userOpHashUrl: "",
+            txHashUrl: "",
+        } })),
+
         setMintNftState: (nftState: MintNftState) => set((state) => ({ mintNftState: { ...nftState } })),
         isTestWalletConnected: false,
         setActiveStep: (step: string) => set((state) => ({ activeStep: step })),
@@ -61,9 +74,7 @@ const useMintStore = create<MintState>()(
             isTestWalletConnected: false,
             activeStep: STEPS.CONNECT,
             mintNftState: {
-                minting: false,
-                waitForMintSuccess: false,
-                mintSuccess: false,
+                mintStep: MINT_STEPS.START,
                 mintError: "",
                 userOpHashUrl: "",
                 txHashUrl: "",
