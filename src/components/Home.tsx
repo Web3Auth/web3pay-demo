@@ -7,11 +7,12 @@ import Navbar from "./ui/Navbar";
 import CrossMintingStep from "./CrossMintingStep";
 import ConnectStep from "./ConnectStep";
 import { IRandomWallet } from "@/utils/interfaces";
-import useMintStore, { STEPS } from "@/lib/store/mint";
+import useMintStore, { MINT_STEPS, STEPS } from "@/lib/store/mint";
 import Button from "./ui/Button";
 
 const Home = ({ address }: { address: string }) => {
-  const { activeStep, setActiveStep, resetMintState } = useMintStore();
+  const { activeStep, setActiveStep, resetMintState, mintNftState } =
+    useMintStore();
   const [randomWallet, setRandomWallet] = useState<IRandomWallet>();
 
   const onImportAccount = (randomWallet: IRandomWallet) => {
@@ -28,10 +29,10 @@ const Home = ({ address }: { address: string }) => {
       />
       <section
         className={cn(
-          "flex-grow flex flex-col items-center justify-center relative z-1 bg-darkCard py-11 px-9 w-full",
+          "flex-grow flex flex-col items-center justify-center relative z-1 bg-darkCard py-11 px-9 w-full h-full",
           {
-            "h-full md:h-dvh": activeStep !== STEPS.VIEW_SUMMARY,
-            "h-dvh": activeStep === STEPS.CROSS_CHAIN_MINTING,
+            "h-dvh": activeStep !== STEPS.VIEW_SUMMARY,
+            "h-full": mintNftState.mintStep === MINT_STEPS.SUCCESS,
           }
         )}
       >
