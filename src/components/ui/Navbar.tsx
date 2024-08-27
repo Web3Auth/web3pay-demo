@@ -90,8 +90,9 @@ const Navbar = ({
       )}
     >
       <div onClick={() => {
-        router.push(redirectRoute ? redirectRoute : "/");
-      }} className="flex items-center gap-x-6 cursor-pointer">
+        redirectRoute && router.push(redirectRoute) ;
+      }} className={`${redirectRoute ? "cursor-pointer": "cursor-default"} flex items-center gap-x-6`}
+      >
         <Image
           src="/images/web3auth-logo.svg"
           alt="Web3Auth Logo"
