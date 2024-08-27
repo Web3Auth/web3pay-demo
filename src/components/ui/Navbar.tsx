@@ -46,7 +46,7 @@ const Navbar = ({
   };
 
   const handleAddressExplorer = () => {
-    openInNewTab(`https://sepolia.arbiscan.io/address/${address}`);
+    openInNewTab(`https://amoy.polygonscan.com/address/${address}`);
   };
 
   const dropdownRef = useRef<HTMLDivElement>(null);

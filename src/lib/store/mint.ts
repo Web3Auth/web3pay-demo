@@ -58,11 +58,13 @@ const useMintStore = create<MintState>()(
             },
             isTestWalletConnected: false,
             activeStep: STEPS.CONNECT,
-            minting: false,
-            mintSuccess: false,
-            mintError: "",
-            userOpHashUrl: "",
-            txHashUrl: "",
+            mintNftState: {
+                minting: false,
+                mintSuccess: false,
+                mintError: "",
+                userOpHashUrl: "",
+                txHashUrl: "",
+            },
         })),
     }),
     {
