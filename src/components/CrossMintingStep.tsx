@@ -41,6 +41,7 @@ const CrossMintingStep = ({
     try {
       setMintNftState({
         mintError: "",
+        waitForMintSuccess: false,
         minting: true,
         mintSuccess: false,
         userOpHashUrl: "",
@@ -66,7 +67,8 @@ const CrossMintingStep = ({
         setMintNftState({
           mintError: "",
           minting: false,
-          mintSuccess: true,
+          waitForMintSuccess: true,
+          mintSuccess: false,
           userOpHashUrl: `https://jiffyscan.xyz/userOpHash/${resp}`,
           txHashUrl: "",
         });
@@ -89,6 +91,7 @@ const CrossMintingStep = ({
       setMintNftState({
         mintError: "Error while minting",
         minting: false,
+        waitForMintSuccess: false,
         mintSuccess: false,
         userOpHashUrl: "",
         txHashUrl: "",
@@ -115,6 +118,7 @@ const CrossMintingStep = ({
       setMintNftState({
         mintError: "",
         minting: false,
+        waitForMintSuccess: false,
         mintSuccess: true,
         userOpHashUrl: `https://jiffyscan.xyz/userOpHash/${hash}`,
         txHashUrl: `https://amoy.polygonscan.com/tx/${userOperationByHash.receipt.transactionHash}`,
@@ -264,14 +268,17 @@ const CrossMintingStep = ({
                 />
               ) : (
                 <GradientButton
-                  loading={mintNftState.minting}
+                  loading={mintNftState.minting || mintNftState.waitForMintSuccess}
                   title="Mint NFT"
                   handleClick={() => {
                     mintNft();
                   }}
-                  btnClass="max-md:!w-full"
+                  btnClass={`max-md:!w-full ${mintNftState.waitForMintSuccess? 'opacity-25 pointer-events-none': ''} `}
+
                 />
               )}
+              { mintNftState.waitForMintSuccess && 
+               <div className="mt-5"> Minting In Progress.... </div>}
             </div>
           </div>
         </Card>
