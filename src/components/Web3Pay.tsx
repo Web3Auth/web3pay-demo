@@ -1,4 +1,4 @@
-import React, {  } from "react";
+import React from "react";
 import Image from "next/image";
 import Button from "@/components/ui/Button";
 import { HiOutlineArrowSmRight } from "react-icons/hi";
@@ -6,8 +6,15 @@ import Card from "@/components/ui/Card";
 import NewsLetter from "@/components/NewsLetter";
 import Footer from "@/components/Footer";
 
-const Web3Pay = ({ onActionButtonClick, isLoading, actionButtonText }: {  onActionButtonClick: () => void, isLoading: boolean, actionButtonText: string }) => {
- 
+const Web3Pay = ({
+  onActionButtonClick,
+  isLoading,
+  actionButtonText,
+}: {
+  onActionButtonClick: () => void;
+  isLoading: boolean;
+  actionButtonText: string;
+}) => {
   return (
     <>
       <section className="lg:h-[calc(100dvh_-_80px)] bg-blend-lighten lg:bg-home bg-no-repeat home-bg bg-scroll bg-[100%] flex-grow px-6 py-10 md:p-9 md:pb-14 flex flex-col gap-y-10 md:gap-y-20 my-20">
@@ -29,11 +36,11 @@ const Web3Pay = ({ onActionButtonClick, isLoading, actionButtonText }: {  onActi
           </div>
         </div>
         <Image
-          src="/images/demo-home-bg.svg"
+          src="/images/mobilehero.png"
           alt="bg"
           height={200}
-          width={100}
-          className="w-full lg:hidden"
+          width={200}
+          className="w-full h-full lg:hidden"
         />
         <div className="flex flex-col text-left gap-y-4 max-lg:mx-auto lg:pl-16 lg:mt-auto">
           <Image
@@ -176,7 +183,6 @@ const Web3Pay = ({ onActionButtonClick, isLoading, actionButtonText }: {  onActi
       </section>
 
       <Footer />
-
     </>
   );
 };

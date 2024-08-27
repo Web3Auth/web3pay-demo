@@ -10,7 +10,6 @@ import { IRandomWallet } from "@/utils/interfaces";
 import useMintStore, { STEPS } from "@/lib/store/mint";
 import Button from "./ui/Button";
 
-
 const Home = ({ address }: { address: string }) => {
   const { activeStep, setActiveStep, resetMintState } = useMintStore();
   const [randomWallet, setRandomWallet] = useState<IRandomWallet>();
@@ -18,7 +17,7 @@ const Home = ({ address }: { address: string }) => {
   const onImportAccount = (randomWallet: IRandomWallet) => {
     setRandomWallet(randomWallet);
     setActiveStep(STEPS.CROSS_CHAIN_MINTING);
-  }
+  };
   return (
     <>
       <Navbar
@@ -32,6 +31,7 @@ const Home = ({ address }: { address: string }) => {
           "flex-grow flex flex-col items-center justify-center relative z-1 bg-darkCard py-11 px-9 w-full",
           {
             "h-full md:h-dvh": activeStep !== STEPS.VIEW_SUMMARY,
+            "h-dvh": activeStep === STEPS.CROSS_CHAIN_MINTING,
           }
         )}
       >
@@ -55,18 +55,18 @@ const Home = ({ address }: { address: string }) => {
                 bridges
               </p>
               <Button
-              onClick={() => resetMintState()}
-              title="Restart Demo"
-              otherClasses="bg-primary"
-              style={{ marginTop: "24px" }}
-            />
+                onClick={() => resetMintState()}
+                title="Restart Demo"
+                otherClasses="bg-primary"
+                style={{ marginTop: "24px" }}
+              />
             </div>
           )}
           {(activeStep === STEPS.CONNECT ||
             activeStep === STEPS.VIEW_SUMMARY) && (
             <ConnectStep
               onSuccess={onImportAccount}
-              existingWallet = {randomWallet}
+              existingWallet={randomWallet}
             />
           )}
           {(activeStep === STEPS.CROSS_CHAIN_MINTING ||
