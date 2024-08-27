@@ -113,7 +113,7 @@ const CrossMintingStep = ({
     const userOperationByHash = await bundlerClient.waitForUserOperationReceipt(
       {
         hash,
-        timeout: 1000 * 35,
+        timeout: 1000 * 60,
         pollingInterval: 2000,
       }
     );
