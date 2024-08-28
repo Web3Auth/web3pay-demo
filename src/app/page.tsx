@@ -8,6 +8,7 @@ import { Modal } from "@/components/ui/Modal";
 import ErrorPopup from "@/components/ErrorPopup";
 import Navbar from "@/components/ui/Navbar";
 import Web3Pay from "@/components/Web3Pay";
+import { parseSdkError } from "@/utils/utils";
 
 export default function Home() {
   const router = useRouter();
@@ -35,9 +36,10 @@ export default function Home() {
       setLoggedIn(walletProvider?.connected || false);
       // addLog(`Success full login: ${response}`);
     } catch (err: any) {
+      const error = parseSdkError(err, "Error while creating Web3Pay account");
       console.log(`Error during login: ${JSON.stringify(err)}`);
-      setErrorText("Error while creating Web3Pay account");
-      setSubErrorText(err?.message || "");
+      setErrorText(error.errorText);
+      setSubErrorText(error.subErrorText);
       setErrorRetryFunction(() => loginOrRegister);
       setDisplayErrorPopup(true);
       throw err;
