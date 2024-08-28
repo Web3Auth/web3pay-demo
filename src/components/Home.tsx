@@ -47,9 +47,12 @@ const Home = ({ address }: { address: string }) => {
         <div className="mt-16 flex flex-col gap-y-16 md:gap-y-20">
           {activeStep === STEPS.VIEW_SUMMARY && (
             <div className="text-center">
-              <p className="text-32 sm:banner-heading-text blue-gradient-text">
-                Web3Pay Demo
-              </p>
+              <div className="flex items-center justify-between gap-x-3 w-fit mx-auto">
+                <p className="text-32 sm:banner-heading-text blue-gradient-text">
+                  Experience with Web3Pay
+                </p>
+                <div className="alpha-tag">Alpha</div>
+              </div>
               <p className="text-base md:text-2xl font-normal text-white w-full md:w-[60%] mx-auto mt-6">
                 Here’s what you experienced when leveraging your EOA’s token
                 liquidity for cross-chain transactions without gas fees or

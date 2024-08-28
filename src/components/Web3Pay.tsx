@@ -23,7 +23,10 @@ const Web3Pay = ({
             <p>Abstract everything, </p>
             <p>everywhere, all at once,</p>
             <div className="flex flex-col items-start gap-y-6">
-              <p className="gradient-text">with Web3Pay</p>
+              <div className="flex items-center justify-between gap-x-3">
+                <p className="gradient-text">with Web3Pay</p>
+                <div className="alpha-tag">Alpha</div>
+              </div>
               {/* make this conditional based on input prop */}
               <Button
                 handleClick={onActionButtonClick}
