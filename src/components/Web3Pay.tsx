@@ -44,6 +44,7 @@ const Web3Pay = ({
           height={200}
           width={200}
           className="w-full h-full lg:hidden"
+          priority
         />
         <div className="flex flex-col text-left gap-y-4 max-lg:mx-auto lg:pl-16 lg:mt-auto">
           <Image
@@ -51,6 +52,7 @@ const Web3Pay = ({
             alt="stroke"
             height={50}
             width={280}
+            priority
           />
           <div className="text-base font-normal text-gray-400 uppercase">
             <p>EXPERIENCE HOW WEB3PAY CAN </p>
@@ -61,6 +63,7 @@ const Web3Pay = ({
             alt="stroke"
             height={50}
             width={280}
+            priority
           />
         </div>
       </section>
