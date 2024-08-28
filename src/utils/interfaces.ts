@@ -20,3 +20,8 @@ export type ImportFlowStep =
 export type NonImportFlowStep = "start" | "fundToken" | "mintNft" | "completed";
 
 export type ConnectWeb3PayStep = "start" | "connect" | "completed";
+
+export interface ISdkErorr {
+  code: number;
+  message: string;
+}

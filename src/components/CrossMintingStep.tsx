@@ -1,5 +1,5 @@
 import { useWallet } from "@/context/walletContext";
-import { calculateBaseUrl, cn, nftContractAddress } from "@/utils/utils";
+import { calculateBaseUrl, cn, nftContractAddress, parseSdkError } from "@/utils/utils";
 import Link from "next/link";
 import Image from "next/image";
 import { bundlerActions, ENTRYPOINT_ADDRESS_V07 } from "permissionless";
@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { openInNewTab } from "@/utils";
 import useMintStore, { MINT_STEPS, STEPS } from "@/lib/store/mint";
 import Loader from "./ui/Loader";
+import { ISdkErorr } from "@/utils/interfaces";
 
 const CrossMintingStep = ({
   showSummary = false,
@@ -77,12 +78,18 @@ const CrossMintingStep = ({
       )}/wallet/nft/${nftContractAddress}`;
     } catch (e: unknown) {
       console.error("error minting nft", e);
-      const walletError = e as { code: number; message: string };
+      const walletError = e as ISdkErorr;
       if (walletError.code === 4100) {
         // unauthorized, user not logged in
         setLoggedIn(false);
         router.push("/");
       }
+
+      setDisplayErrorPopup(true);
+      const parsedError = parseSdkError(e);
+      setErrorText(parsedError.errorText);
+      setSubErrorText(parsedError.subErrorText);
+
       // user closed popup without completing transaction
       if (walletError.code === 4001) {
         setMintNftState({

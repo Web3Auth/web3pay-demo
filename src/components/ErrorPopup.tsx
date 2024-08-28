@@ -16,7 +16,7 @@ const ErrorPopup = ({
       <HiExclamationCircle className=" text-red-500 text-5xl" />
       <div className="text-center">
         <p className="text-lg font-medium text-white">{text}</p>
-        <p className="text-sm font-normal text-white text-center mt-1 mx-auto">
+        <p className="text-sm font-normal text-gray-300 text-center mt-1 mx-auto">
           {subText}
         </p>
       </div>

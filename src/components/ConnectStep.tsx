@@ -1,7 +1,7 @@
 import { useWallet } from "@/context/walletContext";
 import { sliceAddress, openInNewTab } from "@/utils";
 import { IRandomWallet, ConnectWeb3PayStep, TRandomWalletKeyType } from "@/utils/interfaces";
-import { calculateBaseUrl, cn } from "@/utils/utils";
+import { calculateBaseUrl, cn, parseSdkError } from "@/utils/utils";
 import { generatePrivate, getPublic } from "@toruslabs/eccrypto";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -92,10 +92,12 @@ const ConnectStep = ({
       setCurrentStep("connect");
       setTestWalletInfo(newWallet);
     } catch (err: any) {
+      const parsedError = parseSdkError(err, "Error while creating or funding wallet");
       setErrorStep("connect");
       setDisplayErrorPopup(true);
       console.error("error while creating random wallet", err);
-      setErrorText("Error while creating or funding wallet");
+      setErrorText(parsedError.errorText);
+      setSubErrorText(parsedError.subErrorText);
     } finally {
       setStepLoader(false);
     }
@@ -125,8 +127,10 @@ const ConnectStep = ({
       } else {
         throw new Error("Failed to fund test wallet");
       }
-    } catch (error: any) {
-      setErrorText("Error while Funding Wallet");
+    } catch (error: unknown) {
+      const parsedError = parseSdkError(error, "Error while Funding Wallet");
+      setErrorText(parsedError.errorText);
+      setSubErrorText(parsedError.subErrorText);
       // check if user has enough balance and proceed to next step
     } finally {
       setStepLoader(false);
@@ -165,10 +169,11 @@ const ConnectStep = ({
       }
     } catch (e: unknown) {
       console.error("error importing account", e);
-      const walletError = e as { code: number; message: string };
+      const parsedError = parseSdkError(e, "Error while connecting account");
       setErrorStep("import");
       setDisplayErrorPopup(true);
-      setErrorText(walletError.message || "Error while connecting account");
+      setErrorText(parsedError.errorText);
+      setSubErrorText(parsedError.subErrorText);
     } finally {
       setStepLoader(false);
     }
