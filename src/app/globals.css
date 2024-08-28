@@ -74,6 +74,11 @@ body {
   .text-32 {
     @apply text-[32px] font-bold leading-9;
   }
+
+  .alpha-tag {
+    @apply text-gray-900 text-center rounded-32 text-sm font-medium leading-none tracking-normal w-fit px-6 py-2;
+    background: linear-gradient(180deg, #7ee0ff 0%, #dbc6ff 100%);
+  }
 }
 
 .home-bg {
