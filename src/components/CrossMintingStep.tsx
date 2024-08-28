@@ -1,5 +1,10 @@
 import { useWallet } from "@/context/walletContext";
-import { calculateBaseUrl, cn, nftContractAddress, parseSdkError } from "@/utils/utils";
+import {
+  calculateBaseUrl,
+  cn,
+  nftContractAddress,
+  parseSdkError,
+} from "@/utils/utils";
 import Link from "next/link";
 import Image from "next/image";
 import { bundlerActions, ENTRYPOINT_ADDRESS_V07 } from "permissionless";
@@ -169,14 +174,19 @@ const CrossMintingStep = ({
         className={cn("w-full lg:w-[80%] xl:w-[900px] mt-6 md:mt-16", {
           "mt-6 md:mt-10": mintNftState.mintStep === MINT_STEPS.SUCCESS,
           "mt-0": showSummary,
+          "h-full md:h-[256px]": mintNftState.mintStep === MINT_STEPS.WAITING,
+          "h-full md:h-[370px]":
+            mintNftState.mintStep === MINT_STEPS.SUCCESS ||
+            mintNftState.mintStep === MINT_STEPS.FAILED,
         })}
       >
         <Card
           active
           cardClasses={`${
-            mintNftState.mintStep !== MINT_STEPS.START
-              ? "!p-6 lg:!px-16 lg:!py-10"
-              : "!p-0"
+            mintNftState.mintStep === MINT_STEPS.START ||
+            mintNftState.mintStep === MINT_STEPS.MINTING
+              ? "!p-0"
+              : "!p-6 lg:!px-16 lg:!py-10"
           } !w-full bg-primary`}
           rootClasses="!w-full"
         >
@@ -236,9 +246,14 @@ const CrossMintingStep = ({
               />
             )}
             <div
-              className={cn("flex flex-col w-full p-10 h-full", {
-                "p-0 mt-6": mintNftState.mintStep !== MINT_STEPS.START,
-              })}
+              className={cn(
+                "flex flex-col items-start justify-center w-full p-0 h-full",
+                {
+                  "p-6 md:pl-10":
+                    mintNftState.mintStep === MINT_STEPS.START ||
+                    mintNftState.mintStep === MINT_STEPS.MINTING,
+                }
+              )}
             >
               <div className="flex items-center gap-x-2 w-fit max-md:mt-4">
                 <Image
@@ -289,6 +304,7 @@ const CrossMintingStep = ({
                   {
                     "md:w-full mb-0":
                       mintNftState.mintStep === MINT_STEPS.START,
+                    "mb-0": mintNftState.mintStep === MINT_STEPS.WAITING,
                   }
                 )}
               >

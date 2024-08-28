@@ -32,7 +32,7 @@ const Home = ({ address }: { address: string }) => {
           "flex-grow flex flex-col items-center justify-center relative z-1 bg-darkCard py-11 px-9 w-full h-full",
           {
             "h-dvh": activeStep !== STEPS.VIEW_SUMMARY,
-            "h-full": mintNftState.mintStep === MINT_STEPS.SUCCESS,
+            // "h-dvh": mintNftState.mintStep === MINT_STEPS.SUCCESS,
           }
         )}
       >
