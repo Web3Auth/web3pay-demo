@@ -37,6 +37,11 @@ export default function Home() {
       // addLog(`Success full login: ${response}`);
     } catch (err: any) {
       const error = parseSdkError(err, "Error while creating Web3Pay account");
+      if (error.code === 4001) {
+        // user cancelled the login request
+        setIsLoading(false);
+        return;
+      }
       console.log(`Error during login: ${JSON.stringify(err)}`);
       setErrorText(error.errorText);
       setSubErrorText(error.subErrorText);

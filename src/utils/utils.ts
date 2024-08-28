@@ -18,13 +18,14 @@ export const nftContractAddress = "0xD0f3053e39040Eb2e0bc8B4eF8f7bF92636aCd25";
 
 export const parseSdkError = (
   error: unknown,
-  title?: string
-): { errorText: string; subErrorText: string } => {
+  title?: string,
+): { errorText: string; subErrorText: string, code?: number } => {
   if (Object.keys(error as object).includes("code")) {
     const parsedError = error as ISdkErorr;
     switch (parsedError.code) {
       case 4001:
         return {
+          code: parsedError.code,
           errorText: "Canceled or Timed Out",
           subErrorText:
             "Request was either cancelled or timed out due to inactivity",
