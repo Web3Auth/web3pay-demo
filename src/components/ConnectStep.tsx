@@ -1,6 +1,10 @@
 import { useWallet } from "@/context/walletContext";
 import { sliceAddress, openInNewTab } from "@/utils";
-import { IRandomWallet, ConnectWeb3PayStep, TRandomWalletKeyType } from "@/utils/interfaces";
+import {
+  IRandomWallet,
+  ConnectWeb3PayStep,
+  TRandomWalletKeyType,
+} from "@/utils/interfaces";
 import { calculateBaseUrl, cn, parseSdkError } from "@/utils/utils";
 import { generatePrivate, getPublic } from "@toruslabs/eccrypto";
 import Image from "next/image";
@@ -23,7 +27,13 @@ const ConnectStep = ({
   onSuccess: (randomWallet: IRandomWallet) => void;
   existingWallet: undefined | IRandomWallet;
 }) => {
-  const { activeStep, isTestWalletConnected, testWalletInfo, setTestWalletConnected, setTestWalletInfo } = useMintStore();
+  const {
+    activeStep,
+    isTestWalletConnected,
+    testWalletInfo,
+    setTestWalletConnected,
+    setTestWalletInfo,
+  } = useMintStore();
   const { walletProvider, address: web3PayAddress, selectedEnv } = useWallet();
   const [completedSteps, setCompletedSteps] = useState<ConnectWeb3PayStep[]>(
     []
@@ -35,12 +45,12 @@ const ConnectStep = ({
   const [currentStep, setCurrentStep] = useState<ConnectWeb3PayStep>("start");
   const [stepLoader, setStepLoader] = useState(false);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (activeStep === STEPS.VIEW_SUMMARY) {
       setTestWalletInfo(testWalletInfo);
       setCurrentStep("completed");
       setCompletedSteps(["start", "connect"]);
-      return
+      return;
     }
     if (testWalletInfo.address) {
       setTestWalletInfo(testWalletInfo);
@@ -53,9 +63,9 @@ const ConnectStep = ({
     if (isTestWalletConnected) {
       setCompletedSteps(["start", "connect"]);
       onSuccess(testWalletInfo);
-      setTestWalletConnected(true)
+      setTestWalletConnected(true);
     }
-  }, [activeStep])
+  }, [activeStep]);
 
   const handleStep = async (step: ConnectWeb3PayStep) => {
     switch (step) {
@@ -92,7 +102,10 @@ const ConnectStep = ({
       setCurrentStep("connect");
       setTestWalletInfo(newWallet);
     } catch (err: any) {
-      const parsedError = parseSdkError(err, "Error while creating or funding wallet");
+      const parsedError = parseSdkError(
+        err,
+        "Error while creating or funding wallet"
+      );
       setErrorStep("connect");
       setDisplayErrorPopup(true);
       console.error("error while creating random wallet", err);
@@ -165,7 +178,7 @@ const ConnectStep = ({
         setCompletedSteps([...completedSteps, "connect"]);
 
         testWalletInfo && onSuccess(testWalletInfo);
-        setTestWalletConnected(true)
+        setTestWalletConnected(true);
       }
     } catch (e: unknown) {
       console.error("error importing account", e);
@@ -225,21 +238,26 @@ const ConnectStep = ({
               `https://sepolia.arbiscan.io/address/${testWalletInfo?.address}`
             )
           }
+          gradientBtnClass="!w-[234px]"
         />
-        <Image
-          src="/icons/arrow-right.svg"
-          alt="arrow"
-          height={50}
-          width={50}
-          className="rotate-90 my-5 mx-auto block md:hidden"
-        />
-        <Image
-          src="/icons/arrow-white.svg"
-          alt="arrow"
-          height={100}
-          width={100}
-          className="hidden md:block"
-        />
+        <div className="h-[50px]">
+          <Image
+            src="/icons/arrow-right.svg"
+            alt="arrow"
+            height={50}
+            width={50}
+            className="rotate-90 my-5 mx-auto block sm:hidden"
+          />
+        </div>
+        <div className="w-[200px]">
+          <Image
+            src="/icons/arrow-white.svg"
+            alt="arrow"
+            height={120}
+            width={100}
+            className="hidden sm:block"
+          />
+        </div>
         <ImportFlowCard
           title="Connect your wallet to Web3Pay Account"
           description="Allow your Web3Pay Account to access liquidity from your test wallet."
@@ -258,6 +276,7 @@ const ConnectStep = ({
               `https://sepolia.arbiscan.io/address/${testWalletInfo?.address}`
             )
           }
+          gradientBtnClass="!w-[248px]"
         />
       </div>
       <Modal

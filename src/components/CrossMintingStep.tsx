@@ -240,7 +240,7 @@ const CrossMintingStep = ({
               <Image
                 src={"/images/cross-chain-nft-mint.png"}
                 alt="cross chain nft mint"
-                height={500}
+                height={362}
                 width={400}
                 className="w-full h-full"
               />
@@ -303,7 +303,8 @@ const CrossMintingStep = ({
                   "text-lg font-normal text-gray-400 w-full mt-2 mb-6 break-words",
                   {
                     "md:w-full mb-0":
-                      mintNftState.mintStep === MINT_STEPS.START,
+                      mintNftState.mintStep === MINT_STEPS.START ||
+                      mintNftState.mintStep === MINT_STEPS.MINTING,
                     "mb-0": mintNftState.mintStep === MINT_STEPS.WAITING,
                   }
                 )}
@@ -352,7 +353,7 @@ const CrossMintingStep = ({
                       handleClick={() => {
                         mintNft();
                       }}
-                      btnClass={`max-md:!w-full ${
+                      btnClass={`max-md:!w-full !w-[164px] ${
                         mintNftState.mintStep === MINT_STEPS.WAITING
                           ? "opacity-25 pointer-events-none"
                           : ""
@@ -407,7 +408,7 @@ const CrossMintingStep = ({
                     handleClick={() => {
                       mintNft();
                     }}
-                    btnClass={`max-md:!w-full ${
+                    btnClass={`max-md:!w-full !w-[164px] ${
                       mintNftState.mintStep === MINT_STEPS.WAITING
                         ? "opacity-25 pointer-events-none"
                         : ""
