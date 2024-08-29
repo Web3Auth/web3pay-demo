@@ -7,13 +7,24 @@ import { WalletProvider } from "@web3auth/global-accounts-sdk";
 import { usePathname, useRouter } from "next/navigation";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-const WalletContext = createContext({
+type TWalletContext = {
+  address: string;
+  setAddress: (v: string) => void;
+  selectedEnv: SelectedEnv;
+  setSelectedEnv: (v: SelectedEnv) => void;
+  walletProvider: WalletProvider | null;
+  setWalletProvider: (v: WalletProvider) => void;
+  loggedIn: boolean;
+  setLoggedIn: (v: boolean) => void;
+}
+
+const WalletContext = createContext<TWalletContext>({
   address: "",
   selectedEnv: "production" as SelectedEnv,
   setSelectedEnv: (selectedEnv: SelectedEnv) => {},
   setAddress: (address: string) => {},
-  walletProvider: null as any,
-  setWalletProvider: (provider: any) => {},
+  walletProvider: null,
+  setWalletProvider: (provider: WalletProvider) => {},
   loggedIn: false,
   setLoggedIn: (loggedIn: boolean) => {},
 });
