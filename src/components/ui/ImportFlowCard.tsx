@@ -18,6 +18,7 @@ const ImportFlowCard = ({
   resultCustomIcon,
   btnText,
   loading,
+  gradientBtnClass,
 }: {
   isCurrent: boolean;
   isCompleted: boolean;
@@ -33,6 +34,7 @@ const ImportFlowCard = ({
   step: string;
   loading: boolean;
   btnText: string;
+  gradientBtnClass?: string;
 }) => {
   return (
     <Card
@@ -42,16 +44,23 @@ const ImportFlowCard = ({
     >
       <p className="text-26 font-normal flex items-center justify-between w-full">
         0{step}
-        {isCompleted ? (
-          <Image
-            src="/icons/badge-check.svg"
-            alt="completed"
-            height={50}
-            width={50}
-          />
-        ) : (
-          <Image src={`/icons/${logo}.svg`} alt={logo} height={30} width={30} />
-        )}
+        <div className="h-9 w-9 flex flex-col items-center justify-center">
+          {isCompleted ? (
+            <Image
+              src="/icons/badge-check.svg"
+              alt="completed"
+              height={36}
+              width={36}
+            />
+          ) : (
+            <Image
+              src={`/icons/${logo}.svg`}
+              alt={logo}
+              height={30}
+              width={30}
+            />
+          )}
+        </div>
       </p>
       <p className="text-base font-bold break-words w-full 2xl:w-[250px] text-left text-white">
         {title}
@@ -63,7 +72,7 @@ const ImportFlowCard = ({
         <GradientButton
           title={btnText}
           handleClick={() => handleClick()}
-          btnClass="max-sm:!w-full"
+          btnClass={`max-sm:!w-full ${gradientBtnClass}`}
           loading={loading}
         />
       )}
