@@ -137,6 +137,7 @@ export default function HomePage() {
             />
             <section className="h-[calc(100dvh_-_70px)] flex-grow px-6 py-10 md:p-9 flex flex-col items-center justify-center relative z-1 max-md:gap-y-10 mt-8">
               <Image
+                priority={true}
                 src={"/images/cross-chain-gradient.png"}
                 alt="cross chain"
                 width={400}

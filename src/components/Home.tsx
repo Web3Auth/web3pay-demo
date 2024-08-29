@@ -7,7 +7,7 @@ import Navbar from "./ui/Navbar";
 import CrossMintingStep from "./CrossMintingStep";
 import ConnectStep from "./ConnectStep";
 import { IRandomWallet } from "@/utils/interfaces";
-import useMintStore, { MINT_STEPS, STEPS } from "@/lib/store/mint";
+import useMintStore, { STEPS } from "@/lib/store/mint";
 import Button from "./ui/Button";
 
 const Home = ({ address }: { address: string }) => {

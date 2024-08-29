@@ -94,6 +94,7 @@ const Navbar = ({
       }} className={`${redirectRoute ? "cursor-pointer": "cursor-default"} flex items-center gap-x-6`}
       >
         <Image
+          priority={true}
           src="/images/web3auth-logo.svg"
           alt="Web3Auth Logo"
           height={40}
