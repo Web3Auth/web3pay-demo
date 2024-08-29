@@ -1,11 +1,12 @@
 import React from "react";
 import Image from "next/image";
+import { S3_ASSETS_URL } from "@/utils/utils";
 
 const Loading = () => {
   return (
     <main className="flex flex-col items-center justify-center h-dvh w-full gap-y-4 relative z-1">
       <Image
-        src={"/images/cross-chain-gradient.png"}
+        src={`${S3_ASSETS_URL}/images/cross-chain-gradient.png`}
         alt="cross chain"
         width={400}
         height={400}

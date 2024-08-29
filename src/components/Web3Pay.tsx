@@ -5,6 +5,7 @@ import { HiOutlineArrowSmRight } from "react-icons/hi";
 import Card from "@/components/ui/Card";
 import NewsLetter from "@/components/NewsLetter";
 import Footer from "@/components/Footer";
+import { S3_ASSETS_URL } from "@/utils/utils";
 
 const Web3Pay = ({
   onActionButtonClick,
@@ -39,31 +40,31 @@ const Web3Pay = ({
           </div>
         </div>
         <Image
-          src="/images/mobilehero.png"
+          src={`${S3_ASSETS_URL}/images/mobilehero.png`}
           alt="bg"
+          priority={true}
           height={200}
           width={200}
           className="w-full h-full lg:hidden"
-          priority
         />
         <div className="flex flex-col text-left gap-y-4 max-lg:mx-auto lg:pl-16 lg:mt-auto">
           <Image
-            src="/images/stroke-divider.svg"
+            priority={true}
+            src={`${S3_ASSETS_URL}/images/stroke-divider.svg`}
             alt="stroke"
             height={50}
             width={280}
-            priority
           />
           <div className="text-base font-normal text-gray-400 uppercase">
             <p>EXPERIENCE HOW WEB3PAY CAN </p>
             <p>UNIFY A FRAGMENTED ECOSYSTEM</p>
           </div>
           <Image
-            src="/images/stroke-divider.svg"
+            src={`${S3_ASSETS_URL}/images/stroke-divider.svg`}
+            priority={true}
             alt="stroke"
             height={50}
             width={280}
-            priority
           />
         </div>
       </section>
@@ -74,7 +75,7 @@ const Web3Pay = ({
         </p>
         <div className="flex flex-col lg:flex-row items-center gap-y-6 lg:gap-x-10">
           <Image
-            src="/images/web3pay-user.svg"
+            src={`${S3_ASSETS_URL}/images/web3pay-user.svg`}
             alt="Web3PayUser"
             height={500}
             width={600}
@@ -130,7 +131,7 @@ const Web3Pay = ({
             active
           >
             <Image
-              src="/icons/thunder.svg"
+              src={`${S3_ASSETS_URL}/icons/thunder.svg`}
               alt="Service 1"
               height={30}
               width={30}
@@ -149,7 +150,7 @@ const Web3Pay = ({
             active
           >
             <Image
-              src="/icons/finger-print.svg"
+              src={`${S3_ASSETS_URL}/icons/finger-print.svg`}
               alt="Service 1"
               height={30}
               width={30}
@@ -168,7 +169,7 @@ const Web3Pay = ({
             active
           >
             <Image
-              src="/icons/link.svg"
+              src={`${S3_ASSETS_URL}/icons/link.svg`}
               alt="Service 1"
               height={30}
               width={30}

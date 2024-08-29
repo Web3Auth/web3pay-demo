@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import { cn } from "@/utils/utils";
+import { cn, S3_ASSETS_URL } from "@/utils/utils";
 import Footer from "./Footer";
 import NewsLetter from "./NewsLetter";
 import Navbar from "./ui/Navbar";
 import CrossMintingStep from "./CrossMintingStep";
 import ConnectStep from "./ConnectStep";
 import { IRandomWallet } from "@/utils/interfaces";
-import useMintStore, { MINT_STEPS, STEPS } from "@/lib/store/mint";
+import useMintStore, { STEPS } from "@/lib/store/mint";
 import Button from "./ui/Button";
 
 const Home = ({ address }: { address: string }) => {
@@ -37,7 +37,7 @@ const Home = ({ address }: { address: string }) => {
         )}
       >
         <Image
-          src={"/images/cross-chain-gradient.png"}
+          src={`${S3_ASSETS_URL}/images/cross-chain-gradient.png`}
           alt="cross chain"
           width={500}
           height={500}

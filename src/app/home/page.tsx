@@ -9,7 +9,7 @@ import { IRandomWallet, SelectedEnv } from "@/utils/interfaces";
 import { OpenloginSessionManager } from "@toruslabs/session-manager";
 import { useEffect, useState } from "react";
 import { encodeFunctionData, Hex } from "viem";
-import { calculateBaseUrl, nftContractAddress } from "@/utils/utils";
+import { calculateBaseUrl, nftContractAddress, S3_ASSETS_URL } from "@/utils/utils";
 import { useWallet } from "@/context/walletContext";
 
 import { createClient, http } from "viem";
@@ -137,7 +137,8 @@ export default function HomePage() {
             />
             <section className="h-[calc(100dvh_-_70px)] flex-grow px-6 py-10 md:p-9 flex flex-col items-center justify-center relative z-1 max-md:gap-y-10 mt-8">
               <Image
-                src={"/images/cross-chain-gradient.png"}
+                priority={true}
+                src={`${S3_ASSETS_URL}/images/cross-chain-gradient.png`}
                 alt="cross chain"
                 width={400}
                 height={400}

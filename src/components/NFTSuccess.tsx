@@ -1,3 +1,4 @@
+import { S3_ASSETS_URL } from "@/utils/utils";
 import Image from "next/image";
 import React from "react";
 
@@ -5,7 +6,7 @@ const NFTSuccess = () => {
   return (
     <div className="w-full flex flex-col gap-y-4 items-center justify-center">
       <Image
-        src="/images/erc721.png"
+        src={`${S3_ASSETS_URL}/images/erc721.png`}
         alt="success"
         width={300}
         height={200}

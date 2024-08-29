@@ -17,7 +17,7 @@ import {
 import { arbitrumSepolia } from "viem/chains";
 import { waitForTransactionReceipt } from "viem/actions";
 import { NonImportFlowStep, SelectedEnv } from "@/utils/interfaces";
-import { calculateBaseUrl } from "@/utils/utils";
+import { calculateBaseUrl, S3_ASSETS_URL } from "@/utils/utils";
 import { openInNewTab } from "@/utils";
 import { TbExternalLink } from "react-icons/tb";
 import { Modal } from "./ui/Modal";
@@ -176,14 +176,14 @@ const NonImportFlow = ({
               01
               {completedSteps.includes("fundToken") ? (
                 <Image
-                  src="/icons/badge-check.svg"
+                  src={`${S3_ASSETS_URL}/icons/badge-check.svg`}
                   alt="arrow"
                   height={30}
                   width={30}
                 />
               ) : (
                 <Image
-                  src="/icons/arbitrum.svg"
+                  src={`${S3_ASSETS_URL}/icons/arbitrum.svg`}
                   alt="arrow"
                   height={30}
                   width={30}
@@ -211,7 +211,7 @@ const NonImportFlow = ({
                 className="flex items-center w-full bg-transparent rounded-full border border-gray-200 justify-center gap-x-2 py-2 opacity-45"
               >
                 <Image
-                  src="/icons/arbitrum.svg"
+                  src={`${S3_ASSETS_URL}/icons/arbitrum.svg`}
                   alt="arrow"
                   height={20}
                   width={20}
@@ -223,14 +223,14 @@ const NonImportFlow = ({
             )}
           </Card>
           <Image
-            src="/icons/arrow-right.svg"
+            src={`${S3_ASSETS_URL}/icons/arrow-right.svg`}
             alt="arrow"
             height={50}
             width={50}
             className="rotate-90 my-5 mx-auto block sm:hidden"
           />
           <Image
-            src="/icons/arrow-right.svg"
+            src={`${S3_ASSETS_URL}/icons/arrow-right.svg`}
             alt="arrow"
             height={50}
             width={50}
@@ -245,14 +245,14 @@ const NonImportFlow = ({
               02
               {completedSteps.includes("mintNft") ? (
                 <Image
-                  src="/icons/badge-check.svg"
+                  src={`${S3_ASSETS_URL}/icons/badge-check.svg`}
                   alt="arrow"
                   height={30}
                   width={30}
                 />
               ) : (
                 <Image
-                  src="/icons/polygon.svg"
+                  src={`${S3_ASSETS_URL}/icons/polygon.svg`}
                   alt="arrow"
                   height={30}
                   width={30}
@@ -315,7 +315,7 @@ const NonImportFlow = ({
                   <>
                     <div className="flex flex-col gap-y-4 w-[250px]">
                       <Image
-                        src="/images/erc-721-success.svg"
+                        src={`${S3_ASSETS_URL}/images/erc-721-success.svg`}
                         alt="success"
                         width={250}
                         height={108}

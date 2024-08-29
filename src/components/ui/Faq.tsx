@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Image from "next/image";
+import { S3_ASSETS_URL } from "@/utils/utils";
 
 const FAQList = [
   {
@@ -57,7 +58,7 @@ const FAQ = () => {
                 </p>
                 {faqIdx === index ? (
                   <Image
-                    src={"/icons/subtract-line.svg"}
+                    src={`${S3_ASSETS_URL}/icons/subtract-line.svg`}
                     alt="open"
                     width={20}
                     height={20}
@@ -67,7 +68,7 @@ const FAQ = () => {
                   />
                 ) : (
                   <Image
-                    src={"/icons/plus.svg"}
+                    src={`${S3_ASSETS_URL}/icons/plus.svg`}
                     alt="open"
                     width={20}
                     height={20}

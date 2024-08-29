@@ -14,7 +14,7 @@ import { createPublicClient, Hex, http } from "viem";
 import { waitForTransactionReceipt } from "viem/actions";
 import { arbitrumSepolia } from "viem/chains";
 import { TbExternalLink } from "react-icons/tb";
-import { calculateBaseUrl } from "@/utils/utils";
+import { calculateBaseUrl, S3_ASSETS_URL } from "@/utils/utils";
 import { sliceAddress, openInNewTab } from "@/utils";
 import { Modal } from "./ui/Modal";
 import ErrorPopup from "./ErrorPopup";
@@ -238,14 +238,14 @@ const ImportFlow = ({
             />
             {/* Divider */}
             <Image
-              src="/icons/arrow-right.svg"
+              src={`${S3_ASSETS_URL}/icons/arrow-right.svg`}
               alt="arrow"
               height={50}
               width={50}
               className="rotate-90 my-5 mx-auto block md:hidden"
             />
             <Image
-              src="/icons/arrow-right.svg"
+              src={`${S3_ASSETS_URL}/icons/arrow-right.svg`}
               alt="arrow"
               height={50}
               width={50}
@@ -273,21 +273,21 @@ const ImportFlow = ({
           </div>
           {/* Divider */}
           <Image
-            src="/icons/arrow-right.svg"
+            src={`${S3_ASSETS_URL}/icons/arrow-right.svg`}
             alt="arrow"
             height={50}
             width={50}
             className="rotate-90 my-5 mx-auto block md:hidden"
           />
           <Image
-            src="/icons/arrow-right.svg"
+            src={`${S3_ASSETS_URL}/icons/arrow-right.svg`}
             alt="arrow"
             height={50}
             width={50}
             className="hidden xl:block w-[28px]"
           />
           <Image
-            src="/icons/arrow-right.svg"
+            src={`${S3_ASSETS_URL}/icons/arrow-right.svg`}
             alt="arrow"
             height={80}
             width={50}
@@ -321,14 +321,14 @@ const ImportFlow = ({
             />
             {/* Divider */}
             <Image
-              src="/icons/arrow-right.svg"
+              src={`${S3_ASSETS_URL}/icons/arrow-right.svg`}
               alt="arrow"
               height={50}
               width={50}
               className="rotate-90 my-5 mx-auto block md:hidden"
             />
             <Image
-              src="/icons/arrow-right.svg"
+              src={`${S3_ASSETS_URL}/icons/arrow-right.svg`}
               alt="arrow"
               height={50}
               width={50}
@@ -405,13 +405,13 @@ const ImportFlowCard = ({
         0{step}
         {isCompleted ? (
           <Image
-            src="/icons/badge-check.svg"
+            src={`${S3_ASSETS_URL}/icons/badge-check.svg`}
             alt="completed"
             height={50}
             width={50}
           />
         ) : (
-          <Image src={`/icons/${logo}.svg`} alt={logo} height={30} width={30} />
+          <Image src={`${S3_ASSETS_URL}/icons/${logo}.svg`} alt={logo} height={30} width={30} />
         )}
       </p>
       <p className="text-base font-bold break-words w-full 2xl:w-[250px] text-left text-white">
@@ -437,7 +437,7 @@ const ImportFlowCard = ({
         >
           {resultLogo && (
             <Image
-              src={`/icons/${resultLogo}.svg`}
+              src={`${S3_ASSETS_URL}/icons/${resultLogo}.svg`}
               alt={resultLogo}
               height={20}
               width={20}
@@ -483,13 +483,13 @@ const NFTCard = ({
         04
         {completedSteps.includes("mintNft") ? (
           <Image
-            src="/icons/badge-check.svg"
+            src={`${S3_ASSETS_URL}/icons/badge-check.svg`}
             alt="arrow"
             height={30}
             width={30}
           />
         ) : (
-          <Image src="/icons/polygon.svg" alt="arrow" height={30} width={30} />
+          <Image src={`${S3_ASSETS_URL}/icons/polygon.svg`} alt="arrow" height={30} width={30} />
         )}
       </p>
       {!completedSteps.includes("mintNft") && currentStep !== "mintNft" && (
@@ -547,7 +547,7 @@ const NFTCard = ({
             <>
               <div className="flex flex-col justify-around gap-y-4">
                 <Image
-                  src="/images/erc-721-success.svg"
+                  src={`${S3_ASSETS_URL}/images/erc-721-success.svg`}
                   alt="success"
                   width={250}
                   height={108}
