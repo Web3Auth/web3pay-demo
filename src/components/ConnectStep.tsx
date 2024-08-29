@@ -1,7 +1,7 @@
 import { useWallet } from "@/context/walletContext";
 import { sliceAddress, openInNewTab } from "@/utils";
 import { IRandomWallet, ConnectWeb3PayStep, TRandomWalletKeyType } from "@/utils/interfaces";
-import { calculateBaseUrl, cn, parseSdkError } from "@/utils/utils";
+import { calculateBaseUrl, cn, parseSdkError, S3_ASSETS_URL } from "@/utils/utils";
 import { generatePrivate, getPublic } from "@toruslabs/eccrypto";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -227,14 +227,14 @@ const ConnectStep = ({
           }
         />
         <Image
-          src="/icons/arrow-right.svg"
+          src={`${S3_ASSETS_URL}/icons/arrow-right.svg`}
           alt="arrow"
           height={50}
           width={50}
           className="rotate-90 my-5 mx-auto block md:hidden"
         />
         <Image
-          src="/icons/arrow-white.svg"
+          src={`${S3_ASSETS_URL}/icons/arrow-white.svg`}
           alt="arrow"
           height={100}
           width={100}

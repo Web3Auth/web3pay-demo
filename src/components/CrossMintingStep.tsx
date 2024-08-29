@@ -4,6 +4,7 @@ import {
   cn,
   nftContractAddress,
   parseSdkError,
+  S3_ASSETS_URL,
 } from "@/utils/utils";
 import Link from "next/link";
 import Image from "next/image";
@@ -204,7 +205,7 @@ const CrossMintingStep = ({
               <div className="w-full h-full md:w-[317px] md:h-[317px]">
                 <span className="relative w-full h-full md:w-[317px] md:h-[317px]">
                   <Image
-                    src={"/images/mint-failed.svg"}
+                    src={`${S3_ASSETS_URL}/images/mint-failed.svg`}
                     alt="cross chain nft mint"
                     height={300}
                     width={300}
@@ -218,14 +219,14 @@ const CrossMintingStep = ({
               <div className="w-full h-full md:w-[317px] md:h-[317px]">
                 <span className="relative w-full h-full md:w-[317px] md:h-[317px]">
                   <Image
-                    src={"/images/web3pay-nft.png"}
+                    src={`${S3_ASSETS_URL}/images/web3pay-nft.png`}
                     alt="cross chain nft mint"
                     height={300}
                     width={300}
                     className="w-full h-full md:w-[317px] md:h-[317px]"
                   />
                   <Image
-                    src={`/icons/polygon.svg`}
+                    src={`${S3_ASSETS_URL}/icons/polygon.svg`}
                     alt={"polygon"}
                     height={50}
                     width={50}
@@ -238,7 +239,7 @@ const CrossMintingStep = ({
             {(mintNftState.mintStep === MINT_STEPS.START ||
               mintNftState.mintStep === MINT_STEPS.MINTING) && (
               <Image
-                src={"/images/cross-chain-nft-mint.png"}
+                src={`${S3_ASSETS_URL}/images/cross-chain-nft-mint.png`}
                 alt="cross chain nft mint"
                 height={500}
                 width={400}
@@ -257,14 +258,14 @@ const CrossMintingStep = ({
             >
               <div className="flex items-center gap-x-2 w-fit max-md:mt-4">
                 <Image
-                  src={`/icons/arbitrum.svg`}
+                  src={`${S3_ASSETS_URL}/icons/arbitrum.svg`}
                   alt={"arbitrum"}
                   height={30}
                   width={30}
                 />
                 <HiOutlineArrowSmRight />
                 <Image
-                  src={`/icons/polygon.svg`}
+                  src={`${S3_ASSETS_URL}/icons/polygon.svg`}
                   alt={"polygon"}
                   height={30}
                   width={30}

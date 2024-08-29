@@ -5,6 +5,7 @@ import GradientButton from "./GradientButton";
 import { ImportFlowStep } from "@/utils/interfaces";
 import { TbExternalLink } from "react-icons/tb";
 import { openInNewTab } from "@/utils";
+import { S3_ASSETS_URL } from "@/utils/utils";
 
 const NFTCard = ({
   currentStep,
@@ -38,13 +39,18 @@ const NFTCard = ({
         04
         {completedSteps.includes("mintNft") ? (
           <Image
-            src="/icons/badge-check.svg"
+            src={`${S3_ASSETS_URL}/icons/badge-check.svg`}
             alt="arrow"
             height={30}
             width={30}
           />
         ) : (
-          <Image src="/icons/polygon.svg" alt="arrow" height={30} width={30} />
+          <Image
+            src={`${S3_ASSETS_URL}/icons/polygon.svg`}
+            alt="arrow"
+            height={30}
+            width={30}
+          />
         )}
       </p>
       {!completedSteps.includes("mintNft") && currentStep !== "mintNft" && (
@@ -102,7 +108,7 @@ const NFTCard = ({
             <>
               <div className="flex flex-col justify-around gap-y-4">
                 <Image
-                  src="/images/erc-721-success.svg"
+                  src={`${S3_ASSETS_URL}/images/erc-721-success.svg`}
                   alt="success"
                   width={250}
                   height={108}

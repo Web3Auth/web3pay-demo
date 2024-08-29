@@ -4,7 +4,7 @@ import Button from "./Button";
 import { copyToClipBoard, openInNewTab, sliceAddress } from "@/utils";
 import { TbCopy, TbCircleCheck, TbLogout, TbWallet } from "react-icons/tb";
 import { useWallet } from "@/context/walletContext";
-import { cn } from "@/utils/utils";
+import { cn, S3_ASSETS_URL } from "@/utils/utils";
 import useMintStore from "@/lib/store/mint";
 import { useRouter } from "next/navigation";
 
@@ -95,7 +95,7 @@ const Navbar = ({
       >
         <Image
           priority={true}
-          src="/images/web3auth-logo.svg"
+          src={`${S3_ASSETS_URL}/images/web3auth-logo.svg`}
           alt="Web3Auth Logo"
           height={40}
           width={40}

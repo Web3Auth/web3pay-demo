@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import GradientButton from "./GradientButton";
 import Card from "./Card";
+import { S3_ASSETS_URL } from "@/utils/utils";
 
 const ImportFlowCard = ({
   isCurrent = false,
@@ -44,13 +45,18 @@ const ImportFlowCard = ({
         0{step}
         {isCompleted ? (
           <Image
-            src="/icons/badge-check.svg"
+            src={`${S3_ASSETS_URL}/icons/badge-check.svg`}
             alt="completed"
             height={50}
             width={50}
           />
         ) : (
-          <Image src={`/icons/${logo}.svg`} alt={logo} height={30} width={30} />
+          <Image
+            src={`${S3_ASSETS_URL}/icons/${logo}.svg`}
+            alt={logo}
+            height={30}
+            width={30}
+          />
         )}
       </p>
       <p className="text-base font-bold break-words w-full 2xl:w-[250px] text-left text-white">
@@ -76,7 +82,7 @@ const ImportFlowCard = ({
         >
           {resultLogo && (
             <Image
-              src={`/icons/${resultLogo}.svg`}
+              src={`${S3_ASSETS_URL}/icons/${resultLogo}.svg`}
               alt={resultLogo}
               height={20}
               width={20}

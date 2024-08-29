@@ -1,3 +1,4 @@
+import { S3_ASSETS_URL } from "@/utils/utils";
 import Image from "next/image";
 import React from "react";
 
@@ -5,7 +6,7 @@ const MintSuccess = () => {
   return (
     <div className="w-full flex flex-col gap-y-4 items-center justify-center">
       <Image
-        src="/images/success.svg"
+        src={`${S3_ASSETS_URL}/images/success.svg`}
         alt="success"
         width={300}
         height={200}
