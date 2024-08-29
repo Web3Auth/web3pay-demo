@@ -33,10 +33,10 @@ const config: Config = {
         navBar: "#050c33",
       },
       backgroundImage: {
-        login: "url('/images/demo-login-bg.svg')",
-        home: "url('/images/newhero.png')",
-        crossChain: "url('/images/cross-chain-gradient.png')",
-        nft: "url('/images/cross-chain-home-bg.svg')",
+        login: "url('https://dwoikxnpwwd36.cloudfront.net/demo-site/images/demo-login-bg.svg')",
+        home: "url('https://dwoikxnpwwd36.cloudfront.net/demo-site/images/newhero.png')",
+        crossChain: "url('https://dwoikxnpwwd36.cloudfront.net/demo-site/images/cross-chain-gradient.png')",
+        nft: "url('https://dwoikxnpwwd36.cloudfront.net/demo-site/images/cross-chain-home-bg.svg')",
       },
       animation: {
         "bounce-short": "bounce 1s linear 2",
