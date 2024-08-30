@@ -216,7 +216,7 @@ const CrossMintingStep = ({
             {/* Success State */}
             {mintNftState.mintStep === MINT_STEPS.SUCCESS && (
               <div className="w-full h-full md:w-[317px] md:h-[317px]">
-                <span className="relative w-full h-full md:w-[317px] md:h-[317px]">
+                <div className="relative w-full h-full md:w-[317px] md:h-[317px]">
                   <Image
                     src={"/images/web3pay-nft.png"}
                     alt="cross chain nft mint"
@@ -231,7 +231,7 @@ const CrossMintingStep = ({
                     width={50}
                     className="absolute -top-3 -right-3"
                   />
-                </span>
+                </div>
               </div>
             )}
             {/* Mint State */}
