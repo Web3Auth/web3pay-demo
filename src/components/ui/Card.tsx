@@ -28,7 +28,7 @@ const Card = ({
       {active && (
         <span className="animate-[spin_2s_linear_infinite] gradient-border rounded-30" />
       )}
-      <span
+      <div
         className={cn(
           "flex flex-col h-full w-full cursor-default items-start rounded-30 p-4 xl:p-6 2xl:px-9 2xl:py-6 text-base font-medium text-white backdrop-blur-3xl",
           {
@@ -39,7 +39,7 @@ const Card = ({
         )}
       >
         {children}
-      </span>
+      </div>
     </div>
   );
 };
