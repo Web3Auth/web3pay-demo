@@ -171,38 +171,48 @@ const CrossMintingStep = ({
         </>
       )}
       <div
-        className={cn("w-full lg:w-[80%] xl:w-[900px] mt-6 md:mt-16", {
-          "mt-6 md:mt-10": mintNftState.mintStep === MINT_STEPS.SUCCESS,
-          "mt-0": showSummary,
-          "h-full md:h-[256px]": mintNftState.mintStep === MINT_STEPS.WAITING,
-          "h-full md:h-[370px]":
-            mintNftState.mintStep === MINT_STEPS.SUCCESS ||
-            mintNftState.mintStep === MINT_STEPS.FAILED,
-        })}
+        className={cn(
+          "w-full lg:w-[80%] xl:w-[900px] h-full md:h-[370px] mt-6 md:mt-16",
+          {
+            "mt-6 md:mt-10": mintNftState.mintStep === MINT_STEPS.SUCCESS,
+            "mt-0": showSummary,
+            "my-auto": mintNftState.mintStep === MINT_STEPS.WAITING,
+            // "h-full md:h-[370px]":
+            //   mintNftState.mintStep === MINT_STEPS.SUCCESS ||
+            //   mintNftState.mintStep === MINT_STEPS.FAILED,
+            // "h-full md:h-[365px]":
+            //   mintNftState.mintStep === MINT_STEPS.START ||
+            //   mintNftState.mintStep === MINT_STEPS.MINTING,
+          }
+        )}
       >
         <Card
           active
-          cardClasses={`${
+          cardClasses={`h-full md:h-[370px] ${
             mintNftState.mintStep === MINT_STEPS.START ||
             mintNftState.mintStep === MINT_STEPS.MINTING
               ? "!p-0"
-              : "!p-6 lg:!px-16 lg:!py-10"
+              : "!p-6 lg:!px-16 my-auto"
           } !w-full bg-primary`}
-          rootClasses="!w-full"
+          rootClasses={`!w-full h-full md:h-[372px]`}
         >
           <div
-            className={cn("grid grid-cols-1 md:grid-cols-2 items-start", {
-              "items-center": mintNftState.mintStep !== MINT_STEPS.START,
-            })}
+            className={cn(
+              "grid grid-cols-1 md:grid-cols-2 items-start m-auto",
+              {
+                "items-center": mintNftState.mintStep !== MINT_STEPS.START,
+              }
+            )}
           >
             {mintNftState.mintStep === MINT_STEPS.WAITING && (
-              <div className="w-full ml-24">
+              <div className="w-full ml-24 my-auto">
                 <Loader size="xl" />
               </div>
             )}
+
             {mintNftState.mintError && (
-              <div className="w-full h-full md:w-[317px] md:h-[317px]">
-                <span className="relative w-full h-full md:w-[317px] md:h-[317px]">
+              <div className="w-full h-full md:w-[317px] md:h-[317px] my-auto">
+                <div className="relative w-full h-full md:w-[317px] md:h-[317px]">
                   <Image
                     src={"/images/mint-failed.svg"}
                     alt="cross chain nft mint"
@@ -210,40 +220,43 @@ const CrossMintingStep = ({
                     width={300}
                     className="w-full h-full md:w-[317px] md:h-[317px]"
                   />
-                </span>
+                </div>
               </div>
             )}
+
             {/* Success State */}
             {mintNftState.mintStep === MINT_STEPS.SUCCESS && (
-              <div className="w-full h-full md:w-[317px] md:h-[317px]">
-                <span className="relative w-full h-full md:w-[317px] md:h-[317px]">
+              <div className="w-full h-full md:w-[300px] md:h-[300px]">
+                <div className="relative w-full h-full md:w-[300px] md:h-[300px]">
                   <Image
                     src={"/images/web3pay-nft.png"}
                     alt="cross chain nft mint"
                     height={300}
                     width={300}
-                    className="w-full h-full md:w-[317px] md:h-[317px]"
+                    className="w-full h-full md:w-[300px] md:h-[300px]"
                   />
                   <Image
                     src={`/icons/polygon.svg`}
                     alt={"polygon"}
                     height={50}
                     width={50}
-                    className="absolute -top-3 -right-3"
+                    className="absolute -top-3 -right-3 h-[50px] w-[50px]"
                   />
-                </span>
+                </div>
               </div>
             )}
             {/* Mint State */}
             {(mintNftState.mintStep === MINT_STEPS.START ||
               mintNftState.mintStep === MINT_STEPS.MINTING) && (
-              <Image
-                src={"/images/cross-chain-nft-mint.png"}
-                alt="cross chain nft mint"
-                height={500}
-                width={400}
-                className="w-full h-full"
-              />
+              <div className="h-full md:h-[362px]">
+                <Image
+                  src={"/images/cross-chain-nft-mint.png"}
+                  alt="cross chain nft mint"
+                  height={362}
+                  width={400}
+                  className="w-full h-full"
+                />
+              </div>
             )}
             <div
               className={cn(
@@ -300,11 +313,11 @@ const CrossMintingStep = ({
 
               <p
                 className={cn(
-                  "text-lg font-normal text-gray-400 w-full mt-2 mb-6 break-words",
+                  "text-lg font-normal text-gray-400 w-full mt-2 break-words",
                   {
-                    "md:w-full mb-0":
-                      mintNftState.mintStep === MINT_STEPS.START,
-                    "mb-0": mintNftState.mintStep === MINT_STEPS.WAITING,
+                    "md:w-full":
+                      mintNftState.mintStep === MINT_STEPS.START ||
+                      mintNftState.mintStep === MINT_STEPS.MINTING,
                   }
                 )}
               >
@@ -334,7 +347,7 @@ const CrossMintingStep = ({
                 <Link
                   target="_blank"
                   href={mintNftState.txHashUrl || mintNftState.userOpHashUrl}
-                  className="text-lg font-normal text-blue-500"
+                  className="text-lg font-normal text-blue-500 mt-6"
                 >
                   View transaction on Polygon
                 </Link>
@@ -352,7 +365,7 @@ const CrossMintingStep = ({
                       handleClick={() => {
                         mintNft();
                       }}
-                      btnClass={`max-md:!w-full ${
+                      btnClass={`max-md:!w-full !w-[164px] ${
                         mintNftState.mintStep === MINT_STEPS.WAITING
                           ? "opacity-25 pointer-events-none"
                           : ""
@@ -407,7 +420,7 @@ const CrossMintingStep = ({
                     handleClick={() => {
                       mintNft();
                     }}
-                    btnClass={`max-md:!w-full ${
+                    btnClass={`max-md:!w-full !w-[164px] ${
                       mintNftState.mintStep === MINT_STEPS.WAITING
                         ? "opacity-25 pointer-events-none"
                         : ""
