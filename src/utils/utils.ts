@@ -7,10 +7,14 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 export const calculateBaseUrl = (selectedEnv: SelectedEnv) => {
-  if (selectedEnv === "local") {
-    return "http://localhost:3000";
-  } else {
-    return "https://lrc-accounts.web3auth.io";
+  switch (selectedEnv) {
+    case "local":
+      return "http://localhost:3000";
+    case "dev":
+      return "https://web3pay.web3auth.dev";
+    case "production":
+    default:
+      return "https://lrc-accounts.web3auth.io";  
   }
 };
 

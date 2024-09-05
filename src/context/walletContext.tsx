@@ -4,7 +4,7 @@ import { SelectedEnv } from "@/utils/interfaces";
 import { calculateBaseUrl } from "@/utils/utils";
 // WalletContext.js
 import { WalletProvider } from "@web3auth/global-accounts-sdk";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 const WalletContext = createContext({
@@ -23,19 +23,21 @@ export const WalletProviderContext = ({
 }: {
   children: React.ReactNode;
 }) => {
+  const router = useRouter();
   const [address, setAddress] = useState("");
-  const [selectedEnv, setSelectedEnv] = useState<SelectedEnv>("production");
+  const [selectedEnv, setSelectedEnv] = useState<SelectedEnv>("local");
   const [walletProvider, setWalletProvider] = useState<WalletProvider | null>(
     null
   );
   const [loggedIn, setLoggedIn] = useState(false);
   const [chainId, setChainId] = useState(80002);
-  const router = useRouter();
-  const pathname = usePathname();
 
   useEffect(() => {
     const getWalletURL = () => {
-      return `${calculateBaseUrl(selectedEnv)}/connect`;
+      const url = new URL(window.location.href);
+      const env: SelectedEnv = url.searchParams.get("env") as SelectedEnv || "production";
+      setSelectedEnv(env);
+      return `${calculateBaseUrl(env)}/connect`;
     };
 
     // initiate sdk
@@ -55,7 +57,9 @@ export const WalletProviderContext = ({
       setLoggedIn(walletProvider?.connected || false);
     };
     initWalletProvider();
+  }, [walletProvider?.connected, chainId]);
 
+  useEffect(() => {
     // check if user is already logged in
     const getAddress = async () => {
       try {
@@ -64,11 +68,13 @@ export const WalletProviderContext = ({
           method: "eth_accounts",
           params: [],
         })) as string[];
+
+        const url = new URL(window.location.href);
         if (account?.length) {
           setAddress(account[0]);
-          pathname === "/" ? router.push("/home") : router.push(pathname);
+          router.push(`/home${url.search}`);
         } else {
-          router.push("/");
+          router.push(`/${url.search}`);
         }
       } catch (err) {
         console.log(err);
@@ -76,7 +82,7 @@ export const WalletProviderContext = ({
       }
     };
     getAddress();
-  }, [walletProvider?.connected, selectedEnv]);
+  }, [loggedIn, router, walletProvider]);
 
   return (
     <WalletContext.Provider
