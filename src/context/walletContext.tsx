@@ -25,7 +25,7 @@ export const WalletProviderContext = ({
 }) => {
   const router = useRouter();
   const [address, setAddress] = useState("");
-  const [selectedEnv, setSelectedEnv] = useState<SelectedEnv>("local");
+  const [selectedEnv, setSelectedEnv] = useState<SelectedEnv>("production");
   const [walletProvider, setWalletProvider] = useState<WalletProvider | null>(
     null
   );
