@@ -4,7 +4,7 @@ const nextConfig = {
         remotePatterns: [
           {
             protocol: 'https',
-            hostname: 'dwoikxnpwwd36.cloudfront.net',
+            hostname: 'assets.web3pay.io',
             port: '',
             pathname: '/**',
           },
