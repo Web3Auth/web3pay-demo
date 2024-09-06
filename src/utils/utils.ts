@@ -16,7 +16,7 @@ export const calculateBaseUrl = (selectedEnv: SelectedEnv) => {
 
 export const nftContractAddress = "0xD0f3053e39040Eb2e0bc8B4eF8f7bF92636aCd25";
 
-export const S3_ASSETS_URL = "https://dwoikxnpwwd36.cloudfront.net/demo-site";
+export const S3_ASSETS_URL = "https://assets.web3pay.io/demo-site";
 
 export const parseSdkError = (
   error: unknown,
