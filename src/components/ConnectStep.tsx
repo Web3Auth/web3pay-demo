@@ -216,7 +216,7 @@ const ConnectStep = ({
       )}
       <div
         className={cn(
-          "mt-16 w-full flex items-center flex-col sm:flex-row justify-center lg:w-[85%] xl:w-[65%]",
+          "mt-16 w-full flex items-center flex-col sm:flex-row justify-center lg:w-[85%]",
           { "mt-0": activeStep === STEPS.VIEW_SUMMARY }
         )}
       >
