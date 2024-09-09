@@ -73,13 +73,26 @@ const Web3Pay = ({
           Use, Interact and Spend Crypto As One
         </p>
         <div className="flex flex-col lg:flex-row items-center gap-y-6 lg:gap-x-10">
-          <Image
+          {/* <Image
             src="/images/web3pay-user.svg"
             alt="Web3PayUser"
             height={500}
             width={600}
             className="w-full lg:w-[40%] md:h-[480px] lg:h-[500px]"
-          />
+          /> */}
+          <video
+            width="320"
+            height="240"
+            className="w-full lg:w-[40%] md:h-[480px] lg:h-[500px]"
+            autoPlay
+            loop
+            muted
+            // controls
+            // poster="/images/web3pay-user.svg"
+          >
+            <source src="/videos/Web3paygif3.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
           <div className="flex flex-col gap-y-6 md:gap-y-8 lg:gap-y-10 lg:w-[60%] p-6 md:p-10 lg:pr-16">
             <div className="text-left flex flex-col gap-y-2">
               <p className="text-xl md:text-[32px] font-semibold leading-9 text-white break-words">
