@@ -42,18 +42,25 @@ export const WalletProviderContext = ({
 
     // initiate sdk
     const initWalletProvider = async () => {
-      setWalletProvider(
-        new WalletProvider({
-          metadata: {
-            appChainIds: [chainId],
-            appName: "Web3Pay Demo",
-            appLogoUrl: "https://demo-web3pay.tor.us/images/w3a-light.svg",
-          },
-          preference: {
-            keysUrl: getWalletURL(),
-          },
-        })
-      );
+      const _walletProvider = new WalletProvider({
+        metadata: {
+          appChainIds: [chainId],
+          appName: "Web3Pay Demo",
+          appLogoUrl: "https://demo-web3pay.tor.us/images/w3a-light.svg",
+        },
+        preference: {
+          keysUrl: getWalletURL(),
+        },
+      });
+
+      _walletProvider.addListener("disconnect", () => {
+        setAddress("");
+        setWalletProvider(null);
+        localStorage.clear();
+        setLoggedIn(false);
+      });
+
+      setWalletProvider(_walletProvider);
       setLoggedIn(walletProvider?.connected || false);
     };
     initWalletProvider();

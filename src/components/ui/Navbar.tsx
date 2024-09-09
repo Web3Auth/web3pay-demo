@@ -28,7 +28,7 @@ const Navbar = ({
   const [showMenu, setShowMenu] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);
   const { resetMintState } = useMintStore()
-  const { setAddress, setLoggedIn, setWalletProvider } = useWallet();
+  const { walletProvider } = useWallet();
 
   const handleCopy = () => {
     setCopied(true);
@@ -39,13 +39,10 @@ const Navbar = ({
     }, 2000);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     resetMintState();
     setShowMenu(false);
-    setAddress("");
-    setWalletProvider(null);
-    localStorage.clear();
-    setLoggedIn(false);
+    await walletProvider.disconnect();
   };
 
   const handleAddressExplorer = () => {
