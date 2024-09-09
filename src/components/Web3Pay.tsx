@@ -171,8 +171,8 @@ const Web3Pay = ({
               An authentication experience that works
             </p>
             <p className="text-lg font-normal text-gray-400 text-left">
-              Passkeys provides your users a more secure login method, doing
-              away with passwords
+              Passkeys provide your users a more secure login method, doing away
+              with passwords
             </p>
           </Card>
           <Card
