@@ -16,6 +16,8 @@ const WalletContext = createContext({
   setWalletProvider: (provider: any) => {},
   loggedIn: false,
   setLoggedIn: (loggedIn: boolean) => {},
+  showNextLoginModal: false,
+  setShowNextLoginModal: (show: boolean) => {},
 });
 
 export const WalletProviderContext = ({
@@ -29,6 +31,7 @@ export const WalletProviderContext = ({
   const [walletProvider, setWalletProvider] = useState<WalletProvider | null>(
     null
   );
+  const [showNextLoginModal, setShowNextLoginModal] = useState<boolean>(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [chainId, setChainId] = useState(80002);
 
@@ -58,6 +61,7 @@ export const WalletProviderContext = ({
         setWalletProvider(null);
         localStorage.clear();
         setLoggedIn(false);
+        setShowNextLoginModal(true);
       });
 
       setWalletProvider(_walletProvider);
@@ -81,12 +85,7 @@ export const WalletProviderContext = ({
           setAddress(account[0]);
           router.push(`/home${url.search}`);
         } else {
-          let searchParams = url.search || "&showLogin=true";
-          if (!searchParams.startsWith("?")) {
-            searchParams = "?showLogin=true"
-          }
-
-          router.push(`/${searchParams}`);
+          router.push(`/${url.search}`);
         }
       } catch (err) {
         console.log(err);
@@ -107,6 +106,8 @@ export const WalletProviderContext = ({
         setWalletProvider,
         loggedIn,
         setLoggedIn,
+        showNextLoginModal,
+        setShowNextLoginModal,
       }}
     >
       {children}
