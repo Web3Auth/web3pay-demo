@@ -81,7 +81,12 @@ export const WalletProviderContext = ({
           setAddress(account[0]);
           router.push(`/home${url.search}`);
         } else {
-          router.push(`/${url.search}`);
+          let searchParams = url.search || "&showLogin=true";
+          if (!searchParams.startsWith("?")) {
+            searchParams = "?showLogin=true"
+          }
+
+          router.push(`/${searchParams}`);
         }
       } catch (err) {
         console.log(err);

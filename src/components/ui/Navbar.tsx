@@ -7,6 +7,8 @@ import { useWallet } from "@/context/walletContext";
 import { cn } from "@/utils/utils";
 import useMintStore from "@/lib/store/mint";
 import { useRouter } from "next/navigation";
+import { Modal } from "./Modal";
+import LogoutPopup from "../LogoutPopup";
 
 const Navbar = ({
   address,
@@ -27,8 +29,7 @@ const Navbar = ({
   const [copied, setCopied] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);
-  const { resetMintState } = useMintStore()
-  const { walletProvider } = useWallet();
+  const [showLogoutModal, setShowLogoutModal] = useState<boolean>(false);
 
   const handleCopy = () => {
     setCopied(true);
@@ -37,12 +38,6 @@ const Navbar = ({
       setCopied(false);
       setShowMenu(false);
     }, 2000);
-  };
-
-  const handleLogout = async () => {
-    resetMintState();
-    setShowMenu(false);
-    await walletProvider.disconnect();
   };
 
   const handleAddressExplorer = () => {
@@ -141,7 +136,10 @@ const Navbar = ({
             </button>
             <button
               className="appearance-none flex items-center gap-x-2 px-4 py-3 w-full"
-              onClick={handleLogout}
+              onClick={() => {
+                setShowMenu(false);
+                setShowLogoutModal(true);
+              }}
             >
               <TbLogout className="text-red-400 text-xl" />
               <p className="text-red-400 text-sm font-normal">Log out</p>
@@ -149,6 +147,14 @@ const Navbar = ({
           </div>
         </div>
       ) : null}
+      <Modal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+      >
+        <LogoutPopup onCancel={() => {
+          setShowLogoutModal(false);
+        }} />
+      </Modal>
     </div>
   );
 };
