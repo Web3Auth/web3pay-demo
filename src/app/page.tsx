@@ -27,10 +27,7 @@ export default function Home() {
     setIsLoading(true);
     setDisplayErrorPopup(false);
     try {
-      const response = await walletProvider?.request({
-        method: "eth_requestAccounts",
-        params: loginParams || [],
-      });
+      const response = await walletProvider?.connect(loginParams);
       const loggedInAddress = (response as string[])[0];
       setAddress(loggedInAddress);
       setLoggedIn(walletProvider?.connected || false);
