@@ -11,7 +11,7 @@ const LogoutPopup = ({ onCancel }: {
 
   const handleLogout = async () => {
     resetMintState();
-    await walletProvider.disconnect();
+    await walletProvider?.disconnect();
   };
 
   return (
