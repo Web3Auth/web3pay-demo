@@ -7,10 +7,17 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 export const calculateBaseUrl = (selectedEnv: SelectedEnv) => {
-  if (selectedEnv === "local") {
-    return "http://localhost:3000";
-  } else {
-    return "https://lrc-accounts.web3auth.io";
+  switch (selectedEnv) {
+    case "local":
+      return "http://localhost:3000";
+    case "testing":
+      return "http://web3pay-staging.web3auth.dev";
+    case "staging":
+    // currently, we don't have the dedicated prod env yet.
+    // in the mean while, `prod` and `staging` will share the same env (lrc)
+    case "production":
+    default:
+      return "https://lrc-accounts.web3auth.io";  
   }
 };
 

@@ -7,7 +7,7 @@ export interface IRandomWallet {
   keyType: TRandomWalletKeyType;
 }
 
-export type SelectedEnv = "local" | "production";
+export type SelectedEnv = "local" | "testing" | "staging" | "production";
 
 export type ImportFlowStep =
   | "start"
