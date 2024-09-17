@@ -62,10 +62,10 @@ const ImportFlowCard = ({
           )}
         </div>
       </p>
-      <p className="text-base font-bold break-words w-full 2xl:w-[250px] text-left text-white">
+      <p className="text-base font-bold break-words w-full text-left text-white">
         {title}
       </p>
-      <p className="text-base font-normal break-words w-full 2xl:w-[250px] text-left text-gray-400">
+      <p className="text-base font-normal break-words w-full text-left text-gray-400">
         {description}
       </p>
       {isCurrent && (
