@@ -168,12 +168,7 @@ const ConnectStep = ({
           displayName: "Test Wallet",
         });
 
-        const response = await walletProvider?.request({
-          method: "wallet_importW3aSession",
-          params: {
-            sessionId,
-          },
-        });
+        const response = await walletProvider?.importExternalWallet(sessionId);
         console.log("Response", response);
         setCompletedSteps([...completedSteps, "connect"]);
 

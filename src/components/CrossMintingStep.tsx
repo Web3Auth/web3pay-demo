@@ -59,7 +59,7 @@ const CrossMintingStep = ({
         args: [web3PayAddress],
       });
 
-      const resp = await walletProvider?.request({
+      const resp = await walletProvider?.request<`0x${string}`>({
         method: "eth_sendTransaction",
         params: {
           from: web3PayAddress,

@@ -12,9 +12,9 @@ import { parseSdkError } from "@/utils/utils";
 
 export default function Home() {
   const router = useRouter();
+  const { setAddress, walletProvider, setLoggedIn, showNextLoginModal, setShowNextLoginModal } = useWallet();
 
   const [isLoading, setIsLoading] = useState(false);
-  const { setAddress, walletProvider, setLoggedIn, loggedIn } = useWallet();
   // error message
   const [errorText, setErrorText] = useState("");
   const [subErrorText, setSubErrorText] = useState("");
@@ -23,14 +23,11 @@ export default function Home() {
   >(() => Promise.resolve());
   const [displayErrorPopup, setDisplayErrorPopup] = useState(false);
 
-  async function loginOrRegister() {
+  async function loginOrRegister(loginParams?: { showLoggedOutModal?: boolean }) {
     setIsLoading(true);
     setDisplayErrorPopup(false);
     try {
-      const response = await walletProvider?.request({
-        method: "eth_requestAccounts",
-        params: [],
-      });
+      const response = await walletProvider?.connect(loginParams);
       const loggedInAddress = (response as string[])[0];
       setAddress(loggedInAddress);
       setLoggedIn(walletProvider?.connected || false);
@@ -54,15 +51,24 @@ export default function Home() {
   }
 
   useEffect(() => {
-    if (walletProvider?.connected && loggedIn) {
+    if (walletProvider?.connected) {
       router.push("/home");
     }
-  }, [walletProvider, loggedIn, router]);
+  }, [walletProvider, router]);
+
+  useEffect(() => {
+    if (showNextLoginModal) {
+      setShowNextLoginModal(false);
+      (async () => {
+        await loginOrRegister({ showLoggedOutModal: showNextLoginModal });
+      })()
+    }
+  }, [showNextLoginModal]);
 
   return (
     <main className="flex flex-col">
       <Navbar address={""} showButton={false} />
-      <Web3Pay actionButtonText="Create Testnet Web3Pay Account" onActionButtonClick={loginOrRegister} isLoading={isLoading} />
+      <Web3Pay actionButtonText="Create Testnet Web3Pay Account" onActionButtonClick={() => loginOrRegister()} isLoading={isLoading} />
 
       <Modal
         isOpen={displayErrorPopup}
