@@ -354,7 +354,7 @@ packages:
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
 
   '@web3auth/global-accounts-sdk@file:web3auth-global-accounts-sdk-0.1.1-0.tgz':
-    resolution: {integrity: sha512-ewpCP4hZhYgcP4xkFCqn3P9wMWff8shEYRZSbqPFRANSGQaR+BzLqv24LIZ4j3K1yPveokoR3MauvQfCuuMjfw==, tarball: file:web3auth-global-accounts-sdk-0.1.1-0.tgz}
+    resolution: {integrity: sha512-HYyQxv819P2FQvY2zUYanTJWlUtRzYpPZJXIgOcIvlX0dTyY9HV+6WP1Bjcvq/Rb37vzAa7B3H0GU1eYrHp8jQ==, tarball: file:web3auth-global-accounts-sdk-0.1.1-0.tgz}
     version: 0.1.1-0
     engines: {node: '>=20.x'}
 
@@ -1691,8 +1691,8 @@ packages:
   tsconfig-paths@3.15.0:
     resolution: {integrity: sha512-2Ac2RgzDe/cn48GvOe3M+o82pEFewD3UPbyoUHHdKasHwJKjds4fLXWf/Ux5kATBKN20oaFGu+jbElp1pos0mg==}
 
-  tseep@1.2.2:
-    resolution: {integrity: sha512-GgPFuNx+08UaYBYmJQmuI86ykYa2PUUtfXAYb4MLRHGunSCp8k9N+dbsR4PK1yk4/zV9q4e4PrNg8ymXqGYaYA==}
+  tseep@1.3.0:
+    resolution: {integrity: sha512-QIwjVQQhzD0NCaNH47OkaH7NZIWaw/XYxtqe50cTwQq9iEKRoR3UmFIpkSpFsMam3F8bxLMRxUiu0goi+BoFcg==}
 
   tslib@2.7.0:
     resolution: {integrity: sha512-gLXCKdN1/j47AiHiOkJN69hJmcbGTHI0ImLmbYLHykhgeN0jVGola9yVjFgzCUklsZQMW55o+dW7IXv3RCXDzA==}
@@ -2103,7 +2103,7 @@ snapshots:
     dependencies:
       '@toruslabs/secure-pub-sub': 1.0.0(@babel/runtime@7.25.6)
       loglevel: 1.9.2
-      tseep: 1.2.2
+      tseep: 1.3.0
     transitivePeerDependencies:
       - '@babel/runtime'
       - '@sentry/types'
@@ -3693,7 +3693,7 @@ snapshots:
       minimist: 1.2.8
       strip-bom: 3.0.0
 
-  tseep@1.2.2: {}
+  tseep@1.3.0: {}
 
   tslib@2.7.0: {}
 
