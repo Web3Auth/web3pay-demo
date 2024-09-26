@@ -1,7 +1,5 @@
 import { useWallet } from "@/context/walletContext";
 import useMintStore from "@/lib/store/mint";
-import { HiExclamationCircle } from "react-icons/hi";
-import { text } from "stream/consumers";
 
 const LogoutPopup = ({ onCancel }: {
   onCancel: () => void;

@@ -8,7 +8,7 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import { bundlerActions, ENTRYPOINT_ADDRESS_V07 } from "permissionless";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HiOutlineArrowSmRight } from "react-icons/hi";
 import { encodeFunctionData, Hex, createClient, http } from "viem";
 import { polygonAmoy } from "viem/chains";
@@ -39,6 +39,7 @@ const CrossMintingStep = ({
     address: web3PayAddress,
     selectedEnv,
     setLoggedIn,
+    error: errorFromWallet,
   } = useWallet();
   const [displayErrorPopup, setDisplayErrorPopup] = useState(false);
   const [errorText, setErrorText] = useState("");
@@ -68,6 +69,7 @@ const CrossMintingStep = ({
           value: "0",
         },
       });
+
       if (resp) {
         // setMintSuccess(true);
         setMintNftState({
@@ -148,6 +150,19 @@ const CrossMintingStep = ({
       setDisplayErrorPopup(true);
     }
   }
+
+  useEffect(() => {
+    if (errorFromWallet) {
+      // show error
+      setDisplayErrorPopup(true);
+      setErrorText("Minting failed");
+      setSubErrorText(errorFromWallet);
+    } else {
+      setDisplayErrorPopup(false);
+      setErrorText("");
+      setSubErrorText("");
+    }
+  }, [errorFromWallet]);
 
   return (
     <div className="flex flex-col items-center justify-center w-full">

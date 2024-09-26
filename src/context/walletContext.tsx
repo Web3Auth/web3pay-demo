@@ -2,7 +2,6 @@
 
 import { SelectedEnv } from "@/utils/interfaces";
 import { calculateBaseUrl } from "@/utils/utils";
-// WalletContext.js
 import { WalletProvider } from "@web3auth/global-accounts-sdk";
 import { useRouter } from "next/navigation";
 import React, { createContext, useContext, useEffect, useState } from "react";
@@ -17,7 +16,8 @@ interface IWalletContext {
   loggedIn: boolean;
   setLoggedIn: (val: boolean) => void;
   showNextLoginModal: boolean;
-  setShowNextLoginModal: (val: boolean) => void;  
+  setShowNextLoginModal: (val: boolean) => void;
+  error?: string;
 }
 
 const WalletContext = createContext<IWalletContext>({
@@ -47,6 +47,7 @@ export const WalletProviderContext = ({
   const [showNextLoginModal, setShowNextLoginModal] = useState<boolean>(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [chainId, setChainId] = useState(80002);
+  const [error, setError] = useState<string | undefined>();
 
   useEffect(() => {
     const getWalletURL = () => {
@@ -67,14 +68,17 @@ export const WalletProviderContext = ({
         preference: {
           keysUrl: getWalletURL(),
         },
-      });
-
-      _walletProvider.addListener("disconnect", () => {
-        setAddress("");
-        setWalletProvider(null);
-        localStorage.clear();
-        setLoggedIn(false);
-        setShowNextLoginModal(true);
+        onError: (_error) => {
+          console.log("Error occured::error", _error);
+          setError(_error);
+        },
+        onDisconnect: () => {
+          setAddress("");
+          setWalletProvider(null);
+          localStorage.clear();
+          setLoggedIn(false);
+          setShowNextLoginModal(true);
+        },
       });
 
       setWalletProvider(_walletProvider);
@@ -121,6 +125,7 @@ export const WalletProviderContext = ({
         setLoggedIn,
         showNextLoginModal,
         setShowNextLoginModal,
+        error,
       }}
     >
       {children}
