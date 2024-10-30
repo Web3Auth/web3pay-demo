@@ -11,7 +11,7 @@ export const calculateBaseUrl = (selectedEnv: SelectedEnv) => {
     case "local":
       return "http://localhost:3000";
     case "testing":
-      return "http://web3pay-staging.web3auth.dev";
+      return "https://web3pay-staging.web3auth.dev";
     case "staging":
     // currently, we don't have the dedicated prod env yet.
     // in the mean while, `prod` and `staging` will share the same env (lrc)
