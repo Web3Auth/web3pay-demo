@@ -43,7 +43,7 @@ export const parseSdkError = (
   }
 
   return {
-    errorText: title || "",
-    subErrorText: `Error during login: ${JSON.stringify(error)}`,
+    errorText: "Canceled or Timed Out",
+    subErrorText: "Request was either cancelled or timed out due to inactivity",
   };
 };
